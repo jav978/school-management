@@ -1,0 +1,11 @@
+# Default code owners
+* @schoolms
+
+# Frontend
+/frontend/ @schoolms/frontend
+
+# Backend
+/backend/ @schoolms/backend
+
+# Documentation
+/docs/ @schoolms/docs

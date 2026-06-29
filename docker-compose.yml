@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: school_db
+    restart: always
+    environment:
+      POSTGRES_DB: school_management
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docs/school_db.sql:/docker-entrypoint-initdb.d/school_db.sql
+    networks:
+      - school_network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: school_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@colegiosanmartin.edu
+      PGADMIN_DEFAULT_PASSWORD: password123
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - school_network
+
+  directus:
+    image: directus/directus:latest
+    container_name: school_directus
+    restart: always
+    ports:
+      - "8055:8055"
+    environment:
+      KEY: "apollo-school-management-directus-key"
+      SECRET: "apollo-school-management-directus-secret"
+      DB_CLIENT: "pg"
+      DB_HOST: "db"
+      DB_PORT: "5432"
+      DB_DATABASE: "school_management"
+      DB_USER: "postgres"
+      DB_PASSWORD: "postgres"
+      ADMIN_EMAIL: "admin@colegiosanmartin.edu"
+      ADMIN_PASSWORD: "password123"
+      # Bypass table schema creation in public schema (we can use directus schemas)
+      DB_SCHEMA: "public"
+    depends_on:
+      - db
+    networks:
+      - school_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: school_backend
+    restart: always
+    ports:
+      - "3030:3030"
+    environment:
+      DATABASE_URL: "postgresql://postgres:postgres@db:5432/school_management"
+      JWT_SECRET: "school-management-secret-key"
+      PORT: 3030
+    depends_on:
+      - db
+    networks:
+      - school_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: school_frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      API_BASE: "http://localhost:3030"
+    depends_on:
+      - backend
+    networks:
+      - school_network
+
+volumes:
+  postgres_data:
+
+networks:
+  school_network:
+    driver: bridge

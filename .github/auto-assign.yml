@@ -1,0 +1,11 @@
+addAssignees: true
+addReviewers: true
+reviewers:
+  - admin
+assignees:
+  - admin
+numberOfAssignees: 0
+numberOfReviewers: 0
+skipKeywords:
+  - wip
+  - draft

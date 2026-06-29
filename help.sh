@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "📚 Comandos útiles para el desarrollo:"
+echo ""
+echo "  ./start.sh      - Iniciar el sistema completo"
+echo "  ./stop.sh       - Detener todos los servidores"
+echo "  ./check.sh      - Verificar la configuración"
+echo "  ./reset-db.sh   - Resetear la base de datos"
+echo "  ./seed.sh       - Sembrar datos de ejemplo"
+echo ""
+echo "  npm run dev     - Iniciar frontend y backend"
+echo "  npm run build   - Construir el frontend para producción"
+echo ""
+echo "  cd backend && npm run migrate  - Ejecutar migraciones"
+echo "  cd backend && npm run seed     - Sembrar datos de ejemplo"
+echo ""
+echo "  cd frontend && npm run dev     - Iniciar solo el frontend"
+echo "  cd backend && npm run dev      - Iniciar solo el backend"

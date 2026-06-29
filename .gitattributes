@@ -1,0 +1,21 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Custom for Vue
+*.vue linguist-language=HTML
+
+# Custom for JavaScript
+*.js linguist-language=JavaScript
+
+# Custom for TypeScript
+*.ts linguist-language=TypeScript
+
+# Custom for JSON
+*.json linguist-language=JSON
+
+# Custom for Markdown
+*.md linguist-documentation=true
+
+# Custom for YAML
+*.yml linguist-language=YAML
+*.yaml linguist-language=YAML

@@ -1,0 +1,66 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-50 text-slate-800 antialiased font-sans transition-colors duration-200;
+  }
+  .dark body {
+    @apply bg-slate-950 text-slate-300;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold tracking-tight text-slate-900 transition-colors duration-200;
+  }
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-slate-100;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn-primary {
+    @apply bg-gradient-to-r from-emerald-600 to-teal-500 text-slate-950 px-5 py-2.5 rounded-xl font-bold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-98 transition-all duration-200 border-none;
+  }
+  .btn-secondary {
+    @apply bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-medium hover:bg-slate-50 active:scale-98 transition-all duration-200;
+  }
+  .dark .btn-secondary {
+    @apply bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl border border-slate-100 shadow-sm shadow-slate-100/50 p-6 hover:border-slate-200/60 hover:shadow-md transition-all duration-300;
+  }
+  .dark .card {
+    @apply bg-slate-900/50 border-slate-900 shadow-xl shadow-black/45 hover:border-slate-800/80 hover:bg-slate-900/80;
+  }
+
+  /* Inputs */
+  .input-field {
+    @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200;
+  }
+  .dark .input-field {
+    @apply bg-slate-950 border-slate-800 text-slate-100 placeholder-slate-600 focus:bg-slate-950;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+}
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-slate-800 hover:bg-slate-700;
+}
+
+
+

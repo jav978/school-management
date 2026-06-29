@@ -1,0 +1,38 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "migrate": "knex migrate:latest",
+    "migrate:rollback": "knex migrate:rollback",
+    "seed": "knex seed:run",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@feathersjs/authentication": "^5.0.45",
+    "@feathersjs/authentication-local": "^5.0.45",
+    "@feathersjs/authentication-oauth": "^5.0.45",
+    "@feathersjs/errors": "^5.0.45",
+    "@feathersjs/express": "^5.0.45",
+    "@feathersjs/feathers": "^5.0.45",
+    "@feathersjs/knex": "^5.0.45",
+    "@feathersjs/schema": "^5.0.45",
+    "@feathersjs/socketio": "^5.0.45",
+    "@feathersjs/typebox": "^5.0.45",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "knex": "^3.3.0",
+    "pg": "^8.22.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

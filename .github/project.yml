@@ -1,0 +1,17 @@
+name: School Management System
+description: Sistema de Gestión Escolar
+columns:
+  - name: To Do
+    cards:
+      - type: issue
+        number: 1
+      - type: issue
+        number: 2
+  - name: In Progress
+    cards:
+      - type: issue
+        number: 3
+  - name: Done
+    cards:
+      - type: issue
+        number: 4

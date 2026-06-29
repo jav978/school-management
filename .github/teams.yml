@@ -1,0 +1,14 @@
+- name: frontend
+  description: Frontend developers
+  members:
+    - admin
+
+- name: backend
+  description: Backend developers
+  members:
+    - admin
+
+- name: docs
+  description: Documentation writers
+  members:
+    - admin
