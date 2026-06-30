@@ -32,6 +32,14 @@ const mapPassword = (context) => {
   return context
 }
 
+const { validateData } = require('../hooks/validation')
+
+const userSchema = {
+  email: { required: true, type: 'email' },
+  username: { required: true },
+  role: { required: true }
+}
+
 module.exports = function (app) {
   const options = {
     Model: app.get('knexClient'),
@@ -51,9 +59,9 @@ module.exports = function (app) {
       all: [authenticateHook],
       find: [restrictToAdmin],
       get: [restrictToSelfOrAdmin],
-      create: [restrictToAdmin, hashPassword('password'), mapPassword],
-      update: [restrictToAdmin, hashPassword('password'), mapPassword],
-      patch: [restrictToSelfOrAdmin, hashPassword('password'), mapPassword],
+      create: [restrictToAdmin, validateData(userSchema), hashPassword('password'), mapPassword],
+      update: [restrictToAdmin, validateData(userSchema), hashPassword('password'), mapPassword],
+      patch: [restrictToSelfOrAdmin, validateData(userSchema), hashPassword('password'), mapPassword],
       remove: [restrictToAdmin]
     },
     after: {

@@ -1,6 +1,10 @@
 export default defineNuxtRouteMiddleware((to, from) => {
   const authStore = useAuthStore()
   
+  if (import.meta.client) {
+    authStore.checkAuth()
+  }
+  
   if (!authStore.isLoggedIn && to.path !== '/auth/login') {
     return navigateTo('/auth/login')
   }
@@ -13,10 +17,10 @@ export default defineNuxtRouteMiddleware((to, from) => {
     // Role-based route guard
     const userRole = authStore.userRole
     const routeRoles = {
-      '/students': ['admin', 'teacher'],
-      '/teachers': ['admin'],
+      '/students': ['admin', 'teacher', 'planner', 'teacher_coordinator'],
+      '/teachers': ['admin', 'teacher_coordinator'],
       '/finance': ['admin'],
-      '/reports': ['admin']
+      '/reports': ['admin', 'planner', 'teacher_coordinator']
     }
 
     for (const [route, allowedRoles] of Object.entries(routeRoles)) {

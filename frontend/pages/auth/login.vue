@@ -13,9 +13,9 @@
             <!-- Apollo-style Glowing Emblem -->
             <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-400 to-teal-500 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-emerald-500/20 relative group">
               <div class="absolute inset-0 rounded-2xl bg-gradient-to-tr from-emerald-400 to-teal-500 blur-md opacity-50 group-hover:opacity-100 transition-opacity"></div>
-              <span class="relative z-10 font-display">A</span>
+              <span class="relative z-10 font-display">GE</span>
             </div>
-            <span class="text-2xl font-black text-white tracking-wider font-display bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">Apollo</span>
+            <span class="text-2xl font-black text-white tracking-wider font-display bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">Gestión Escolar</span>
           </div>
           <h2 class="text-xl font-extrabold text-white">¡Bienvenido de nuevo!</h2>
           <p class="text-slate-400 text-xs mt-1.5">Introduce tus credenciales para acceder a la plataforma</p>

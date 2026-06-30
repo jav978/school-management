@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   db:
@@ -10,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./docs/school_db.sql:/docker-entrypoint-initdb.d/school_db.sql
@@ -18,14 +17,14 @@ services:
       - school_network
 
   pgadmin:
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:9.16
     container_name: school_pgadmin
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@colegiosanmartin.edu
+      PGADMIN_DEFAULT_EMAIL: admin@colegiosantaluisa.edu
       PGADMIN_DEFAULT_PASSWORD: password123
     ports:
-      - "5050:80"
+      - "5051:80"
     depends_on:
       - db
     networks:
@@ -36,7 +35,7 @@ services:
     container_name: school_directus
     restart: always
     ports:
-      - "8055:8055"
+      - "8056:8055"
     environment:
       KEY: "apollo-school-management-directus-key"
       SECRET: "apollo-school-management-directus-secret"
@@ -46,7 +45,7 @@ services:
       DB_DATABASE: "school_management"
       DB_USER: "postgres"
       DB_PASSWORD: "postgres"
-      ADMIN_EMAIL: "admin@colegiosanmartin.edu"
+      ADMIN_EMAIL: "admin@colegiosantaluisa.edu"
       ADMIN_PASSWORD: "password123"
       # Bypass table schema creation in public schema (we can use directus schemas)
       DB_SCHEMA: "public"

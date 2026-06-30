@@ -6,4 +6,10 @@ echo "🛑 Deteniendo Sistema de Gestión Escolar..."
 pkill -f "node"
 pkill -f "npm"
 
-echo "✅ Servidores detenidos."
+# Detener contenedores de Docker si docker compose está disponible
+if command -v docker &> /dev/null; then
+    echo "🐋 Deteniendo contenedores de Docker..."
+    docker compose down
+fi
+
+echo "✅ Servidores y contenedores detenidos."

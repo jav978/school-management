@@ -108,7 +108,7 @@
           </div>
           <div>
             <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Grado</label>
-            <select v-model="form.grade" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
+            <select v-model="form.grade" required class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300">
               <option value="" disabled>Seleccionar grado</option>
               <option v-for="grade in grades" :key="grade" :value="grade">{{ grade }}</option>
             </select>
@@ -162,6 +162,8 @@ const filteredStudents = computed(() => {
   })
 })
 
+const toast = useToast()
+
 const editStudent = (student) => {
   editingStudent.value = student
   form.value = { ...student }
@@ -171,6 +173,11 @@ const editStudent = (student) => {
 const deleteStudent = (student) => {
   if (confirm(`¿Estás seguro de eliminar a ${student.name}?`)) {
     students.value = students.value.filter(s => s.id !== student.id)
+    toast.add({
+      title: 'Estudiante eliminado',
+      description: `El estudiante ${student.name} fue eliminado satisfactoriamente.`,
+      color: 'success'
+    })
   }
 }
 
@@ -178,6 +185,11 @@ const saveStudent = () => {
   if (editingStudent.value) {
     const index = students.value.findIndex(s => s.id === editingStudent.value.id)
     students.value[index] = { ...form.value, id: editingStudent.value.id }
+    toast.add({
+      title: 'Estudiante actualizado',
+      description: `Los datos del estudiante ${form.value.name} se actualizaron satisfactoriamente.`,
+      color: 'success'
+    })
   } else {
     students.value.push({
       ...form.value,
@@ -185,6 +197,11 @@ const saveStudent = () => {
       enrollment: `EST-${String(students.value.length + 1).padStart(3, '0')}`,
       status: 'active',
       initials: form.value.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    })
+    toast.add({
+      title: 'Estudiante creado',
+      description: `El estudiante ${form.value.name} se registró satisfactoriamente.`,
+      color: 'success'
     })
   }
   closeModal()

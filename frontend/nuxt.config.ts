@@ -3,19 +3,11 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: [
-    '@nuxtjs/tailwindcss',
+    '@nuxt/ui',
     '@pinia/nuxt',
-    '@vueuse/nuxt',
-    '@nuxtjs/color-mode'
+    '@vueuse/nuxt'
   ],
-  tailwindcss: {
-    configPath: 'tailwind.config.js'
-  },
-  colorMode: {
-    classSuffix: '',
-    preference: 'dark',
-    fallback: 'dark'
-  },
+  css: ['~/assets/css/main.css'],
   app: {
     head: {
       title: 'School Management System',

@@ -16,18 +16,18 @@
     <!-- Filters Panel -->
     <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-[2rem] p-6 shadow-sm mb-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <select v-model="filterClass" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
+        <select v-model="filterClass" class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300">
           <option value="">Todas las clases</option>
           <option v-for="cls in classes" :key="cls" :value="cls">{{ cls }}</option>
         </select>
-        <select v-model="filterType" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
+        <select v-model="filterType" class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300">
           <option value="">Todos los tipos</option>
           <option value="exam">Examen</option>
           <option value="homework">Tarea</option>
           <option value="project">Proyecto</option>
           <option value="quiz">Quiz</option>
         </select>
-        <select v-model="filterPeriod" class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
+        <select v-model="filterPeriod" class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300">
           <option value="">Todos los periodos</option>
           <option value="1">Primer Periodo</option>
           <option value="2">Segundo Periodo</option>
@@ -136,13 +136,13 @@
         <form @submit.prevent="saveGrade" class="space-y-4">
           <div>
             <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Estudiante</label>
-            <select v-model="form.student" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
+            <select v-model="form.student" required class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300">
               <option v-for="student in students" :key="student" :value="student">{{ student }}</option>
             </select>
           </div>
           <div>
             <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Clase</label>
-            <select v-model="form.class" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
+            <select v-model="form.class" required class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300">
               <option v-for="cls in classes" :key="cls" :value="cls">{{ cls }}</option>
             </select>
           </div>
@@ -152,7 +152,7 @@
           </div>
           <div>
             <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Tipo</label>
-            <select v-model="form.type" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
+            <select v-model="form.type" required class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300">
               <option value="exam">Examen</option>
               <option value="homework">Tarea</option>
               <option value="project">Proyecto</option>
@@ -260,6 +260,8 @@ const getScoreClass = (score) => {
   return 'text-rose-600 dark:text-rose-400'
 }
 
+const toast = useToast()
+
 const editGrade = (grade) => {
   editingGrade.value = grade
   form.value = { ...grade }
@@ -269,6 +271,11 @@ const editGrade = (grade) => {
 const deleteGrade = (grade) => {
   if (confirm('¿Estás seguro de eliminar esta calificación?')) {
     grades.value = grades.value.filter(g => g.id !== grade.id)
+    toast.add({
+      title: 'Calificación eliminada',
+      description: `La calificación fue eliminada satisfactoriamente.`,
+      color: 'success'
+    })
   }
 }
 
@@ -276,8 +283,18 @@ const saveGrade = () => {
   if (editingGrade.value) {
     const index = grades.value.findIndex(g => g.id === editingGrade.value.id)
     grades.value[index] = { ...form.value, id: editingGrade.value.id }
+    toast.add({
+      title: 'Calificación actualizada',
+      description: `La calificación se actualizó satisfactoriamente.`,
+      color: 'success'
+    })
   } else {
     grades.value.push({ ...form.value, id: Date.now() })
+    toast.add({
+      title: 'Calificación agregada',
+      description: `La calificación se registró satisfactoriamente.`,
+      color: 'success'
+    })
   }
   showModal.value = false
   form.value = { student: '', class: '', assessment: '', type: 'exam', score: 0, maxScore: 100, date: '' }

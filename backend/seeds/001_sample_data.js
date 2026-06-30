@@ -34,13 +34,13 @@ exports.seed = async function(knex) {
   await knex('fee_types').del()
   await knex('settings').del()
   await knex('grade_scales').del()
+  await knex('students').del()
   await knex('class_subjects').del()
   await knex('classes').del()
+  await knex('grades').del()
   await knex('rooms').del()
   await knex('subjects').del()
   await knex('subject_categories').del()
-  await knex('grades').del()
-  await knex('students').del()
   await knex('parents').del()
   await knex('teacher_qualifications').del()
   await knex('teachers').del()
@@ -79,10 +79,10 @@ exports.seed = async function(knex) {
 
   // 4. Institución
   const institutions = await knex('institutions').insert({
-    name: 'Colegio San Martín',
-    legal_name: 'Colegio San Martín de Porres A.C.',
-    tax_id: 'CSM123456789',
-    email: 'info@colegiosanmartin.edu',
+    name: 'Colegio Santa Luisa',
+    legal_name: 'Colegio Santa Luisa A.C.',
+    tax_id: 'CSL123456789',
+    email: 'info@colegiosantaluisa.edu',
     phone_primary: '+52 55 1234 5678',
     phone_secondary: '+52 55 1234 5679',
     address_line1: 'Av. Reforma 123',
@@ -124,17 +124,21 @@ exports.seed = async function(knex) {
 
   // 7. Usuarios
   const hashedPassword = await bcrypt.hash('password123', 10)
+  const josePasswordHash = await bcrypt.hash('#Armany4770..', 10)
 
   const users = await knex('users').insert([
-    { institution_id: institutionId, username: 'admin', email: 'admin@colegiosanmartin.edu', password_hash: hashedPassword, role: 'admin', status: 'active' },
-    { institution_id: institutionId, username: 'profesor1', email: 'roberto@colegiosanmartin.edu', password_hash: hashedPassword, role: 'teacher', status: 'active' },
-    { institution_id: institutionId, username: 'profesor2', email: 'laura@colegiosanmartin.edu', password_hash: hashedPassword, role: 'teacher', status: 'active' },
-    { institution_id: institutionId, username: 'profesor3', email: 'miguel@colegiosanmartin.edu', password_hash: hashedPassword, role: 'teacher', status: 'active' },
+    { institution_id: institutionId, username: 'admin', email: 'admin@colegiosantaluisa.edu', password_hash: hashedPassword, role: 'admin', status: 'active' },
+    { institution_id: institutionId, username: 'profesor1', email: 'roberto@colegiosantaluisa.edu', password_hash: hashedPassword, role: 'teacher', status: 'active' },
+    { institution_id: institutionId, username: 'profesor2', email: 'laura@colegiosantaluisa.edu', password_hash: hashedPassword, role: 'teacher', status: 'active' },
+    { institution_id: institutionId, username: 'profesor3', email: 'miguel@colegiosantaluisa.edu', password_hash: hashedPassword, role: 'teacher', status: 'active' },
     { institution_id: institutionId, username: 'estudiante1', email: 'juan@estudiante.edu', password_hash: hashedPassword, role: 'student', status: 'active' },
     { institution_id: institutionId, username: 'estudiante2', email: 'maria@estudiante.edu', password_hash: hashedPassword, role: 'student', status: 'active' },
     { institution_id: institutionId, username: 'estudiante3', email: 'carlos@estudiante.edu', password_hash: hashedPassword, role: 'student', status: 'active' },
     { institution_id: institutionId, username: 'padre1', email: 'pedro@padre.com', password_hash: hashedPassword, role: 'parent', status: 'active' },
-    { institution_id: institutionId, username: 'padre2', email: 'ana@padre.com', password_hash: hashedPassword, role: 'parent', status: 'active' }
+    { institution_id: institutionId, username: 'padre2', email: 'ana@padre.com', password_hash: hashedPassword, role: 'parent', status: 'active' },
+    { institution_id: institutionId, username: 'planificacion', email: 'planificacion@colegiosantaluisa.edu', password_hash: hashedPassword, role: 'planner', status: 'active' },
+    { institution_id: institutionId, username: 'coordinacion_profesores', email: 'coordinacion_profesores@colegiosantaluisa.edu', password_hash: hashedPassword, role: 'teacher_coordinator', status: 'active' },
+    { institution_id: institutionId, username: 'jvasquez', email: 'jvasquez978@gmail.com', password_hash: josePasswordHash, role: 'admin', status: 'active' }
   ]).returning('*')
 
   // 8. Profesores

@@ -34,7 +34,7 @@
               class="flex items-center px-3 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-white transition-all group"
               active-class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold"
             >
-              <span class="mr-3 text-lg group-hover:scale-110 transition-transform">{{ item.icon }}</span>
+              <UIcon :name="item.icon" class="mr-3 text-lg group-hover:scale-110 transition-transform text-slate-400 dark:text-slate-500 group-hover:text-emerald-500 dark:group-hover:text-emerald-400" />
               <span class="text-sm">{{ item.label }}</span>
             </NuxtLink>
           </div>
@@ -50,7 +50,7 @@
               class="flex items-center px-3 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-white transition-all group"
               active-class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold"
             >
-              <span class="mr-3 text-lg group-hover:scale-110 transition-transform">{{ item.icon }}</span>
+              <UIcon :name="item.icon" class="mr-3 text-lg group-hover:scale-110 transition-transform text-slate-400 dark:text-slate-500 group-hover:text-emerald-500 dark:group-hover:text-emerald-400" />
               <span class="text-sm">{{ item.label }}</span>
             </NuxtLink>
           </div>
@@ -66,7 +66,7 @@
               class="flex items-center px-3 py-2.5 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 hover:text-slate-800 dark:hover:text-white transition-all group"
               active-class="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold"
             >
-              <span class="mr-3 text-lg group-hover:scale-110 transition-transform">{{ item.icon }}</span>
+              <UIcon :name="item.icon" class="mr-3 text-lg group-hover:scale-110 transition-transform text-slate-400 dark:text-slate-500 group-hover:text-emerald-500 dark:group-hover:text-emerald-400" />
               <span class="text-sm">{{ item.label }}</span>
             </NuxtLink>
           </div>
@@ -88,21 +88,21 @@ import { useAuthStore } from '~/stores/auth'
 const authStore = useAuthStore()
 
 const mainMenu = [
-  { path: '/dashboard', label: 'Dashboard', icon: '📊', roles: ['admin', 'teacher', 'student', 'parent'] },
+  { path: '/dashboard', label: 'Dashboard', icon: 'i-lucide-layout-dashboard', roles: ['admin', 'teacher', 'student', 'parent', 'planner', 'teacher_coordinator'] },
 ]
 
 const academicMenu = [
-  { path: '/students', label: 'Estudiantes', icon: '👨‍🎓', roles: ['admin', 'teacher'] },
-  { path: '/teachers', label: 'Profesores', icon: '👨‍🏫', roles: ['admin'] },
-  { path: '/grades', label: 'Calificaciones', icon: '📝', roles: ['admin', 'teacher', 'student', 'parent'] },
-  { path: '/attendance', label: 'Asistencia', icon: '✅', roles: ['admin', 'teacher', 'student', 'parent'] },
-  { path: '/schedules', label: 'Horarios', icon: '📅', roles: ['admin', 'teacher', 'student', 'parent'] },
+  { path: '/students', label: 'Estudiantes', icon: 'i-lucide-graduation-cap', roles: ['admin', 'teacher', 'planner', 'teacher_coordinator'] },
+  { path: '/teachers', label: 'Profesores', icon: 'i-lucide-book-open', roles: ['admin', 'teacher_coordinator'] },
+  { path: '/grades', label: 'Calificaciones', icon: 'i-lucide-clipboard-check', roles: ['admin', 'teacher', 'student', 'parent', 'planner'] },
+  { path: '/attendance', label: 'Asistencia', icon: 'i-lucide-check-square', roles: ['admin', 'teacher', 'student', 'parent', 'planner'] },
+  { path: '/schedules', label: 'Horarios', icon: 'i-lucide-calendar', roles: ['admin', 'teacher', 'student', 'parent', 'planner', 'teacher_coordinator'] },
 ]
 
 const adminMenu = [
-  { path: '/finance', label: 'Finanzas', icon: '💰', roles: ['admin'] },
-  { path: '/communication', label: 'Comunicación', icon: '💬', roles: ['admin', 'teacher', 'student', 'parent'] },
-  { path: '/reports', label: 'Reportes', icon: '📈', roles: ['admin'] },
+  { path: '/finance', label: 'Finanzas', icon: 'i-lucide-wallet', roles: ['admin'] },
+  { path: '/communication', label: 'Comunicación', icon: 'i-lucide-message-square', roles: ['admin', 'teacher', 'student', 'parent', 'planner', 'teacher_coordinator'] },
+  { path: '/reports', label: 'Reportes', icon: 'i-lucide-trending-up', roles: ['admin', 'planner', 'teacher_coordinator'] },
 ]
 
 const filteredMainMenu = computed(() => {

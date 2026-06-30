@@ -23,6 +23,15 @@ class GradesService extends KnexService {
   }
 }
 
+const { validateData } = require('../hooks/validation')
+
+const gradeSchema = {
+  exam_id: { required: true, type: 'number' },
+  student_id: { required: true, type: 'number' },
+  marks_obtained: { required: true, type: 'number', min: 0 },
+  total_marks: { required: true, type: 'number', min: 1 }
+}
+
 module.exports = function (app) {
   const options = {
     Model: app.get('knexClient'),
@@ -42,9 +51,9 @@ module.exports = function (app) {
       all: [authenticateHook],
       find: [restrictToRoles('admin', 'teacher', 'student', 'parent')],
       get: [restrictToRoles('admin', 'teacher', 'student', 'parent')],
-      create: [restrictToRoles('admin', 'teacher')],
-      update: [restrictToRoles('admin', 'teacher')],
-      patch: [restrictToRoles('admin', 'teacher')],
+      create: [restrictToRoles('admin', 'teacher'), validateData(gradeSchema)],
+      update: [restrictToRoles('admin', 'teacher'), validateData(gradeSchema)],
+      patch: [restrictToRoles('admin', 'teacher'), validateData(gradeSchema)],
       remove: [restrictToRoles('admin', 'teacher')]
     }
   })

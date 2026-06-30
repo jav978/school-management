@@ -32,8 +32,8 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true
 
         if (import.meta.client) {
-          localStorage.setItem('token', response.accessToken)
-          localStorage.setItem('user', JSON.stringify(response.user))
+          sessionStorage.setItem('token', response.accessToken)
+          sessionStorage.setItem('user', JSON.stringify(response.user))
         }
 
         return response
@@ -48,15 +48,15 @@ export const useAuthStore = defineStore('auth', {
       this.isAuthenticated = false
 
       if (import.meta.client) {
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('user')
       }
     },
 
     async checkAuth() {
       if (import.meta.client) {
-        const token = localStorage.getItem('token')
-        const user = localStorage.getItem('user')
+        const token = sessionStorage.getItem('token')
+        const user = sessionStorage.getItem('user')
 
         if (token && user) {
           this.token = token

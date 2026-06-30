@@ -20,7 +20,7 @@ SET search_path TO school, public;
 -- TIPOS ENUMERADOS
 -- ============================================================
 CREATE TYPE gender_type       AS ENUM ('male','female','other','prefer_not_to_say');
-CREATE TYPE user_role         AS ENUM ('admin','teacher','student','parent','staff');
+CREATE TYPE user_role         AS ENUM ('admin','teacher','student','parent','staff','planner','teacher_coordinator');
 CREATE TYPE user_status       AS ENUM ('active','inactive','suspended','pending','graduated');
 CREATE TYPE day_of_week       AS ENUM ('monday','tuesday','wednesday','thursday','friday','saturday','sunday');
 CREATE TYPE exam_type         AS ENUM ('written','oral','practical','online','take_home');

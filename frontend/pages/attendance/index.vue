@@ -7,7 +7,7 @@
       </div>
       <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
         <input v-model="selectedDate" type="date" class="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 text-xs font-bold" />
-        <select v-model="selectedClass" class="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 text-xs font-bold">
+        <select v-model="selectedClass" class="px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300 text-xs font-bold">
           <option value="">Seleccionar clase</option>
           <option v-for="cls in classes" :key="cls" :value="cls">{{ cls }}</option>
         </select>
@@ -161,6 +161,8 @@ const presentCount = computed(() => students.value.filter(s => s.status === 'pre
 const absentCount = computed(() => students.value.filter(s => s.status === 'absent').length)
 const lateCount = computed(() => students.value.filter(s => s.status === 'late').length)
 
+const toast = useToast()
+
 const setStatus = (studentId, status) => {
   const student = students.value.find(s => s.id === studentId)
   if (student) {
@@ -169,7 +171,11 @@ const setStatus = (studentId, status) => {
 }
 
 const saveAttendance = () => {
-  alert('Asistencia guardada exitosamente')
+  toast.add({
+    title: 'Asistencia guardada',
+    description: `La asistencia para el día ${selectedDate.value} en la clase ${selectedClass.value} fue guardada satisfactoriamente.`,
+    color: 'success'
+  })
 }
 
 const calendarDays = computed(() => {

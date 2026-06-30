@@ -22,6 +22,15 @@ class AttendanceService extends KnexService {
   }
 }
 
+const { authenticateHook, restrictToRoles } = require('../hooks/auth')
+const { validateData } = require('../hooks/validation')
+
+const attendanceSchema = {
+  student_id: { required: true },
+  date: { required: true, type: 'date' },
+  status: { required: true }
+}
+
 module.exports = function (app) {
   const options = {
     Model: app.get('knexClient'),
@@ -33,4 +42,18 @@ module.exports = function (app) {
   }
 
   app.use('attendance', new AttendanceService(options))
+
+  const service = app.service('attendance')
+
+  service.hooks({
+    before: {
+      all: [authenticateHook],
+      find: [restrictToRoles('admin', 'teacher', 'student', 'parent')],
+      get: [restrictToRoles('admin', 'teacher', 'student', 'parent')],
+      create: [restrictToRoles('admin', 'teacher'), validateData(attendanceSchema)],
+      update: [restrictToRoles('admin', 'teacher'), validateData(attendanceSchema)],
+      patch: [restrictToRoles('admin', 'teacher'), validateData(attendanceSchema)],
+      remove: [restrictToRoles('admin', 'teacher')]
+    }
+  })
 }

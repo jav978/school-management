@@ -101,7 +101,7 @@
           </div>
           <div>
             <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Materias (Ctrl+Click para seleccionar varias)</label>
-            <select v-model="form.subjects" multiple class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 h-28">
+            <select v-model="form.subjects" multiple class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-slate-500 dark:text-slate-350 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all duration-300 h-28">
               <option v-for="subject in subjects" :key="subject" :value="subject">{{ subject }}</option>
             </select>
           </div>
@@ -148,6 +148,8 @@ const filteredTeachers = computed(() => {
   })
 })
 
+const toast = useToast()
+
 const editTeacher = (teacher) => {
   editingTeacher.value = teacher
   form.value = { ...teacher }
@@ -162,6 +164,11 @@ const saveTeacher = () => {
   if (editingTeacher.value) {
     const index = teachers.value.findIndex(t => t.id === editingTeacher.value.id)
     teachers.value[index] = { ...form.value, id: editingTeacher.value.id }
+    toast.add({
+      title: 'Profesor actualizado',
+      description: `Los datos del profesor ${form.value.name} se actualizaron satisfactoriamente.`,
+      color: 'success'
+    })
   } else {
     teachers.value.push({
       ...form.value,
@@ -169,6 +176,11 @@ const saveTeacher = () => {
       classes: 0,
       status: 'active',
       initials: form.value.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    })
+    toast.add({
+      title: 'Profesor registrado',
+      description: `El profesor ${form.value.name} se registró satisfactoriamente.`,
+      color: 'success'
     })
   }
   showModal.value = false
