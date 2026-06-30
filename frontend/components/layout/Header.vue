@@ -1,6 +1,6 @@
 <template>
   <header class="bg-white/80 dark:bg-slate-950/80 backdrop-blur-md sticky top-0 z-30 border-b border-slate-100 dark:border-slate-900 transition-colors duration-200">
-    <div class="flex items-center justify-between px-4 sm:px-6 py-4">
+    <div class="flex items-center justify-between px-4 sm:px-6 py-[21px]">
       <div class="flex items-center gap-3">
         <!-- Hamburger menu button (Visible only on mobile) -->
         <button 
@@ -16,6 +16,20 @@
       </div>
 
       <div class="flex items-center space-x-3 sm:space-x-4">
+        <!-- Buscador General -->
+        <div class="relative hidden md:block">
+          <input 
+            type="text" 
+            placeholder="Buscar en el sistema..." 
+            class="pl-10 pr-4 py-2 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-700 dark:text-slate-250 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 w-64"
+          />
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 dark:text-slate-550">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+        </div>
+
         <!-- Theme Toggle Switch -->
         <button 
           @click="toggleTheme" 

@@ -20,7 +20,7 @@
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col min-w-0 min-h-screen">
       <layout-header @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
-      <main class="flex-1 p-4 md:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+      <main class="flex-1 p-4 md:p-6 lg:p-8 max-w-[1800px] w-full mx-auto">
         <slot />
       </main>
     </div>
