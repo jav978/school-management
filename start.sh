@@ -14,9 +14,10 @@ cd "$DIR_RAIZ/backend" && npm run migrate
 echo ""
 echo "✅ ¡Todo listo! Iniciando servidores..."
 echo ""
-echo "Frontend: http://localhost:3000"
-echo "Backend: http://localhost:3030"
+echo "Frontend: http://localhost:3001"
+echo "Backend:  http://localhost:3031"
 echo ""
 
 cd "$DIR_RAIZ" && npm run dev
+
 

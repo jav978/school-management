@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-04T20:05:00.000Z",
+  "title": "Design System: ACERO School Management",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Luminous Emerald",
+        "canonical": "oklch(70% 0.18 160)",
+        "tonalRamp": ["#022c22", "#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#6ee7b7"]
+      },
+      "brand-ember": {
+        "role": "secondary",
+        "displayName": "ACERO Ember",
+        "canonical": "oklch(68% 0.21 45)",
+        "tonalRamp": ["#431407", "#7c2d12", "#9a3412", "#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74"]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "Obsidian Slate",
+        "canonical": "oklch(14% 0.02 260)",
+        "tonalRamp": ["#020617", "#090d16", "#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8"]
+      },
+      "surface-light": {
+        "role": "neutral",
+        "displayName": "Clean Paper Canvas",
+        "canonical": "oklch(98% 0.005 240)",
+        "tonalRamp": ["#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc", "#ffffff", "#ffffff", "#ffffff", "#ffffff"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display / Metrics",
+        "purpose": "Hero headlines, major metrics, and dashboard KPI values."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Modal headers and major card section titles."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Sub-card titles and widget headers."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Standard prose, form labels, and table cells."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Dense metadata, table column headers, and status badges."
+      }
+    },
+    "shadows": [
+      {
+        "name": "cta-glow",
+        "value": "0 10px 15px -3px rgba(16, 185, 129, 0.2)",
+        "purpose": "Ambient glow under primary action buttons."
+      },
+      {
+        "name": "card-subtle",
+        "value": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)",
+        "purpose": "Resting shadow on cards in light mode."
+      },
+      {
+        "name": "modal-deep",
+        "value": "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+        "purpose": "Elevated modal dialogs and dropdown menus."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-standard",
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "purpose": "Standard easing for state transitions."
+      },
+      {
+        "name": "duration-fast",
+        "value": "200ms",
+        "purpose": "Hover, focus, and button press micro-interactions."
+      },
+      {
+        "name": "duration-enter",
+        "value": "300ms",
+        "purpose": "Drawer slide and modal entrance."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Affirmative actions, creation triggers, and primary confirmation buttons.",
+      "html": "<button class=\"ds-btn-primary\"><svg class=\"ds-btn-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" d=\"M12 4v16m8-8H4\"/></svg><span>Nuevo Estudiante</span></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: linear-gradient(135deg, #10b981 0%, #0d9488 100%); color: #020617; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 14px; padding: 10px 20px; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-primary:hover { background: linear-gradient(135deg, #059669 0%, #0f766e 100%); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); transform: translateY(-1px); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-icon { width: 16px; height: 16px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary actions, dismissals, and filtering options.",
+      "html": "<button class=\"ds-btn-secondary\">Cancelar</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; background: #0f172a; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 14px; padding: 10px 20px; border-radius: 12px; border: 1px solid #1e293b; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-btn-secondary:hover { background: #1e293b; color: #ffffff; border-color: #334155; } .ds-btn-secondary:active { transform: scale(0.98); }"
+    },
+    {
+      "name": "KPI Metric Card",
+      "kind": "card",
+      "description": "High-density statistical summary widget with Outfit display numerals and status trend badge.",
+      "html": "<div class=\"ds-kpi-card\"><div class=\"ds-kpi-content\"><span class=\"ds-kpi-label\">ESTUDIANTES ACTIVOS</span><span class=\"ds-kpi-value\">1,260</span></div><div class=\"ds-kpi-icon-wrap\"><svg class=\"ds-kpi-icon\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.8\" d=\"M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222\"/></svg></div></div>",
+      "css": ".ds-kpi-card { display: flex; align-items: center; justify-content: space-between; background: #0f172a; border: 1px solid #1e293b; border-radius: 16px; padding: 20px 24px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); transition: border-color 0.2s, box-shadow 0.2s; } .ds-kpi-card:hover { border-color: #334155; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); } .ds-kpi-content { display: flex; flex-direction: column; gap: 4px; } .ds-kpi-label { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.05em; text-transform: uppercase; } .ds-kpi-value { font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; } .ds-kpi-icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); display: flex; align-items: center; justify-content: center; color: #60a5fa; } .ds-kpi-icon { width: 22px; height: 22px; }"
+    },
+    {
+      "name": "Text Input Field",
+      "kind": "input",
+      "description": "Standard administrative form input with crisp 1px stroke and ember focus glow.",
+      "html": "<div class=\"ds-field-wrap\"><label class=\"ds-field-label\">Nombre Completo</label><input type=\"text\" class=\"ds-input\" placeholder=\"Ej. Valentina Morales\"/></div>",
+      "css": ".ds-field-wrap { display: flex; flex-direction: column; gap: 6px; width: 100%; max-width: 320px; } .ds-field-label { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px; font-weight: 600; color: #cbd5e1; } .ds-input { width: 100%; box-sizing: border-box; background: #020617; border: 1px solid #1e293b; border-radius: 12px; padding: 10px 14px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; color: #ffffff; outline: none; transition: border-color 0.2s, box-shadow 0.2s; } .ds-input::placeholder { color: #475569; } .ds-input:focus { border-color: #f97316; box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15); }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "description": "Semantic status tag for enrollment, payments, and attendance.",
+      "html": "<div style=\"display:flex;gap:8px;\"><span class=\"ds-badge ds-badge-success\">Activo</span><span class=\"ds-badge ds-badge-warning\">Pendiente</span><span class=\"ds-badge ds-badge-danger\">Vencido</span></div>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 8px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; border: 1px solid transparent; } .ds-badge-success { background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.25); } .ds-badge-warning { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.25); } .ds-badge-danger { background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.25); }"
+    },
+    {
+      "name": "Sidebar Navigation Item",
+      "kind": "nav",
+      "description": "Brand navigation element with ACERO Ember active state and subtle dot indicator.",
+      "html": "<div class=\"ds-nav-item ds-nav-active\"><span class=\"ds-nav-label\">Estudiantes</span><span class=\"ds-nav-dot\"></span></div>",
+      "css": ".ds-nav-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-radius: 14px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 500; color: #94a3b8; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); } .ds-nav-item:hover { background: rgba(255, 255, 255, 0.04); color: #ffffff; } .ds-nav-active { background: rgba(249, 115, 22, 0.15); color: #fb923c; font-weight: 700; } .ds-nav-dot { width: 6px; height: 6px; border-radius: 9999px; background: #f97316; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Modern Academy Terminal",
+    "overview": "ACERO is an operational command center tailored for Spanish-speaking K-12 private and subsidized educational institutions. It reconciles administrative density with contemporary executive craft: dark-first obsidian slate foundations (#020617), vibrant emerald affirmative actions, and warm terracotta-ember branding cues that elevate school governance above generic corporate ERP software.\n\nRather than presenting an intimidating spreadsheet wall or a sterile clinical database, ACERO organizes complex academic schedules, student dossiers, attendance tallies, and tuition fee cycles into crisp, tactile planes. Information is structured for rapid visual scanning, high contrast legibility, and keyboard-efficient administrative execution.",
+    "keyCharacteristics": [
+      "Dark-First Slate Atmosphere: Deep rich navy-slate surfaces with tonal layering rather than pitch-black voids or generic mid-tone grays.",
+      "Dual Accent Discipline: ACERO Ember (#f97316) identifies institutional hierarchy and navigation; Luminous Emerald (#10b981 → #0d9488) drives affirmative workflows, data creation, and primary CTAs.",
+      "Geometric Typographic Contrast: Expressive geometric display weights in Outfit paired with ultra-legible, modern grotesque body copy in Plus Jakarta Sans.",
+      "Micro-Tactility: Rounded corners (12px to 24px), soft press-down interactions (active:scale-95), and delicate 1px architectural borders."
+    ],
+    "rules": [
+      {
+        "name": "The Dual Accent Rule",
+        "body": "Never use ACERO Ember for affirmative commit buttons, and never use Luminous Emerald for navigation item active states. Ember anchors location and institutional identity; Emerald drives user action and record creation.",
+        "section": "colors"
+      },
+      {
+        "name": "The Glow-to-Signal Rule",
+        "body": "Glowing drop shadows (shadow-emerald-500/20) are reserved exclusively for clickable affirmative CTAs. Static badges, data cards, and decorative shapes must never use ambient glow.",
+        "section": "colors"
+      },
+      {
+        "name": "The Display Anchor Rule",
+        "body": "Large numeric values (KPIs, statistics, balance totals) and major section titles must strictly use Outfit font-display with extra-bold weight (700/800). Tabular data and metadata must strictly use Plus Jakarta Sans to prevent optical distraction.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Containers, panels, and tables are flat at rest. Shadows never exceed shadow-sm on resting cards. Elevation rises only in response to explicit user hover, modal presentation, or active dropdown activation.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do preserve the dual-accent split: Ember for brand/navigation and Emerald for creation/commit actions.",
+      "Do use Outfit specifically for metrics, KPIs, and major section titles, and Plus Jakarta Sans for dense tabular information.",
+      "Do wrap tabular data with clean 1px subtle borders (border-slate-800/80 in dark mode) to maintain structural order.",
+      "Do apply active:scale-[0.98] micro-interactions on interactive buttons and action icons for tactile responsiveness.",
+      "Do keep dark mode backgrounds grounded in deep Slate (#020617 / #0f172a), never pure #000000 pitch black."
+    ],
+    "donts": [
+      "Don't use generic blue/gray corporate ERP styles or unstyled browser tables that degrade the executive feel.",
+      "Don't mix more than two accent colors on a single view; avoid combining purple, cyan, and neon pink into the terminal palette.",
+      "Don't add heavy multi-stop drop shadows (shadow-2xl) to standard cards; stick to subtle tonal borders and ambient glows.",
+      "Don't use sharp rectangular 0px border-radii; maintain ACERO's distinctive 12px to 24px smooth corner radii.",
+      "Don't use pure saturated red or green text without subtle background chip backing for status indicators."
+    ]
+  }
+}

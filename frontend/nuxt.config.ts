@@ -18,7 +18,10 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'School Management System',
+      htmlAttrs: {
+        lang: 'es'
+      },
+      title: 'Sistema de Gestión Escolar - ACERO',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
@@ -30,9 +33,13 @@ export default defineNuxtConfig({
       ]
     }
   },
+  devServer: {
+    port: 3001
+  },
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE || 'http://localhost:3030'
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || process.env.API_BASE || 'http://localhost:3031'
     }
   }
 })
+

@@ -1,31 +1,42 @@
+require('dotenv').config()
 const app = require('./src/app')
 const db = require('./src/database')
 
-const PORT = process.env.PORT || 3030
+const PORT = process.env.BACKEND_PORT || 3031
+
 
 app.set('knexClient', db)
 
-// Core services
+// Core & Personnel services
 require('./src/services/authentication')(app)
 require('./src/services/users')(app)
 require('./src/services/students')(app)
 require('./src/services/teachers')(app)
+require('./src/services/parents')(app)
+require('./src/services/staff')(app)
 
-// Academic services
+// Academic & Facilities services
 require('./src/services/academic-years')(app)
 require('./src/services/terms')(app)
 require('./src/services/subjects')(app)
 require('./src/services/classes')(app)
+require('./src/services/classrooms')(app)
 require('./src/services/exams')(app)
+require('./src/services/exam-questions')(app)
 require('./src/services/assignments')(app)
 require('./src/services/grades')(app)
+require('./src/services/report-cards')(app)
+require('./src/services/academic-plannings')(app)
 
 // Attendance & Schedule services
 require('./src/services/attendance')(app)
 require('./src/services/schedules')(app)
+require('./src/services/schedule-templates')(app)
 
-// Financial services
+// Financial & Identification services
 require('./src/services/payments')(app)
+require('./src/services/certificates')(app)
+require('./src/services/id-cards')(app)
 
 // Communication services
 require('./src/services/messages')(app)

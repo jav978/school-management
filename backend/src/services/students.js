@@ -3,7 +3,11 @@ const { authenticateHook, restrictToAdmin, restrictToRoles } = require('../hooks
 
 class StudentsService extends KnexService {
   async find(params) {
-    return super.find(params)
+    const query = { ...params?.query }
+    if (query.is_deleted === undefined) {
+      query.is_deleted = false
+    }
+    return super.find({ ...params, query })
   }
 
   async get(id, params) {
@@ -19,7 +23,7 @@ class StudentsService extends KnexService {
   }
 
   async remove(id, params) {
-    return super.remove(id, params)
+    return super.patch(id, { is_deleted: true, deleted_at: new Date() }, params)
   }
 }
 
@@ -28,8 +32,8 @@ module.exports = function (app) {
     Model: app.get('knexClient'),
     name: 'school.students',
     paginate: {
-      default: 10,
-      max: 50
+      default: 50,
+      max: 200
     }
   }
 
@@ -40,13 +44,12 @@ module.exports = function (app) {
   service.hooks({
     before: {
       all: [authenticateHook],
-      find: [restrictToRoles('admin', 'teacher', 'student', 'parent')],
-      get: [restrictToRoles('admin', 'teacher', 'student', 'parent')],
-      create: [restrictToAdmin],
-      update: [restrictToAdmin],
-      patch: [restrictToAdmin],
-      remove: [restrictToAdmin]
+      find: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent')],
+      get: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent')],
+      create: [restrictToRoles('admin', 'control_estudio')],
+      update: [restrictToRoles('admin', 'control_estudio')],
+      patch: [restrictToRoles('admin', 'control_estudio', 'teacher')],
+      remove: [restrictToRoles('admin', 'control_estudio')]
     }
   })
 }
-
