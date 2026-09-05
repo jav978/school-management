@@ -26,6 +26,19 @@ export default {
           700: '#1d4ed8',
           800: '#1e40af',
           900: '#1e3a8a'
+        },
+        brand: {
+          primary: '#281470',
+          purple: '#3e229c',
+          secondary: '#38bdf8',
+          accent: '#f7c301',
+          gold: '#f7c301',
+          'gold-light': '#ffdf66',
+          red: '#da2318',
+          gray: '#dddedc',
+          dark: '#23175c',
+          night: '#16113a',
+          surface: '#1b1145'
         }
       }
     }
