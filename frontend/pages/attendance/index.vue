@@ -12,8 +12,26 @@
         </p>
       </div>
 
-      <!-- Action Buttons & Controls -->
-      <div class="flex flex-wrap items-center gap-2.5">
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <!-- QR Attendance Scanner Button -->
+        <button
+          @click="openQrScannerModal"
+          type="button"
+          class="inline-flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200 active:scale-[0.98]"
+        >
+          <span>📷 Escanear QR</span>
+        </button>
+
+        <!-- Printable Student QR Cards Button -->
+        <button
+          v-if="students.length > 0"
+          @click="openPrintableQrModal"
+          type="button"
+          class="inline-flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200"
+        >
+          <span>🪪 Tarjetas QR</span>
+        </button>
+
         <!-- Mark all present -->
         <button
           v-if="students.length > 0"
@@ -497,14 +515,103 @@
       </div>
     </Teleport>
 
-    <!-- Floating Feedback Toast -->
+    <!-- QR Attendance Scanner Modal -->
     <Teleport to="body">
       <div 
-        v-if="toastMessage" 
-        class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-800 text-xs sm:text-sm font-bold animate-in fade-in slide-in-from-bottom-5 duration-200"
+        v-if="isQrScannerOpen" 
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs"
       >
-        <span class="w-2 h-2 rounded-full bg-orange-500"></span>
-        <span>{{ toastMessage }}</span>
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-800 text-center space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold text-2xl mx-auto">
+            📷
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-850 dark:text-white">Escáner de Asistencia QR</h3>
+            <p class="text-xs text-slate-400 mt-1">Escanea el código QR del carnet o ingresa el código del estudiante.</p>
+          </div>
+
+          <div class="relative">
+            <input 
+              v-model="qrInput" 
+              @keyup.enter="processQrInput"
+              ref="qrInputRef"
+              placeholder="Ej: STU-001 o V-32456789..."
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-indigo-200 dark:border-indigo-800 text-center font-mono text-sm font-bold focus:ring-2 focus:ring-indigo-500 text-slate-850 dark:text-white"
+            />
+            <button 
+              @click="processQrInput"
+              class="absolute right-2 top-2 px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold"
+            >
+              Registrar
+            </button>
+          </div>
+
+          <div v-if="lastScannedStudent" class="p-3 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-200 text-xs text-emerald-700 dark:text-emerald-300 font-bold">
+            ✓ {{ lastScannedStudent.first_name }} {{ lastScannedStudent.last_name }} registrado como PRESENTE
+          </div>
+
+          <div class="flex justify-end pt-2">
+            <button 
+              @click="isQrScannerOpen = false"
+              class="w-full py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+            >
+              Cerrar Escáner
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Printable QR Badges Modal -->
+    <Teleport to="body">
+      <div 
+        v-if="isPrintableQrOpen"
+        class="fixed inset-0 z-50 bg-white dark:bg-slate-950 overflow-y-auto p-6 sm:p-12 print:p-0"
+      >
+        <div class="max-w-4xl mx-auto space-y-6">
+          <div class="flex justify-between items-center print:hidden border-b pb-4">
+            <div>
+              <h2 class="text-xl font-bold text-slate-850 dark:text-white">Credenciales QR de Asistencia para el Aula</h2>
+              <p class="text-xs text-slate-400">Listas para imprimir y recortar para el control de asistencia diario</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <button 
+                @click="windowPrint" 
+                class="px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-md"
+              >
+                Imprimir Tarjetas
+              </button>
+              <button 
+                @click="isPrintableQrOpen = false" 
+                class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold"
+              >
+                Cerrar
+              </button>
+            </div>
+          </div>
+
+          <!-- Sheet Grid of QR Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div 
+              v-for="s in students" 
+              :key="s.id"
+              class="p-4 bg-white text-slate-900 rounded-2xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-between text-center print:border-slate-400"
+            >
+              <div class="flex items-center gap-2 mb-2">
+                <img src="/logocolegio.png" alt="Logo" class="w-6 h-6 object-contain" />
+                <span class="text-[10px] font-black uppercase">U.E Santa Luisa</span>
+              </div>
+              <h4 class="font-bold text-xs leading-tight mb-1">{{ s.first_name }} {{ s.last_name }}</h4>
+              <p class="text-[10px] text-slate-500 font-mono mb-2">Cód: {{ s.student_id || `EST-${s.id}` }}</p>
+              
+              <ui-qr-code 
+                :value="s.student_id || `EST-${s.id}`"
+                :size="80"
+              />
+              <span class="text-[9px] font-semibold text-slate-400 mt-2">Control Asistencia QR</span>
+            </div>
+          </div>
+        </div>
       </div>
     </Teleport>
 
@@ -778,6 +885,53 @@ const showToast = (msg) => {
   setTimeout(() => {
     toastMessage.value = ''
   }, 3500)
+}
+
+// QR Attendance Scanner Logic
+const isQrScannerOpen = ref(false)
+const qrInput = ref('')
+const qrInputRef = ref(null)
+const lastScannedStudent = ref(null)
+
+const openQrScannerModal = () => {
+  qrInput.value = ''
+  lastScannedStudent.value = null
+  isQrScannerOpen.value = true
+  setTimeout(() => {
+    if (qrInputRef.value) qrInputRef.value.focus()
+  }, 150)
+}
+
+const processQrInput = () => {
+  const query = qrInput.value.trim().toLowerCase()
+  if (!query) return
+
+  const student = students.value.find(s => 
+    (s.student_id && s.student_id.toLowerCase().includes(query)) ||
+    (s.national_id && s.national_id.toLowerCase().includes(query)) ||
+    (s.id_card && s.id_card.toLowerCase().includes(query)) ||
+    (`${s.first_name} ${s.last_name}`).toLowerCase().includes(query) ||
+    String(s.id) === query
+  )
+
+  if (student) {
+    student.attendance_status = 'present'
+    lastScannedStudent.value = student
+    showToast(`Asistencia registrada: ${student.first_name} ${student.last_name}`)
+    qrInput.value = ''
+  } else {
+    showToast('Estudiante no encontrado en esta sección')
+  }
+}
+
+// Printable Student QR Cards Logic
+const isPrintableQrOpen = ref(false)
+const openPrintableQrModal = () => {
+  isPrintableQrOpen.value = true
+}
+
+const windowPrint = () => {
+  window.print()
 }
 
 onMounted(async () => {

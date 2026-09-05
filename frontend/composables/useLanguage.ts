@@ -37,6 +37,15 @@ const translations = {
     transport: 'Transport',
     notice: 'Notice',
     reports: 'Reports',
+    classrooms: 'Classrooms',
+    staff: 'Staff',
+    planning: 'Planning',
+    exams: 'Exams',
+    boletas: 'Report Cards',
+    certificates: 'Certificates',
+    idcards: 'ID Cards',
+    users: 'Users & Roles',
+    documentation: 'Documentation',
 
     // Dashboard KPIs
     earnings: 'Earnings',
@@ -87,6 +96,15 @@ const translations = {
     transport: 'Transporte',
     notice: 'Avisos',
     reports: 'Reportes',
+    classrooms: 'Aulas e Instalaciones',
+    staff: 'Personal Administrativo',
+    planning: 'Planificación Académica',
+    exams: 'Generador de Exámenes',
+    boletas: 'Boletas de Notas',
+    certificates: 'Diplomas y Certificados',
+    idcards: 'Carnets Escolares',
+    users: 'Usuarios y Roles',
+    documentation: 'Documentación del Sistema',
 
     // Dashboard KPIs
     earnings: 'Ingresos',
