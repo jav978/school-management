@@ -1,16 +1,16 @@
 {
-  "name": "School Management System",
-  "short_name": "SchoolMS",
-  "description": "Sistema de Gestión Escolar",
+  "name": "U.E Santa Luisa - Gestión Escolar",
+  "short_name": "U.E Santa Luisa",
+  "description": "Sistema de Gestión y Administración Escolar - U.E Santa Luisa",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#3b82f6",
+  "theme_color": "#ea580c",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "64x64",
-      "type": "image/x-icon"
+      "src": "/logocolegio.png",
+      "sizes": "430x500",
+      "type": "image/png"
     }
   ]
 }

@@ -7,19 +7,24 @@
         
         <!-- Logo and Heading -->
         <div class="text-center mb-8">
-          <div class="flex items-center justify-center gap-3 mb-4">
-            <div class="w-11 h-11 rounded-2xl bg-orange-50 dark:bg-orange-950/40 flex items-center justify-center text-orange-500 shadow-xs">
-              <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                <circle cx="7" cy="12" r="3.5" class="opacity-80" />
-                <circle cx="17" cy="12" r="3.5" class="opacity-80" />
-                <circle cx="12" cy="7" r="3.5" />
-              </svg>
+          <div class="flex flex-col items-center justify-center gap-3 mb-4">
+            <div class="w-20 h-20 rounded-2xl bg-white dark:bg-slate-800 p-2 flex items-center justify-center shadow-md border border-slate-200/70 dark:border-slate-700/60 transition-transform hover:scale-105">
+              <img 
+                src="/logocolegio.png" 
+                alt="Logo U.E Santa Luisa" 
+                class="w-full h-full object-contain" 
+              />
             </div>
-            <span class="text-2xl font-black text-slate-850 dark:text-white tracking-wider font-display">
-              ACERO
-            </span>
+            <div class="text-center">
+              <h1 class="text-2xl font-black text-slate-850 dark:text-white tracking-tight font-display">
+                U.E Santa Luisa
+              </h1>
+              <span class="text-[11px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+                Comunidad Educativa Vicenciana
+              </span>
+            </div>
           </div>
-          <h2 class="text-xl font-bold text-slate-850 dark:text-white">¡Bienvenido de nuevo!</h2>
+          <h2 class="text-lg font-bold text-slate-850 dark:text-white">¡Bienvenido de nuevo!</h2>
           <p class="text-slate-400 text-xs mt-1 font-medium">Sistema de Gestión y Administración Escolar</p>
         </div>
 

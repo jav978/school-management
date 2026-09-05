@@ -106,10 +106,10 @@ const tabs = [
 ]
 
 const settings = ref({
-  schoolName: 'Colegio San Martín',
-  schoolEmail: 'info@colegiosanmartin.edu',
-  schoolPhone: '+1 234 567 890',
-  schoolAddress: '123 Calle Principal, Ciudad',
+  schoolName: 'U.E Santa Luisa',
+  schoolEmail: 'contacto@santaluisa.edu.ve',
+  schoolPhone: '+58 212 123 4567',
+  schoolAddress: 'Av. San Martín, Caracas, Venezuela',
   emailNotifications: true,
   pushNotifications: true,
   twoFactor: false

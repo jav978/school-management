@@ -13,6 +13,9 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
+        <div class="lg:hidden w-8 h-8 rounded-lg bg-white dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 flex items-center justify-center flex-shrink-0 shadow-xs">
+          <img src="/logocolegio.png" alt="U.E Santa Luisa" class="w-full h-full object-contain" />
+        </div>
         <h2 class="text-xl sm:text-2xl font-bold font-display text-slate-850 dark:text-white tracking-tight">
           {{ pageTitle }}
         </h2>

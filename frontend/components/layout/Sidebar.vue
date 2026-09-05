@@ -1,20 +1,25 @@
 <template>
   <aside class="h-full w-64 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-r border-slate-100 dark:border-slate-800/80 flex flex-col justify-between transition-colors duration-200">
     <div>
-      <!-- Brand Header: ACERO -->
-      <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <!-- Stylized Orange Icon -->
-          <div class="w-8 h-8 rounded-xl bg-orange-50 dark:bg-orange-950/40 flex items-center justify-center text-orange-500">
-            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-              <circle cx="7" cy="12" r="3.5" class="opacity-80" />
-              <circle cx="17" cy="12" r="3.5" class="opacity-80" />
-              <circle cx="12" cy="7" r="3.5" />
-            </svg>
+      <!-- Brand Header: U.E Santa Luisa -->
+      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
+        <div class="flex items-center gap-3 min-w-0">
+          <!-- School Logo Image -->
+          <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 p-1 flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-200/70 dark:border-slate-700/60 overflow-hidden">
+            <img 
+              src="/logocolegio.png" 
+              alt="Logo U.E Santa Luisa" 
+              class="w-full h-full object-contain" 
+            />
           </div>
-          <h1 class="text-xl font-black font-display text-slate-850 dark:text-white tracking-wider">
-            ACERO
-          </h1>
+          <div class="flex flex-col min-w-0">
+            <h1 class="text-base font-black font-display text-slate-850 dark:text-white tracking-tight leading-tight truncate">
+              U.E Santa Luisa
+            </h1>
+            <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              Gestión Escolar
+            </span>
+          </div>
         </div>
         
         <button 
