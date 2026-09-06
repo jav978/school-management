@@ -59,10 +59,11 @@
       </nav>
     </div>
 
-    <!-- Institutional Footer (Settings & Logout moved to topbar user avatar dropdown) -->
+    <!-- Institutional Footer with System Version -->
     <div class="p-3.5 border-t border-slate-200/80 dark:border-white/10 text-center flex-shrink-0">
-      <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-        U.E Santa Luisa • 2026
+      <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center justify-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span>Versión 1.0.0</span>
       </p>
     </div>
   </aside>

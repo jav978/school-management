@@ -32,45 +32,62 @@
       </div>
     </div>
 
-    <!-- 4 KPI Summary Cards -->
+    <!-- 4 KPI Summary Cards - Standardized Glass Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-        <div>
+      <!-- Total Usuarios -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Usuarios</p>
-          <p class="text-3xl font-black font-display text-slate-850 dark:text-white mt-1">{{ users.length }}</p>
+          <p class="text-3xl font-black font-display text-brand-primary dark:text-white mt-1 leading-tight tracking-tight">{{ users.length }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-950/40 text-violet-600 flex items-center justify-center font-bold text-xl">
-          👥
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
         </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-        <div>
+      <!-- Activos -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Activos</p>
-          <p class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 mt-1">{{ stats.active }}</p>
+          <div class="flex items-baseline gap-2 mt-1">
+            <p class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 leading-tight tracking-tight">{{ stats.active }}</p>
+            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded-md">
+              Habilitados
+            </span>
+          </div>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-500 flex items-center justify-center font-bold text-xl">
-          ✓
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-        <div>
+      <!-- Docentes / Staff -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Docentes / Staff</p>
-          <p class="text-3xl font-black font-display text-blue-600 dark:text-blue-400 mt-1">{{ stats.teachersAndStaff }}</p>
+          <p class="text-3xl font-black font-display text-blue-600 dark:text-blue-400 mt-1 leading-tight tracking-tight">{{ stats.teachersAndStaff }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 text-blue-500 flex items-center justify-center font-bold text-xl">
-          👨‍🏫
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
         </div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between">
-        <div>
+      <!-- Estudiantes / Padres -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Estudiantes / Padres</p>
-          <p class="text-3xl font-black font-display text-amber-600 dark:text-amber-400 mt-1">{{ stats.studentsAndParents }}</p>
+          <p class="text-3xl font-black font-display text-amber-600 dark:text-amber-400 mt-1 leading-tight tracking-tight">{{ stats.studentsAndParents }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-500 flex items-center justify-center font-bold text-xl">
-          🎓
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+          </svg>
         </div>
       </div>
     </div>

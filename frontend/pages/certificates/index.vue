@@ -117,120 +117,144 @@
           <!-- Thin Inner Border Frame -->
           <div class="absolute inset-4 sm:inset-6 border border-amber-400/40 pointer-events-none"></div>
 
-          <!-- Translucent Watermark (U.E Santa Luisa Coat of Arms) -->
-          <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] print:opacity-[0.06] pointer-events-none z-0">
-            <img src="/logocolegio.png" alt="U.E Santa Luisa Watermark" class="w-[420px] h-[420px] object-contain" />
+          <!-- Translucent Watermark (U.E Santa Luisa Coat of Arms) with subtle enhancement -->
+          <div class="absolute inset-0 flex items-center justify-center opacity-[0.09] print:opacity-[0.10] pointer-events-none z-0">
+            <img src="/logocolegio.png" alt="U.E Santa Luisa Watermark" class="w-[430px] h-[430px] object-contain rotate-[-2deg]" />
           </div>
 
           <!-- DIPLOMA CONTENT (z-10) -->
-          <div class="relative z-10 flex flex-col items-center justify-between text-center h-full py-2 sm:py-4 px-4 sm:px-10">
+          <div class="relative z-10 flex flex-col items-center justify-between text-center h-full py-2 sm:py-3 px-4 sm:px-8">
             
-            <!-- Header Section: Medal Icon & Institutional Heading -->
-            <div class="flex flex-col items-center space-y-1">
-              <!-- Medal / Rosette Circle Badge (Screenshot 2) -->
-              <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-indigo-700 to-indigo-500 text-white flex items-center justify-center shadow-md mb-2 border-2 border-amber-300">
-                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                </svg>
+            <!-- Header Section: Santa Luisa (Left), Ministerial & Institutional Text (Center), San Vicente (Right) -->
+            <div class="w-full flex items-center justify-between gap-4 pt-1 sm:pt-2 px-2 sm:px-6">
+              <!-- Left: Santa Luisa de Marillac -->
+              <div class="flex flex-col items-center flex-shrink-0">
+                <div class="w-16 h-20 sm:w-20 sm:h-24 p-1 rounded-xl bg-white border border-amber-400/40 shadow-xs flex items-center justify-center">
+                  <img src="/images/santaluisa.png" alt="Santa Luisa de Marillac" class="w-full h-full object-contain rounded-lg" />
+                </div>
+                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-tighter mt-1">Sta. Luisa de Marillac</span>
               </div>
 
-              <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                República Bolivariana de Venezuela • Ministerio del Poder Popular para la Educación
-              </span>
-              <h2 class="text-xl sm:text-2xl font-black font-display text-indigo-950 tracking-tight uppercase">
-                U.E. Santa Luisa
-              </h2>
-              <p class="text-[10px] sm:text-xs font-bold text-indigo-700 tracking-wider uppercase">
-                Sistema de Gestión Escolar • Hijas de la Caridad de San Vicente de Paúl
-              </p>
+              <!-- Center: Institutional Hierarchy Heading -->
+              <div class="flex-1 flex flex-col items-center space-y-0.5 text-center">
+                <span class="text-[9px] sm:text-[11px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-800">
+                  República Bolivariana de Venezuela
+                </span>
+                <span class="text-[8px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-700">
+                  Ministerio del Poder Popular para la Educación
+                </span>
+                <h2 class="text-xl sm:text-2xl lg:text-3xl font-black font-display text-indigo-950 tracking-tight uppercase pt-0.5">
+                  Unidad Educativa Colegio Santa Luisa
+                </h2>
+                <p class="text-[10px] sm:text-xs font-extrabold text-amber-800 uppercase tracking-wider">
+                  Hijas de la Caridad de San Vicente de Paúl
+                </p>
 
-              <!-- Golden Accent Diamond Divider -->
-              <div class="flex items-center justify-center gap-2 pt-1 pb-2 w-48 mx-auto">
-                <div class="h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent flex-1"></div>
-                <div class="w-1.5 h-1.5 rotate-45 bg-amber-500"></div>
-                <div class="h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent flex-1"></div>
+                <!-- Golden Accent Diamond Divider -->
+                <div class="flex items-center justify-center gap-2 pt-1 w-48 mx-auto">
+                  <div class="h-[1.5px] bg-gradient-to-r from-transparent via-amber-500 to-transparent flex-1"></div>
+                  <div class="w-2 h-2 rotate-45 bg-amber-600"></div>
+                  <div class="h-[1.5px] bg-gradient-to-r from-transparent via-amber-500 to-transparent flex-1"></div>
+                </div>
+              </div>
+
+              <!-- Right: San Vicente de Paúl -->
+              <div class="flex flex-col items-center flex-shrink-0">
+                <div class="w-16 h-20 sm:w-20 sm:h-24 p-1 rounded-xl bg-white border border-amber-400/40 shadow-xs flex items-center justify-center">
+                  <img src="/images/sanvicente.png" alt="San Vicente de Paúl" class="w-full h-full object-contain rounded-lg" />
+                </div>
+                <span class="text-[8px] sm:text-[9px] font-bold text-slate-500 uppercase tracking-tighter mt-1">San Vicente de Paúl</span>
               </div>
             </div>
 
-            <!-- Title of Honor (Uppercase Royal Blue Display) -->
-            <div class="my-2">
-              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-indigo-700 tracking-wider uppercase">
+            <!-- Title of Honor (High Contrast Dark Indigo Display) -->
+            <div class="my-1.5 sm:my-2">
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-indigo-950 tracking-wider uppercase drop-shadow-xs">
                 {{ formatCertTitle(activeCert.certificate_type) }}
               </h3>
-              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+              <p class="text-xs sm:text-sm text-slate-600 font-semibold tracking-wide uppercase mt-1">
                 Se otorga el presente certificado a:
               </p>
             </div>
 
-            <!-- Recipient Name Display (Screenshot 2: Bold, Centered, Gold Underline) -->
-            <div class="my-2 sm:my-3">
-              <h4 class="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-slate-900 tracking-tight">
+            <!-- Recipient Name Display: Bold, Centered, High Contrast Slate-950 with Gold Underline -->
+            <div class="my-1.5 sm:my-2 w-full">
+              <h4 class="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-slate-950 tracking-tight">
                 {{ activeCert.recipient_name }}
               </h4>
               <!-- Gold Underline -->
-              <div class="w-64 sm:w-80 h-1 bg-amber-500 mx-auto mt-2 rounded-full shadow-xs"></div>
+              <div class="w-64 sm:w-80 h-1 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 mx-auto mt-2 rounded-full shadow-xs"></div>
               
-              <p class="text-xs sm:text-sm font-bold text-slate-600 mt-2 uppercase tracking-wide">
+              <p class="text-xs sm:text-sm font-bold text-slate-700 mt-2 uppercase tracking-wider">
                 {{ activeCert.recipient_type === 'estudiante' ? (activeCert.grade_level || '1er Año de Educación Media General') : (activeCert.department || 'Cuerpo Docente Titular') }}
               </p>
             </div>
 
             <!-- Statement / Narrative Citation -->
-            <div class="max-w-2xl mx-auto my-2">
-              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-serif italic">
-                {{ activeCert.description || 'Por haber demostrado excelencia académica, constancia, alto espíritu vicenciano y disciplina ejemplar en sus actividades formativas.' }}
+            <div class="max-w-3xl mx-auto my-1">
+              <p class="text-xs sm:text-sm text-slate-800 leading-relaxed font-serif italic">
+                {{ activeCert.description || 'Por haber obtenido el más alto índice académico de su cohorte durante el período escolar, demostrando constancia, rectitud y virtud vicenciana.' }}
               </p>
               
-              <div v-if="activeCert.average_grade" class="inline-flex items-center gap-1.5 mt-2 px-3 py-1 bg-amber-50 rounded-full border border-amber-200">
+              <div v-if="activeCert.average_grade" class="inline-flex items-center gap-1.5 mt-1 px-3 py-1 bg-amber-50 rounded-full border border-amber-300">
                 <span class="text-xs font-bold text-amber-900">Obteniendo un promedio de:</span>
-                <span class="text-xs font-black text-indigo-700">{{ activeCert.average_grade }} / 20 pts</span>
+                <span class="text-xs font-black text-indigo-950">{{ activeCert.average_grade }} / 20 pts</span>
               </div>
             </div>
 
-            <!-- Footer: Dynamic QR, Date & Signatures, Official Golden Seal -->
-            <div class="w-full grid grid-cols-12 items-end pt-4 sm:pt-6 border-t border-slate-200/80 mt-2 gap-2">
-              <!-- Left: Verification QR Code -->
-              <div class="col-span-3 flex flex-col items-center sm:items-start text-left">
-                <div class="bg-white p-1 rounded-xl border border-slate-200 shadow-xs">
-                  <ui-qr-code 
-                    :value="getVerificationUrl(activeCert.verification_code)"
-                    :size="54"
-                  />
-                </div>
-                <div class="text-[9px] text-slate-500 mt-1 leading-tight">
-                  <span class="font-mono text-indigo-700 font-bold block">Código: {{ activeCert.verification_code }}</span>
-                  <span class="text-slate-400">Escanear para validar</span>
-                </div>
-              </div>
+            <!-- Footer: Dynamic QR, Date & 3 Institutional Signatures (Directora, Control de Estudios, Profesor Guía), Official Golden Seal -->
+            <div class="w-full flex flex-col pt-3 border-t border-slate-200/80 mt-1">
+              <p class="text-[10px] sm:text-xs text-slate-600 mb-3 text-center">
+                Fecha de emisión: <strong class="text-slate-900">{{ activeCert.issue_date || '1 de septiembre de 2026' }}</strong>
+              </p>
 
-              <!-- Center: Issue Date & Institutional Signatures -->
-              <div class="col-span-6 flex flex-col items-center justify-end text-center">
-                <p class="text-[10px] sm:text-xs text-slate-500 mb-4">
-                  Fecha de emisión: <strong class="text-slate-800">{{ activeCert.issue_date || '1 de septiembre de 2026' }}</strong>
-                </p>
-
-                <div class="grid grid-cols-2 gap-4 sm:gap-8 w-full">
-                  <div>
-                    <div class="border-t-2 border-slate-800 w-28 sm:w-36 mx-auto mb-1"></div>
-                    <p class="font-bold text-slate-900 text-[10px] sm:text-xs leading-tight">{{ activeCert.issued_by || 'Sor María Dolores Amaya' }}</p>
-                    <p class="text-[9px] text-slate-500 uppercase">{{ activeCert.issued_role || 'Directora' }}</p>
+              <div class="w-full grid grid-cols-12 items-end gap-2">
+                <!-- Left: Verification QR Code -->
+                <div class="col-span-2 flex flex-col items-center sm:items-start text-left">
+                  <div class="bg-white p-1 rounded-xl border border-slate-200 shadow-xs">
+                    <ui-qr-code 
+                      :value="getVerificationUrl(activeCert.verification_code)"
+                      :size="52"
+                    />
                   </div>
-
-                  <div>
-                    <div class="border-t-2 border-slate-800 w-28 sm:w-36 mx-auto mb-1"></div>
-                    <p class="font-bold text-slate-900 text-[10px] sm:text-xs leading-tight">Prof. Elena Vargas</p>
-                    <p class="text-[9px] text-slate-500 uppercase">Control de Estudios</p>
+                  <div class="text-[8px] text-slate-500 mt-1 leading-tight">
+                    <span class="font-mono text-indigo-900 font-bold block">Código: {{ activeCert.verification_code }}</span>
+                    <span class="text-slate-400">Escanear para validar</span>
                   </div>
                 </div>
-              </div>
 
-              <!-- Right: Official Golden Seal (Screenshot 2) -->
-              <div class="col-span-3 flex flex-col items-center sm:items-end text-center sm:text-right">
-                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-amber-500 bg-gradient-to-b from-amber-50 to-amber-100 flex flex-col items-center justify-center p-1 shadow-sm">
-                  <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-                  </svg>
-                  <span class="text-[8px] font-black uppercase tracking-tighter text-amber-900 leading-none mt-0.5">Sello Oficial</span>
+                <!-- Center: 3 Institutional Signatures (Directora, Control de Estudios, Profesor Guía) -->
+                <div class="col-span-8 grid grid-cols-3 gap-3 sm:gap-6 text-center">
+                  <!-- Firma 1: Directora General -->
+                  <div>
+                    <div class="border-t-2 border-slate-900 w-24 sm:w-32 mx-auto mb-1"></div>
+                    <p class="font-black text-slate-950 text-[10px] sm:text-xs leading-tight">{{ activeCert.issued_by || 'Sor María Dolores Amaya' }}</p>
+                    <p class="text-[8px] sm:text-[9px] font-bold text-slate-600 uppercase">{{ activeCert.issued_role || 'Directora General' }}</p>
+                  </div>
+
+                  <!-- Firma 2: Control de Estudios -->
+                  <div>
+                    <div class="border-t-2 border-slate-900 w-24 sm:w-32 mx-auto mb-1"></div>
+                    <p class="font-black text-slate-950 text-[10px] sm:text-xs leading-tight">Prof. Elena Vargas</p>
+                    <p class="text-[8px] sm:text-[9px] font-bold text-slate-600 uppercase">Control de Estudios</p>
+                  </div>
+
+                  <!-- Firma 3: Profesor Guía (Solicitado en Audio 2) -->
+                  <div>
+                    <div class="border-t-2 border-slate-900 w-24 sm:w-32 mx-auto mb-1"></div>
+                    <p class="font-black text-slate-950 text-[10px] sm:text-xs leading-tight">Prof. Carlos Mendoza</p>
+                    <p class="text-[8px] sm:text-[9px] font-bold text-slate-600 uppercase">Docente Guía</p>
+                  </div>
+                </div>
+
+                <!-- Right: Official Golden Seal -->
+                <div class="col-span-2 flex flex-col items-center sm:items-end text-center sm:text-right">
+                  <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-amber-500 bg-gradient-to-b from-amber-50 to-amber-100 flex flex-col items-center justify-center p-1 shadow-sm">
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                    <span class="text-[8px] font-black uppercase tracking-tighter text-amber-900 leading-none mt-0.5">Sello Oficial</span>
+                  </div>
                 </div>
               </div>
             </div>
