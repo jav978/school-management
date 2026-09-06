@@ -180,52 +180,73 @@
       </button>
     </div>
 
-    <!-- GRID VIEW: Subject Cards (Institutional Aesthetic, NO Fluorescent Gradients) -->
-    <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- GRID VIEW: Subject Cards (Clean Institutional Glass-Card Standard) -->
+    <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
       <div 
         v-for="subject in filteredSubjects" 
         :key="subject.id"
-        class="glass-card glass-card-hover rounded-2xl overflow-hidden flex flex-col justify-between transition-all"
+        class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between transition-all"
         :class="!subject.is_active ? 'opacity-85 border-amber-500/30' : ''"
       >
-        <!-- Institutional Card Header Banner -->
-        <div class="px-5 py-4 bg-gradient-to-r from-brand-primary via-[#2e1773] to-brand-purple border-b border-brand-gold/30 text-white relative min-h-[96px] flex flex-col justify-between">
-          <div class="flex items-start justify-between gap-3">
-            <h3 class="font-display font-extrabold text-base sm:text-lg tracking-tight leading-snug line-clamp-2 flex-1 text-white">
-              {{ subject.name }}
-            </h3>
-            
-            <!-- Category Tag -->
-            <span v-if="subject.category_name" class="shrink-0 px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-white/15 text-brand-gold border border-brand-gold/40 tracking-wide shadow-2xs">
-              {{ subject.category_name }}
-            </span>
-          </div>
-
-          <div class="flex items-center justify-between mt-2 pt-1 border-t border-white/15">
-            <span class="text-[11px] font-bold text-white/95 uppercase tracking-wider font-mono">
+        <div>
+          <!-- Top Row: Subject Code (left) & Department with Outline Icon (right) -->
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="px-3 py-1 bg-brand-primary/10 dark:bg-brand-purple/20 text-brand-primary dark:text-brand-gold border border-brand-primary/20 dark:border-brand-purple/40 rounded-xl font-black text-xs font-mono">
               {{ subject.code }}
             </span>
-            <span v-if="subject.credits" class="text-[10px] font-bold text-brand-gold">
-              {{ subject.credits }} CR
+
+            <!-- Department with Clean Outline Icon (No background box, stroke-only SVG) -->
+            <div v-if="subject.category_name" class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+              <span class="font-medium truncate max-w-[160px] text-right">{{ subject.category_name }}</span>
+              <svg v-if="isScience(subject.category_name)" class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+              </svg>
+              <svg v-else-if="isMath(subject.category_name)" class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <svg v-else-if="isLanguage(subject.category_name)" class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <svg v-else class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+              </svg>
+            </div>
+            <!-- Fallback if no department -->
+            <span 
+              v-else
+              :class="getStatusBadgeClass(subject.is_active)"
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize border"
+            >
+              {{ subject.is_active ? 'Activa' : 'Inactiva' }}
             </span>
           </div>
-        </div>
 
-        <!-- Card Body -->
-        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+          <!-- Subject Title & Status / Credits -->
+          <div class="flex items-start justify-between gap-2">
+            <h3 class="text-base font-bold text-slate-900 dark:text-white leading-snug">
+              {{ subject.name }}
+            </h3>
+            <span 
+              :class="getStatusBadgeClass(subject.is_active)"
+              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize border shrink-0 mt-0.5"
+            >
+              {{ subject.is_active ? 'Activa' : 'Inactiva' }}
+            </span>
+          </div>
+
           <!-- Description -->
-          <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed min-h-[36px]">
+          <p class="text-xs text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed mt-2.5 min-h-[36px]">
             {{ subject.description || 'Sin descripción curricular asignada.' }}
           </p>
 
           <!-- Attributes list -->
-          <div class="space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
+          <div class="mt-4 space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
             <!-- Level -->
             <div class="flex items-center gap-2.5 h-5">
               <svg class="w-4 h-4 text-brand-secondary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
-              <span class="font-medium capitalize truncate text-slate-700 dark:text-slate-300">{{ subject.grade_level || 'General' }}</span>
+              <span class="font-medium capitalize truncate text-slate-700 dark:text-slate-300">{{ formatGradeLevel(subject.grade_level) }}</span>
             </div>
 
             <!-- Assigned Teacher -->
@@ -246,28 +267,25 @@
               <span class="truncate text-slate-700 dark:text-slate-300">{{ subject.hours_per_week || 4 }} horas semanales ({{ subject.credits || 0 }} créditos)</span>
             </div>
           </div>
+        </div>
 
-          <!-- Card Footer Actions -->
-          <div class="pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between h-9">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border" :class="getStatusBadgeClass(subject.is_active)">
-              {{ subject.is_active ? 'Activa' : 'Inactiva' }}
-            </span>
-
-            <div class="flex items-center gap-1">
-              <button 
-                @click="openEditModal(subject, $event)"
-                class="px-2.5 py-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
-              >
-                Editar
-              </button>
-              <button 
-                v-if="canManage"
-                @click="promptDeleteSubject(subject, $event)"
-                class="px-2.5 py-1 text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all cursor-pointer"
-              >
-                Eliminar
-              </button>
-            </div>
+        <!-- Card Footer Actions (Consistent with classrooms/staff) -->
+        <div class="flex items-center justify-between gap-2 mt-5 pt-3 border-t border-slate-100 dark:border-white/10">
+          <span class="text-[10px] text-slate-400 font-medium">U.E Santa Luisa</span>
+          <div class="flex items-center gap-1">
+            <button 
+              @click="openEditModal(subject, $event)"
+              class="px-3 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+            >
+              Editar
+            </button>
+            <button 
+              v-if="canManage"
+              @click="promptDeleteSubject(subject, $event)"
+              class="px-3 py-1.5 text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all cursor-pointer"
+            >
+              Eliminar
+            </button>
           </div>
         </div>
       </div>
@@ -775,6 +793,33 @@ const getStatusBadgeClass = (isActive) => {
     return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
   }
   return 'bg-amber-500/10 text-amber-600 dark:text-brand-gold border-amber-500/30'
+}
+
+// Category and Level Helpers for Clean Outline Icons
+const isScience = (dept) => {
+  if (!dept) return false
+  const d = dept.toLowerCase()
+  return d.includes('ciencia') || d.includes('física') || d.includes('fisica') || d.includes('química') || d.includes('quimica') || d.includes('biología') || d.includes('biologia')
+}
+
+const isMath = (dept) => {
+  if (!dept) return false
+  const d = dept.toLowerCase()
+  return d.includes('matemática') || d.includes('matematica') || d.includes('lógica') || d.includes('logica')
+}
+
+const isLanguage = (dept) => {
+  if (!dept) return false
+  const d = dept.toLowerCase()
+  return d.includes('lengua') || d.includes('humanidad') || d.includes('arte') || d.includes('castellano') || d.includes('literatura') || d.includes('inglés') || d.includes('ingles')
+}
+
+const formatGradeLevel = (level) => {
+  if (!level) return 'Media / Bachillerato'
+  if (level.toLowerCase() === 'media') return 'Media / Bachillerato'
+  if (level.toLowerCase() === 'primaria') return 'Primaria'
+  if (level.toLowerCase() === 'inicial') return 'Educación Inicial'
+  return level
 }
 
 // Fetch Subjects from Backend API
