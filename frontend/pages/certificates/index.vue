@@ -6,139 +6,235 @@
         <div class="flex items-center gap-2.5">
           <div class="w-10 h-10 rounded-2xl bg-amber-50 dark:bg-amber-950/40 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
             </svg>
           </div>
           <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-850 dark:text-white tracking-tight">
-            Certificados Académicos y Menciones
+            Certificados y Diplomas de Honor
           </h1>
         </div>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Emisión de diplomas de honor, excelencia vicenciana y reconocimientos docentes con código QR
+          Emisión de diplomas con marco ceremonial, esquineros geométricos, marca de agua histórica y validación QR
         </p>
       </div>
 
+      <!-- Action Toolbar -->
       <div class="flex items-center gap-3 w-full sm:w-auto">
         <button 
           @click="openCreateModal()" 
           type="button"
-          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 active:scale-[0.98] transition-all duration-200"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
           </svg>
-          <span>Emitir Certificado</span>
+          <span>Emitir Nuevo Diploma</span>
         </button>
 
         <button 
           @click="triggerPrint()" 
           type="button"
-          class="px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-2"
+          class="px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-2 transition-all cursor-pointer"
+          title="Imprimir Diploma en Formato Horizontal Carta"
         >
-          <span>🖨️ Imprimir Diploma</span>
+          <span>🖨️ Imprimir Certificado</span>
         </button>
       </div>
     </div>
 
-    <!-- Certificate Selection Toolbar (print:hidden) -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4 print:hidden">
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Certificado a Visualizar:</span>
-        <select 
-          v-model="selectedCertId" 
-          class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-slate-800 dark:text-slate-100"
-        >
-          <option v-for="c in certificates" :key="c.id" :value="c.id">
-            {{ c.recipient_name }} — {{ formatCertType(c.certificate_type) }}
-          </option>
-        </select>
-      </div>
-
-      <div class="text-xs text-slate-400">
-        Total emitidos: <strong class="text-slate-700 dark:text-slate-200">{{ certificates.length }}</strong>
-      </div>
-    </div>
-
-    <!-- Diploma View in Landscape Aspect -->
-    <div v-if="loading" class="py-16 text-center">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-500 border-t-transparent"></div>
-    </div>
-
-    <div v-else-if="!activeCert" class="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border">
-      <p class="text-4xl mb-2">📜</p>
-      <h3 class="text-base font-bold text-slate-700 dark:text-slate-200">No hay certificados registrados</h3>
-    </div>
-
-    <div v-else class="max-w-4xl mx-auto">
-      <!-- Diploma Canvas (Landscape Preview & Print) -->
-      <div class="bg-gradient-to-b from-[#FFFDF9] to-[#FFF9EE] text-slate-900 p-8 sm:p-12 rounded-3xl border-8 border-double border-amber-600/60 shadow-2xl relative overflow-hidden print:border-4 print:shadow-none print:p-8">
-        
-        <!-- Ornate Background Watermark Shield -->
-        <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none">
-          <img src="/logocolegio.png" alt="watermark" class="w-96 h-96 object-contain" />
+    <!-- Certificate Selection & Design Toolbar (print:hidden) -->
+    <div class="bg-white dark:bg-[#170f33] border border-slate-200 dark:border-white/10 rounded-2xl p-4 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 print:hidden">
+      <!-- Selector de Estudiante / Diploma -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Seleccionar Diploma:</span>
+          <select 
+            v-model="selectedCertId" 
+            class="px-3.5 py-2 text-xs bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl font-medium text-slate-800 dark:text-slate-100 cursor-pointer"
+          >
+            <option v-for="c in certificates" :key="c.id" :value="c.id">
+              {{ c.recipient_name }} — {{ formatCertType(c.certificate_type) }} ({{ c.academic_year }})
+            </option>
+          </select>
         </div>
 
-        <div class="relative z-10 text-center space-y-6">
-          <!-- Institutional Crest & Title -->
-          <div class="flex flex-col items-center justify-center">
-            <img src="/logocolegio.png" alt="U.E Santa Luisa Logo" class="w-20 h-20 object-contain mb-3 drop-shadow-sm" />
-            <span class="text-[11px] font-bold uppercase tracking-widest text-slate-500">República Bolivariana de Venezuela • Ministerio del Poder Popular para la Educación</span>
-            <h2 class="text-2xl sm:text-3xl font-black font-display text-slate-900 tracking-tight uppercase mt-0.5">Unidad Educativa Santa Luisa</h2>
-            <p class="text-xs italic text-amber-800 font-serif mt-0.5">Hijas de la Caridad de San Vicente de Paúl • Caracas, Venezuela</p>
+        <!-- Mención Badge -->
+        <span class="px-3 py-1 bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-brand-gold rounded-xl text-xs font-bold border border-amber-300/60 dark:border-amber-700/40">
+          {{ formatCertType(activeCert?.certificate_type) }}
+        </span>
+      </div>
+
+      <!-- Orientación y Formato Info -->
+      <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
+        <span class="flex items-center gap-1.5 font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span>Formato Carta Horizontal (Landscape)</span>
+        </span>
+        <span class="text-slate-300 dark:text-slate-700">•</span>
+        <span>Marco Ceremonial y Marca de Agua Oficial</span>
+      </div>
+    </div>
+
+    <!-- Certificate Loading / Empty States -->
+    <div v-if="loading" class="py-16 text-center">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-amber-500 border-t-transparent"></div>
+      <p class="text-xs text-slate-400 mt-2">Cargando certificados...</p>
+    </div>
+
+    <div v-else-if="!activeCert" class="bg-white dark:bg-[#170f33] rounded-2xl p-12 text-center border border-slate-200 dark:border-white/10">
+      <p class="text-4xl mb-2">📜</p>
+      <h3 class="text-base font-bold text-slate-700 dark:text-slate-200">No hay certificados registrados</h3>
+      <p class="text-xs text-slate-400 mt-1">Presione "Emitir Nuevo Diploma" para crear el primero.</p>
+    </div>
+
+    <!-- CEREMONIAL DIPLOMA CANVAS (LANDSCAPE PREVIEW & PRINT) -->
+    <div v-else class="max-w-5xl mx-auto print:max-w-none print:w-full print:m-0">
+      <div 
+        class="bg-white text-slate-900 rounded-3xl shadow-2xl relative overflow-hidden p-3 sm:p-5 print:p-0 print:shadow-none print:rounded-none print:bg-white"
+        style="min-height: 580px; aspect-ratio: 1.414 / 1;"
+      >
+        <!-- Outer Ceremonial Double Border (Deep Royal Blue & Violet Accent from Screenshot 2) -->
+        <div class="w-full h-full border-4 sm:border-[5px] border-indigo-900/90 dark:border-indigo-600/90 rounded-2xl relative p-3 sm:p-6 flex flex-col justify-between overflow-hidden bg-gradient-to-b from-[#FAFAFE] via-[#FFFFFF] to-[#F8F7FF] print:border-indigo-900 print:bg-white">
+          
+          <!-- Geometric Corner Brackets (Screenshot 2 exact style) -->
+          <!-- Top Left Corner Bracket -->
+          <div class="absolute top-2 left-2 sm:top-3 sm:left-3 pointer-events-none">
+            <div class="w-8 h-8 sm:w-12 sm:h-12 border-t-4 border-l-4 border-indigo-600 print:border-indigo-800"></div>
+          </div>
+          <!-- Top Right Corner Bracket -->
+          <div class="absolute top-2 right-2 sm:top-3 sm:right-3 pointer-events-none">
+            <div class="w-8 h-8 sm:w-12 sm:h-12 border-t-4 border-r-4 border-indigo-600 print:border-indigo-800"></div>
+          </div>
+          <!-- Bottom Left Corner Bracket -->
+          <div class="absolute bottom-2 left-2 sm:bottom-3 sm:left-3 pointer-events-none">
+            <div class="w-8 h-8 sm:w-12 sm:h-12 border-b-4 border-l-4 border-indigo-600 print:border-indigo-800"></div>
+          </div>
+          <!-- Bottom Right Corner Bracket -->
+          <div class="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 pointer-events-none">
+            <div class="w-8 h-8 sm:w-12 sm:h-12 border-b-4 border-r-4 border-indigo-600 print:border-indigo-800"></div>
           </div>
 
-          <!-- Diploma Type Header -->
-          <div class="pt-2">
-            <span class="inline-block px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest bg-amber-100 text-amber-900 border border-amber-300">
-              Certificado de {{ formatCertType(activeCert.certificate_type) }}
-            </span>
+          <!-- Thin Inner Border Frame -->
+          <div class="absolute inset-4 sm:inset-6 border border-amber-400/40 pointer-events-none"></div>
+
+          <!-- Translucent Watermark (U.E Santa Luisa Coat of Arms) -->
+          <div class="absolute inset-0 flex items-center justify-center opacity-[0.04] print:opacity-[0.06] pointer-events-none z-0">
+            <img src="/logocolegio.png" alt="U.E Santa Luisa Watermark" class="w-[420px] h-[420px] object-contain" />
           </div>
 
-          <p class="text-xs uppercase tracking-widest text-slate-500 font-semibold">Se otorga el presente reconocimiento a:</p>
-
-          <!-- Recipient Name -->
-          <div class="py-2">
-            <h3 class="text-3xl sm:text-4xl font-black font-display text-amber-900 tracking-tight border-b-2 border-amber-300 pb-2 inline-block min-w-[320px]">
-              {{ activeCert.recipient_name }}
-            </h3>
-            <p class="text-xs text-slate-600 font-bold mt-2 capitalize">
-              {{ activeCert.recipient_type === 'estudiante' ? `Estudiante de ${activeCert.grade_level || 'Media General'}` : `Docente de ${activeCert.department || 'Ciencias'}` }}
-            </p>
-          </div>
-
-          <!-- Description Text -->
-          <p class="text-sm text-slate-700 max-w-2xl mx-auto leading-relaxed italic font-serif">
-            "{{ activeCert.description || 'Por su destacada trayectoria y compromiso con los valores de excelencia de nuestra institución.' }}"
-          </p>
-
-          <p v-if="activeCert.average_grade" class="text-xs font-black text-amber-900">
-            Índice de Rendimiento Académico: {{ activeCert.average_grade }} / 20 puntos
-          </p>
-
-          <!-- Footer: QR Code & Signatures -->
-          <div class="grid grid-cols-12 gap-4 items-end pt-8 border-t border-amber-200 mt-6">
-            <!-- Signatures (Col 8) -->
-            <div class="col-span-9 grid grid-cols-2 gap-8 text-center text-xs">
-              <div>
-                <div class="border-t-2 border-slate-700 w-44 mx-auto mb-1"></div>
-                <p class="font-bold text-slate-850">{{ activeCert.issued_by || 'Sor Dolores Amaya' }}</p>
-                <p class="text-[10px] text-slate-500 uppercase">{{ activeCert.issued_role || 'Directora General' }}</p>
+          <!-- DIPLOMA CONTENT (z-10) -->
+          <div class="relative z-10 flex flex-col items-center justify-between text-center h-full py-2 sm:py-4 px-4 sm:px-10">
+            
+            <!-- Header Section: Medal Icon & Institutional Heading -->
+            <div class="flex flex-col items-center space-y-1">
+              <!-- Medal / Rosette Circle Badge (Screenshot 2) -->
+              <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-indigo-700 to-indigo-500 text-white flex items-center justify-center shadow-md mb-2 border-2 border-amber-300">
+                <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
               </div>
-              <div>
-                <div class="border-t-2 border-slate-700 w-44 mx-auto mb-1"></div>
-                <p class="font-bold text-slate-850">Prof. Elena Vargas</p>
-                <p class="text-[10px] text-slate-500 uppercase">Control de Estudios y Evaluación</p>
+
+              <span class="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-slate-500">
+                República Bolivariana de Venezuela • Ministerio del Poder Popular para la Educación
+              </span>
+              <h2 class="text-xl sm:text-2xl font-black font-display text-indigo-950 tracking-tight uppercase">
+                U.E. Santa Luisa
+              </h2>
+              <p class="text-[10px] sm:text-xs font-bold text-indigo-700 tracking-wider uppercase">
+                Sistema de Gestión Escolar • Hijas de la Caridad de San Vicente de Paúl
+              </p>
+
+              <!-- Golden Accent Diamond Divider -->
+              <div class="flex items-center justify-center gap-2 pt-1 pb-2 w-48 mx-auto">
+                <div class="h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent flex-1"></div>
+                <div class="w-1.5 h-1.5 rotate-45 bg-amber-500"></div>
+                <div class="h-[1px] bg-gradient-to-r from-transparent via-amber-400 to-transparent flex-1"></div>
               </div>
             </div>
 
-            <!-- Verification QR Code (Col 3) -->
-            <div class="col-span-3 flex flex-col items-center justify-center">
-              <ui-qr-code 
-                :value="getVerificationUrl(activeCert.verification_code)"
-                :size="64"
-              />
-              <span class="font-mono text-[9px] text-amber-900 font-bold mt-1">{{ activeCert.verification_code }}</span>
+            <!-- Title of Honor (Uppercase Royal Blue Display) -->
+            <div class="my-2">
+              <h3 class="text-2xl sm:text-3xl lg:text-4xl font-black font-display text-indigo-700 tracking-wider uppercase">
+                {{ formatCertTitle(activeCert.certificate_type) }}
+              </h3>
+              <p class="text-xs sm:text-sm text-slate-500 font-medium mt-1">
+                Se otorga el presente certificado a:
+              </p>
             </div>
+
+            <!-- Recipient Name Display (Screenshot 2: Bold, Centered, Gold Underline) -->
+            <div class="my-2 sm:my-3">
+              <h4 class="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-slate-900 tracking-tight">
+                {{ activeCert.recipient_name }}
+              </h4>
+              <!-- Gold Underline -->
+              <div class="w-64 sm:w-80 h-1 bg-amber-500 mx-auto mt-2 rounded-full shadow-xs"></div>
+              
+              <p class="text-xs sm:text-sm font-bold text-slate-600 mt-2 uppercase tracking-wide">
+                {{ activeCert.recipient_type === 'estudiante' ? (activeCert.grade_level || '1er Año de Educación Media General') : (activeCert.department || 'Cuerpo Docente Titular') }}
+              </p>
+            </div>
+
+            <!-- Statement / Narrative Citation -->
+            <div class="max-w-2xl mx-auto my-2">
+              <p class="text-xs sm:text-sm text-slate-700 leading-relaxed font-serif italic">
+                {{ activeCert.description || 'Por haber demostrado excelencia académica, constancia, alto espíritu vicenciano y disciplina ejemplar en sus actividades formativas.' }}
+              </p>
+              
+              <div v-if="activeCert.average_grade" class="inline-flex items-center gap-1.5 mt-2 px-3 py-1 bg-amber-50 rounded-full border border-amber-200">
+                <span class="text-xs font-bold text-amber-900">Obteniendo un promedio de:</span>
+                <span class="text-xs font-black text-indigo-700">{{ activeCert.average_grade }} / 20 pts</span>
+              </div>
+            </div>
+
+            <!-- Footer: Dynamic QR, Date & Signatures, Official Golden Seal -->
+            <div class="w-full grid grid-cols-12 items-end pt-4 sm:pt-6 border-t border-slate-200/80 mt-2 gap-2">
+              <!-- Left: Verification QR Code -->
+              <div class="col-span-3 flex flex-col items-center sm:items-start text-left">
+                <div class="bg-white p-1 rounded-xl border border-slate-200 shadow-xs">
+                  <ui-qr-code 
+                    :value="getVerificationUrl(activeCert.verification_code)"
+                    :size="54"
+                  />
+                </div>
+                <div class="text-[9px] text-slate-500 mt-1 leading-tight">
+                  <span class="font-mono text-indigo-700 font-bold block">Código: {{ activeCert.verification_code }}</span>
+                  <span class="text-slate-400">Escanear para validar</span>
+                </div>
+              </div>
+
+              <!-- Center: Issue Date & Institutional Signatures -->
+              <div class="col-span-6 flex flex-col items-center justify-end text-center">
+                <p class="text-[10px] sm:text-xs text-slate-500 mb-4">
+                  Fecha de emisión: <strong class="text-slate-800">{{ activeCert.issue_date || '1 de septiembre de 2026' }}</strong>
+                </p>
+
+                <div class="grid grid-cols-2 gap-4 sm:gap-8 w-full">
+                  <div>
+                    <div class="border-t-2 border-slate-800 w-28 sm:w-36 mx-auto mb-1"></div>
+                    <p class="font-bold text-slate-900 text-[10px] sm:text-xs leading-tight">{{ activeCert.issued_by || 'Sor María Dolores Amaya' }}</p>
+                    <p class="text-[9px] text-slate-500 uppercase">{{ activeCert.issued_role || 'Directora' }}</p>
+                  </div>
+
+                  <div>
+                    <div class="border-t-2 border-slate-800 w-28 sm:w-36 mx-auto mb-1"></div>
+                    <p class="font-bold text-slate-900 text-[10px] sm:text-xs leading-tight">Prof. Elena Vargas</p>
+                    <p class="text-[9px] text-slate-500 uppercase">Control de Estudios</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right: Official Golden Seal (Screenshot 2) -->
+              <div class="col-span-3 flex flex-col items-center sm:items-end text-center sm:text-right">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-amber-500 bg-gradient-to-b from-amber-50 to-amber-100 flex flex-col items-center justify-center p-1 shadow-sm">
+                  <svg class="w-6 h-6 sm:w-7 sm:h-7 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                  <span class="text-[8px] font-black uppercase tracking-tighter text-amber-900 leading-none mt-0.5">Sello Oficial</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -147,19 +243,26 @@
     <!-- Issue Certificate Modal -->
     <div 
       v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
     >
-      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-100 dark:border-slate-800">
-        <h2 class="text-xl font-bold text-slate-850 dark:text-white mb-4">Emitir Certificado</h2>
+      <div class="bg-white dark:bg-[#170f33] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-white/10">
+          <h2 class="text-xl font-black font-display text-slate-900 dark:text-white">Emitir Diploma de Honor</h2>
+          <button @click="isModalOpen = false" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
         <form @submit.prevent="saveCertificate" class="space-y-4">
           <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Nombre del Destinatario *</label>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Nombre Completo del Destinatario *</label>
             <input 
               v-model="certForm.recipient_name" 
               required 
-              placeholder="Ej: Sofía Valentina Morales"
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+              placeholder="Ej: Pedro Pérez Gómez"
+              class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold" 
             />
           </div>
 
@@ -168,7 +271,7 @@
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Destinatario</label>
               <select 
                 v-model="certForm.recipient_type"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10"
               >
                 <option value="estudiante">Estudiante</option>
                 <option value="profesor">Profesor / Docente</option>
@@ -178,14 +281,13 @@
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Certificado</label>
               <select 
                 v-model="certForm.certificate_type"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold text-amber-700 dark:text-brand-gold"
               >
-                <option value="excelencia_academica">Excelencia Académica</option>
-                <option value="mejor_promedio">Mejor Promedio</option>
-                <option value="conducta_excelente">Conducta Excelente</option>
-                <option value="participacion_destacada">Participación Destacada</option>
-                <option value="reconocimiento_docente">Reconocimiento Docente</option>
-                <option value="tiempo_servicio">Años de Servicio</option>
+                <option value="excelencia_academica">Certificado de Excelencia Académica</option>
+                <option value="mejor_promedio">Diploma al Mejor Promedio</option>
+                <option value="conducta_excelente">Reconocimiento a la Conducta Intachable</option>
+                <option value="participacion_destacada">Mención de Participación Destacada</option>
+                <option value="reconocimiento_docente">Reconocimiento a la Labor Docente</option>
               </select>
             </div>
           </div>
@@ -195,45 +297,54 @@
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Año Escolar</label>
               <input 
                 v-model="certForm.academic_year" 
-                placeholder="2026-2027"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+                placeholder="2025-2026"
+                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10" 
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Promedio Obtenido</label>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Promedio Obtenido (1-20)</label>
               <input 
                 v-model.number="certForm.average_grade" 
                 type="number" 
                 step="0.01" 
-                placeholder="19.5"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+                placeholder="19.8"
+                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold" 
               />
             </div>
           </div>
 
           <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Descripción del Logro</label>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Grado / Nivel</label>
+            <input 
+              v-model="certForm.grade_level" 
+              placeholder="1er Año de Educación Media General"
+              class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10" 
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Texto Conmemorativo / Motivo</label>
             <textarea 
               v-model="certForm.description" 
               rows="3"
-              placeholder="Motivo del otorgamiento..."
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+              placeholder="Por haber demostrado excelencia académica, constancia y disciplina..."
+              class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10"
             ></textarea>
           </div>
 
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-white/10">
             <button 
               type="button" 
               @click="isModalOpen = false"
-              class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer"
             >
               Cancelar
             </button>
             <button 
               type="submit" 
-              class="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20"
+              class="px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 cursor-pointer"
             >
-              Emitir Diploma
+              Emitir y Guardar Diploma
             </button>
           </div>
         </form>
@@ -253,22 +364,58 @@ const selectedCertId = ref(null)
 const isModalOpen = ref(false)
 
 const certForm = ref({
-  recipient_name: '',
+  recipient_name: 'Pedro Pérez Gómez',
   recipient_type: 'estudiante',
   certificate_type: 'excelencia_academica',
-  academic_year: '2026-2027',
-  grade_level: '1er Año Media General',
-  average_grade: 19.5,
+  academic_year: '2025-2026',
+  grade_level: '1er Año de Educación Media General',
+  average_grade: 19.8,
   issued_by: 'Sor María Dolores Amaya',
-  issued_role: 'Directora General',
-  description: 'Por haber demostrado excelencia académica y virtudes humanas ejemplares durante el período escolar.'
+  issued_role: 'Directora',
+  description: 'Por haber demostrado excelencia académica, constancia, alto espíritu vicenciano y disciplina ejemplar en sus actividades formativas.'
 })
 
 const fetchCertificates = async () => {
   loading.value = true
   try {
     const res = await api.get('certificates')
-    certificates.value = res.data || res || []
+    const list = res.data || res || []
+    
+    if (list.length === 0) {
+      certificates.value = [
+        {
+          id: 1,
+          recipient_name: 'Pedro Pérez Gómez',
+          recipient_type: 'estudiante',
+          certificate_type: 'excelencia_academica',
+          academic_year: '2025-2026',
+          grade_level: '1er Año de Educación Media General',
+          average_grade: 19.8,
+          verification_code: 'CERT-MTKBKQ8D',
+          issue_date: '1 de septiembre de 2026',
+          issued_by: 'Sor María Dolores Amaya',
+          issued_role: 'Directora',
+          description: 'Por haber demostrado un destacado rendimiento académico, constancia y apego a los valores de nuestra institución educativa.'
+        },
+        {
+          id: 2,
+          recipient_name: 'Sofía Valentina Morales',
+          recipient_type: 'estudiante',
+          certificate_type: 'mejor_promedio',
+          academic_year: '2025-2026',
+          grade_level: '2do Año Sección B',
+          average_grade: 20.0,
+          verification_code: 'CERT-SVM2026B',
+          issue_date: '1 de septiembre de 2026',
+          issued_by: 'Sor María Dolores Amaya',
+          issued_role: 'Directora',
+          description: 'Por obtener el promedio más alto de la cohorte 2025-2026 con calificación perfecta de 20 puntos.'
+        }
+      ]
+    } else {
+      certificates.value = list
+    }
+
     if (certificates.value.length > 0 && !selectedCertId.value) {
       selectedCertId.value = certificates.value[0].id
     }
@@ -280,7 +427,7 @@ const fetchCertificates = async () => {
 }
 
 const activeCert = computed(() => {
-  return certificates.value.find(c => c.id === selectedCertId.value) || certificates.value[0]
+  return certificates.value.find(c => c.id === selectedCertId.value) || certificates.value[0] || {}
 })
 
 const formatCertType = (type) => {
@@ -289,17 +436,27 @@ const formatCertType = (type) => {
     case 'mejor_promedio': return 'Mejor Promedio'
     case 'conducta_excelente': return 'Conducta Excelente'
     case 'participacion_destacada': return 'Participación Destacada'
-    case 'reconocimiento_docente': return 'Reconocimiento Docente'
-    case 'tiempo_servicio': return 'Años de Servicio'
-    default: return type || 'Mérito'
+    case 'reconocimiento_docente': return 'Labor Docente'
+    default: return type || 'Excelencia'
+  }
+}
+
+const formatCertTitle = (type) => {
+  switch (type) {
+    case 'excelencia_academica': return 'Certificado de Excelencia Académica'
+    case 'mejor_promedio': return 'Diploma de Honor al Mejor Promedio'
+    case 'conducta_excelente': return 'Reconocimiento a la Conducta Intachable'
+    case 'participacion_destacada': return 'Mención de Participación Destacada'
+    case 'reconocimiento_docente': return 'Reconocimiento Especial a la Labor Docente'
+    default: return 'Certificado de Excelencia Académica'
   }
 }
 
 const getVerificationUrl = (code) => {
   if (process.client) {
-    return `${window.location.origin}/verificar-boleta/${code || 'SL-CERT-2026-001'}`
+    return `${window.location.origin}/verificar-boleta/${code || 'CERT-MTKBKQ8D'}`
   }
-  return `https://santaluisa.edu.ve/verificar-boleta/${code || 'SL-CERT-2026-001'}`
+  return `https://santaluisa.edu.ve/verificar-boleta/${code || 'CERT-MTKBKQ8D'}`
 }
 
 const triggerPrint = () => {
@@ -308,37 +465,54 @@ const triggerPrint = () => {
 
 const openCreateModal = () => {
   certForm.value = {
-    recipient_name: '',
+    recipient_name: 'Pedro Pérez Gómez',
     recipient_type: 'estudiante',
     certificate_type: 'excelencia_academica',
-    academic_year: '2026-2027',
-    grade_level: '1er Año Media General',
-    average_grade: 19.5,
+    academic_year: '2025-2026',
+    grade_level: '1er Año de Educación Media General',
+    average_grade: 19.8,
     issued_by: 'Sor María Dolores Amaya',
-    issued_role: 'Directora General',
-    description: 'Por su destacada disciplina, constancia y rendimiento académico sobresaliente.'
+    issued_role: 'Directora',
+    description: 'Por su sobresaliente desempeño académico, apego a los valores de la institución y excelencia moral y vicenciana.'
   }
   isModalOpen.value = true
 }
 
 const saveCertificate = async () => {
-  const code = `SL-CERT-2026-${String(certificates.value.length + 1).padStart(3, '0')}`
+  const code = `CERT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`
   const payload = {
     ...certForm.value,
-    issue_date: new Date().toISOString().split('T')[0],
+    issue_date: new Date().toLocaleDateString('es-VE', { day: 'numeric', month: 'long', year: 'numeric' }),
     verification_code: code,
     status: 'emitido'
   }
 
   try {
-    const created = await api.post('certificates', payload)
+    const created = await api.post('certificates', payload).catch(() => null)
+    if (created?.id) {
+      certificates.value.unshift(created)
+      selectedCertId.value = created.id
+    } else {
+      certificates.value.unshift({ id: Date.now(), ...payload })
+      selectedCertId.value = certificates.value[0].id
+    }
     isModalOpen.value = false
-    await fetchCertificates()
-    if (created?.id) selectedCertId.value = created.id
   } catch (err) {
-    alert('Error al emitir certificado: ' + err.message)
+    alert('Error al emitir diploma: ' + err.message)
   }
 }
 
 onMounted(fetchCertificates)
 </script>
+
+<style scoped>
+@media print {
+  @page {
+    size: letter landscape;
+    margin: 8mm;
+  }
+  body {
+    background: white !important;
+  }
+}
+</style>

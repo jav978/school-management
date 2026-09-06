@@ -1,8 +1,8 @@
 <template>
   <aside class="h-full w-64 bg-white dark:bg-[#120b29] text-slate-700 dark:text-slate-200 border-r border-slate-200/80 dark:border-white/10 flex flex-col justify-between transition-colors duration-200 shadow-sm dark:shadow-2xl">
-    <div>
+    <div class="flex-1 flex flex-col min-h-0">
       <!-- Brand Header: U.E Santa Luisa -->
-      <div class="px-5 py-4 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between">
+      <div class="px-5 py-4 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center gap-3 min-w-0">
           <!-- School Logo Image -->
           <div class="w-10 h-10 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-200/70 dark:border-white/15 overflow-hidden">
@@ -25,7 +25,7 @@
         <button 
           @click="$emit('close')" 
           type="button" 
-          class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-white"
+          class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-white cursor-pointer"
         >
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -33,18 +33,18 @@
         </button>
       </div>
 
-      <!-- Navigation Menu -->
-      <nav class="mt-4 px-3 space-y-1 overflow-y-auto max-h-[calc(100vh-14rem)]">
+      <!-- Navigation Menu (Expanded height, clean scrollbar) -->
+      <nav class="mt-3 px-3 space-y-1 overflow-y-auto flex-1 pb-4">
         <NuxtLink
           v-for="item in menuItems"
           :key="item.path"
           :to="item.path"
-          class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-brand-primary dark:hover:text-white transition-all group font-medium text-sm"
-          active-class="bg-brand-primary/10 dark:bg-brand-purple/30 text-brand-primary dark:text-brand-gold font-bold shadow-xs border-l-4 border-brand-primary dark:border-brand-gold"
+          class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-brand-primary dark:hover:text-white transition-all group font-medium text-sm cursor-pointer"
+          active-class="bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-brand-gold font-bold shadow-xs border-l-4 border-amber-500 dark:border-brand-gold"
         >
           <div class="flex items-center gap-3">
             <!-- Icon -->
-            <span class="text-slate-400 group-hover:text-brand-primary dark:group-hover:text-brand-gold group-[.router-link-active]:text-brand-primary dark:group-[.router-link-active]:text-brand-gold transition-colors">
+            <span class="text-slate-400 group-hover:text-amber-600 dark:group-hover:text-brand-gold group-[.router-link-active]:text-amber-600 dark:group-[.router-link-active]:text-brand-gold transition-colors">
               <component :is="item.icon" class="w-5 h-5" />
             </span>
             <span>{{ t(item.key) }}</span>
@@ -53,46 +53,23 @@
           <!-- Active dot indicator -->
           <span 
             v-if="route.path === item.path" 
-            class="w-2 h-2 rounded-full bg-brand-primary dark:bg-brand-gold shadow-xs"
+            class="w-2 h-2 rounded-full bg-amber-500 dark:bg-brand-gold shadow-xs"
           ></span>
         </NuxtLink>
       </nav>
     </div>
 
-    <!-- Bottom Actions: Settings & Log out -->
-    <div class="p-4 border-t border-slate-200/80 dark:border-white/10 space-y-1">
-      <NuxtLink
-        to="/settings"
-        class="flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-brand-primary dark:hover:text-white transition-all font-medium text-sm group"
-        active-class="bg-brand-primary/10 dark:bg-brand-purple/30 text-brand-primary dark:text-brand-gold font-bold"
-      >
-        <span class="text-slate-400 group-hover:text-brand-primary dark:group-hover:text-brand-gold transition-colors">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-        </span>
-        <span>{{ t('settings') }}</span>
-      </NuxtLink>
-
-      <button
-        @click="logout"
-        type="button"
-        class="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 transition-all font-medium text-sm group"
-      >
-        <span class="text-slate-400 group-hover:text-rose-500 transition-colors">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-        </span>
-        <span>{{ t('logout') }}</span>
-      </button>
+    <!-- Institutional Footer (Settings & Logout moved to topbar user avatar dropdown) -->
+    <div class="p-3.5 border-t border-slate-200/80 dark:border-white/10 text-center flex-shrink-0">
+      <p class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+        U.E Santa Luisa • 2026
+      </p>
     </div>
   </aside>
 </template>
 
 <script setup>
-import { h } from 'vue'
+import { h, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '~/stores/auth'
 import { useLanguage } from '~/composables/useLanguage'
@@ -129,6 +106,7 @@ const icons = {
   account: createSvgIcon('M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'),
   class: createSvgIcon('M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'),
   exam: createSvgIcon('M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'),
+  grades: createSvgIcon('M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4'),
   attendance: createSvgIcon('M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'),
   notice: createSvgIcon('M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'),
   reports: createSvgIcon('M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z'),
@@ -142,7 +120,7 @@ const icons = {
   documentation: createSvgIcon('M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253')
 }
 
-// Full menu with role-based visibility
+// Full menu with role-based visibility & Reports included
 const allMenuItems = [
   { path: '/dashboard', key: 'dashboard', icon: icons.dashboard, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/students', key: 'students', icon: icons.students, roles: ['admin', 'control_estudio', 'coordinator', 'teacher'] },
@@ -154,9 +132,10 @@ const allMenuItems = [
   { path: '/schedules', key: 'schedules', icon: icons.class, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/planning', key: 'planning', icon: icons.planning, roles: ['admin', 'control_estudio', 'coordinator', 'teacher'] },
   { path: '/exams', key: 'exams', icon: icons.exam, roles: ['admin', 'control_estudio', 'coordinator', 'teacher'] },
-  { path: '/grades', key: 'grades', icon: icons.reports, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
+  { path: '/grades', key: 'grades', icon: icons.grades, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/boletas', key: 'boletas', icon: icons.boletas, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/certificates', key: 'certificates', icon: icons.certificates, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
+  { path: '/reports', key: 'reports', icon: icons.reports, roles: ['admin', 'control_estudio', 'coordinator', 'teacher'] },
   { path: '/idcards', key: 'idcards', icon: icons.idcards, roles: ['admin', 'control_estudio', 'coordinator'] },
   { path: '/attendance', key: 'attendance', icon: icons.attendance, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/finance', key: 'account', icon: icons.account, roles: ['admin', 'parent'] },
@@ -175,10 +154,4 @@ const menuItems = computed(() => {
     return item.roles.includes(currentRole.value) || currentRole.value === 'admin'
   })
 })
-
-const logout = () => {
-  authStore.logout()
-  navigateTo('/auth/login')
-}
 </script>
-
