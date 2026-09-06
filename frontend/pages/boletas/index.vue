@@ -33,55 +33,81 @@
 
         <button 
           @click="triggerPrint()" 
+          :disabled="!isSolvent"
           type="button"
-          class="px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-2"
+          :class="!isSolvent ? 'opacity-50 cursor-not-allowed bg-slate-500' : 'bg-slate-800 hover:bg-slate-900 cursor-pointer'"
+          class="px-4 py-2.5 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-2 transition-all"
+          :title="!isSolvent ? 'Impresión bloqueada: El representante no se encuentra solvente' : 'Imprimir Boleta de Calificaciones'"
         >
           <span>🖨️ Imprimir Boleta</span>
         </button>
       </div>
     </div>
 
-    <!-- Model Switcher Toolbar (print:hidden) -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 print:hidden">
+    <!-- Model Switcher & Solvency Toolbar (print:hidden) -->
+    <div class="bg-white dark:bg-[#170f33] border border-slate-200 dark:border-white/10 rounded-2xl p-4 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 print:hidden">
       <!-- Selector de Modelo de Boleta -->
       <div class="flex items-center gap-2">
         <span class="text-xs font-bold uppercase tracking-wider text-slate-400 mr-1">Modelo de Diseño:</span>
-        <div class="inline-flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
+        <div class="inline-flex p-1 bg-slate-100 dark:bg-white/10 rounded-xl">
           <button 
             @click="selectedModel = 'moderna'"
-            :class="selectedModel === 'moderna' ? 'bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'"
-            class="px-3 py-1.5 rounded-lg text-xs transition-all"
+            :class="selectedModel === 'moderna' ? 'bg-white dark:bg-[#201646] text-orange-600 dark:text-brand-gold shadow-xs font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'"
+            class="px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer"
           >
             Moderna
           </button>
           <button 
             @click="selectedModel = 'clasica'"
-            :class="selectedModel === 'clasica' ? 'bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'"
-            class="px-3 py-1.5 rounded-lg text-xs transition-all"
+            :class="selectedModel === 'clasica' ? 'bg-white dark:bg-[#201646] text-orange-600 dark:text-brand-gold shadow-xs font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'"
+            class="px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer"
           >
             Clásica Institucional
           </button>
           <button 
             @click="selectedModel = 'compacta'"
-            :class="selectedModel === 'compacta' ? 'bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'"
-            class="px-3 py-1.5 rounded-lg text-xs transition-all"
+            :class="selectedModel === 'compacta' ? 'bg-white dark:bg-[#201646] text-orange-600 dark:text-brand-gold shadow-xs font-bold' : 'text-slate-600 dark:text-slate-400 font-medium'"
+            class="px-3 py-1.5 rounded-lg text-xs transition-all cursor-pointer"
           >
             Compacta
           </button>
         </div>
       </div>
 
-      <!-- Selector de Boleta Activa -->
-      <div class="flex items-center gap-3">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Seleccionar Estudiante:</span>
-        <select 
-          v-model="selectedReportCardId"
-          class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-slate-800 dark:text-slate-100"
-        >
-          <option v-for="rc in reportCards" :key="rc.id" :value="rc.id">
-            {{ rc.student_name || `Estudiante #${rc.student_id}` }} • {{ rc.period }} ({{ rc.academic_year }})
-          </option>
-        </select>
+      <!-- Selector de Boleta Activa y Control de Solvencia -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Seleccionar Estudiante:</span>
+          <select 
+            v-model="selectedReportCardId"
+            class="px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl font-medium text-slate-800 dark:text-slate-100 cursor-pointer"
+          >
+            <option v-for="rc in reportCards" :key="rc.id" :value="rc.id">
+              {{ rc.student_name || `Estudiante #${rc.student_id}` }} • {{ rc.period }} ({{ rc.academic_year }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Solvency Status Badge & Admin Toggle -->
+        <div class="flex items-center gap-1.5 pl-2 border-l border-slate-200 dark:border-white/10">
+          <span 
+            :class="isSolvent ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30'"
+            class="px-2.5 py-1 rounded-xl text-xs font-bold border flex items-center gap-1.5"
+            :title="isSolvent ? 'El representante está solvente' : 'El representante tiene pagos pendientes (Boleta bloqueada)'"
+          >
+            <span class="w-2 h-2 rounded-full" :class="isSolvent ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+            <span>{{ isSolvent ? 'Solvente' : 'No Solvente' }}</span>
+          </span>
+
+          <button 
+            @click="toggleSolvency"
+            type="button"
+            class="px-2.5 py-1 text-xs font-bold bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 rounded-xl transition-all cursor-pointer"
+            title="Alternar estado de solvencia (Control Administrativo)"
+          >
+            {{ isSolvent ? 'Simular Insolvencia' : 'Conceder Solvencia' }}
+          </button>
+        </div>
       </div>
     </div>
 
@@ -91,12 +117,57 @@
       <p class="text-xs text-slate-400 mt-2">Generando modelo de boleta...</p>
     </div>
 
-    <div v-else-if="!activeReportCard" class="bg-white dark:bg-slate-900 rounded-2xl p-12 text-center border border-slate-100 dark:border-slate-800">
+    <div v-else-if="!activeReportCard" class="bg-white dark:bg-[#170f33] rounded-2xl p-12 text-center border border-slate-100 dark:border-white/10">
       <p class="text-4xl mb-2">📄</p>
       <h3 class="text-base font-bold text-slate-700 dark:text-slate-200">No hay boletas disponibles</h3>
       <p class="text-xs text-slate-400 mt-1">Presiona "Emitir Nueva Boleta" para crear una evaluación formal.</p>
     </div>
 
+    <!-- SI EL REPRESENTANTE NO ESTÁ SOLVENTE: RESTRICCIÓN ADMINISTRATIVA -->
+    <div v-else-if="!isSolvent" class="bg-white dark:bg-[#170f33] border-2 border-dashed border-amber-400/50 dark:border-amber-500/40 rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto shadow-xl space-y-6 animate-fade-in print:hidden">
+      <div class="w-20 h-20 rounded-3xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 text-amber-600 dark:text-brand-gold flex items-center justify-center mx-auto text-4xl shadow-inner">
+        🔒
+      </div>
+
+      <div>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-brand-gold border border-amber-300 dark:border-amber-700/50 mb-3">
+          Restricción Administrativa • Pendiente de Solvencia
+        </span>
+        <h2 class="text-xl sm:text-2xl font-black font-display text-slate-900 dark:text-white">
+          Boletín de Calificaciones No Disponible
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-3 leading-relaxed max-w-lg mx-auto">
+          Estimado Representante de <strong class="text-slate-900 dark:text-white">{{ activeReportCard?.student_name }}</strong>:
+          Para poder visualizar, descargar o imprimir la boleta de calificaciones en el sistema, es requisito indispensable encontrarse <strong>solvente con las mensualidades y compromisos administrativos</strong> de la U.E Santa Luisa.
+        </p>
+      </div>
+
+      <div class="p-4 bg-slate-50 dark:bg-[#110926] rounded-2xl border border-slate-200 dark:border-white/10 text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto text-left space-y-2">
+        <p class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+          <span>🏛️</span> ¿Cómo consultar su boleta?
+        </p>
+        <p>• Acérquese a la oficina de <strong>Control de Estudios o Administración</strong> del plantel para revisar su estado de cuenta.</p>
+        <p>• Si ya realizó su pago, registre su comprobante en el módulo de <strong>Tesorería y Finanzas</strong> para su oportuna conciliación.</p>
+      </div>
+
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <NuxtLink 
+          to="/finance"
+          class="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition-all cursor-pointer flex items-center gap-2"
+        >
+          <span>💳 Ir a Tesorería y Pagos</span>
+        </NuxtLink>
+        <button 
+          @click="toggleSolvency"
+          type="button"
+          class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition-all cursor-pointer"
+        >
+          <span>⚖️ Conceder Solvencia (Administrador)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SI ESTÁ SOLVENTE: RENDERIZA LOS MODELOS DE BOLETA -->
     <div v-else class="space-y-6">
       <!-- MODELO 1: MODERNA -->
       <div 
@@ -435,6 +506,22 @@ const loading = ref(true)
 const selectedModel = ref('moderna') // 'moderna' | 'clasica' | 'compacta'
 const selectedReportCardId = ref(null)
 const isCreateModalOpen = ref(false)
+const studentSolvencyMap = ref({})
+
+const isSolvent = computed(() => {
+  if (!activeReportCard.value) return false
+  const cardId = activeReportCard.value.id
+  if (studentSolvencyMap.value[cardId] !== undefined) {
+    return studentSolvencyMap.value[cardId]
+  }
+  return activeReportCard.value.is_solvent !== false
+})
+
+const toggleSolvency = () => {
+  if (!activeReportCard.value) return
+  const cardId = activeReportCard.value.id
+  studentSolvencyMap.value[cardId] = !isSolvent.value
+}
 
 const modalForm = ref({
   student_id: 1,
@@ -514,6 +601,10 @@ const getVerificationUrl = (code) => {
 }
 
 const triggerPrint = () => {
+  if (!isSolvent.value) {
+    alert('Impresión no autorizada: El representante debe estar solvente con la institución para imprimir el boletín.')
+    return
+  }
   window.print()
 }
 

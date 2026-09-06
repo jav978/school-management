@@ -316,35 +316,41 @@
               {{ expandedId === plan.id ? 'Ocultar ▲' : 'Ver Detalle ▼' }}
             </button>
 
-            <!-- Editar -->
+            <!-- Editar (Lápiz amarillo con ayuda contextual) -->
             <button 
               @click="editPlan(plan)"
-              class="px-2.5 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+              class="p-2 text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-amber-500/30"
+              title="Editar planificación académica"
             >
-              Editar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
             </button>
 
-            <!-- Eliminar -->
+            <!-- Eliminar (Papelera roja con ayuda contextual) -->
             <button 
               @click="openDeleteModal(plan)"
-              class="px-2 py-1.5 text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all cursor-pointer"
+              class="p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-rose-500/30"
+              title="Eliminar planificación académica"
             >
-              Eliminar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- STANDARDIZED MODAL WITH 4 TABS: General, Planificación, Evaluación, Estudiantes -->
+    <!-- STANDARDIZED MODAL WITH 4 TABS: General, Planificación, Evaluación, Estudiantes (Ampliado a max-w-6xl) -->
     <Teleport to="body">
       <div 
         v-if="isModalOpen" 
-        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto print:hidden"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-xs overflow-y-auto print:hidden"
         @click.self="closeModal"
       >
         <div 
-          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden animate-scale-up"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-6xl max-h-[95vh] flex flex-col overflow-hidden animate-scale-up"
         >
           <!-- Institutional Header Banner -->
           <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
