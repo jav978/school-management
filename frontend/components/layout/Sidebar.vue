@@ -1,11 +1,11 @@
 <template>
-  <aside class="h-full w-64 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-r border-slate-100 dark:border-slate-800/80 flex flex-col justify-between transition-colors duration-200">
+  <aside class="h-full w-64 bg-white dark:bg-[#120b29] text-slate-700 dark:text-slate-200 border-r border-slate-200/80 dark:border-white/10 flex flex-col justify-between transition-colors duration-200 shadow-sm dark:shadow-2xl">
     <div>
       <!-- Brand Header: U.E Santa Luisa -->
-      <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-800/60 flex items-center justify-between">
+      <div class="px-5 py-4 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between">
         <div class="flex items-center gap-3 min-w-0">
           <!-- School Logo Image -->
-          <div class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 p-1 flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-200/70 dark:border-slate-700/60 overflow-hidden">
+          <div class="w-10 h-10 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-200/70 dark:border-white/15 overflow-hidden">
             <img 
               src="/logocolegio.png" 
               alt="Logo U.E Santa Luisa" 
@@ -13,10 +13,10 @@
             />
           </div>
           <div class="flex flex-col min-w-0">
-            <h1 class="text-base font-black font-display text-slate-850 dark:text-white tracking-tight leading-tight truncate">
+            <h1 class="text-base font-black font-display text-brand-primary dark:text-white tracking-tight leading-tight truncate">
               U.E Santa Luisa
             </h1>
-            <span class="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+            <span class="text-[10px] font-bold text-slate-400 dark:text-brand-gold uppercase tracking-wider">
               Gestión Escolar
             </span>
           </div>
@@ -25,7 +25,7 @@
         <button 
           @click="$emit('close')" 
           type="button" 
-          class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-800 dark:hover:text-white"
+          class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-white"
         >
           <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -39,12 +39,12 @@
           v-for="item in menuItems"
           :key="item.path"
           :to="item.path"
-          class="flex items-center justify-between px-4 py-2.5 rounded-2xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white transition-all group font-medium text-sm"
-          active-class="bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold"
+          class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-brand-primary dark:hover:text-white transition-all group font-medium text-sm"
+          active-class="bg-brand-primary/10 dark:bg-brand-purple/30 text-brand-primary dark:text-brand-gold font-bold shadow-xs border-l-4 border-brand-primary dark:border-brand-gold"
         >
-          <div class="flex items-center gap-3.5">
+          <div class="flex items-center gap-3">
             <!-- Icon -->
-            <span class="text-slate-400 group-hover:text-orange-500 group-[.router-link-active]:text-orange-600 transition-colors">
+            <span class="text-slate-400 group-hover:text-brand-primary dark:group-hover:text-brand-gold group-[.router-link-active]:text-brand-primary dark:group-[.router-link-active]:text-brand-gold transition-colors">
               <component :is="item.icon" class="w-5 h-5" />
             </span>
             <span>{{ t(item.key) }}</span>
@@ -53,20 +53,20 @@
           <!-- Active dot indicator -->
           <span 
             v-if="route.path === item.path" 
-            class="w-1.5 h-1.5 rounded-full bg-orange-500 shadow-xs"
+            class="w-2 h-2 rounded-full bg-brand-primary dark:bg-brand-gold shadow-xs"
           ></span>
         </NuxtLink>
       </nav>
     </div>
 
     <!-- Bottom Actions: Settings & Log out -->
-    <div class="p-4 border-t border-slate-100 dark:border-slate-800/60 space-y-1">
+    <div class="p-4 border-t border-slate-200/80 dark:border-white/10 space-y-1">
       <NuxtLink
         to="/settings"
-        class="flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white transition-all font-medium text-sm group"
-        active-class="bg-orange-500/10 text-orange-600 font-bold"
+        class="flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-brand-primary dark:hover:text-white transition-all font-medium text-sm group"
+        active-class="bg-brand-primary/10 dark:bg-brand-purple/30 text-brand-primary dark:text-brand-gold font-bold"
       >
-        <span class="text-slate-400 group-hover:text-orange-500 transition-colors">
+        <span class="text-slate-400 group-hover:text-brand-primary dark:group-hover:text-brand-gold transition-colors">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -78,7 +78,7 @@
       <button
         @click="logout"
         type="button"
-        class="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-slate-500 dark:text-slate-400 hover:bg-rose-50 dark:hover:bg-rose-950/20 hover:text-rose-600 dark:hover:text-rose-400 transition-all font-medium text-sm group"
+        class="w-full flex items-center gap-3.5 px-4 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 transition-all font-medium text-sm group"
       >
         <span class="text-slate-400 group-hover:text-rose-500 transition-colors">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -3,70 +3,119 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply bg-slate-50 text-slate-800 antialiased font-sans transition-colors duration-300;
-    background: linear-gradient(135deg, #ffffff 0%, #f4f2ff 100%);
-    background-attachment: fixed;
+  html {
+    scroll-behavior: smooth;
   }
-  .dark body {
-    @apply text-slate-100;
-    background: 
-      radial-gradient(ellipse 70% 55% at 50% 50%, rgba(62, 34, 156, 0.22), transparent 50%),
-      radial-gradient(ellipse 160% 130% at 10% 10%, rgba(56, 189, 248, 0.10), transparent 60%),
-      radial-gradient(ellipse 160% 130% at 90% 90%, rgba(40, 20, 112, 0.28), transparent 65%),
-      radial-gradient(ellipse 110% 50% at 80% 30%, rgba(247, 195, 1, 0.06), transparent 40%),
-      #0d0922;
-    background-attachment: fixed;
+
+  body {
+    @apply antialiased font-sans transition-colors duration-300;
+    background-color: #f8fafc !important;
+    background-image: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #faf5ff 100%) !important;
+    background-attachment: fixed !important;
+    color: #1e293b !important;
+  }
+
+  html.dark body,
+  .dark body,
+  body.dark {
+    background-color: #0c081e !important;
+    background-image: 
+      radial-gradient(ellipse 75% 55% at 50% 35%, rgba(62, 34, 156, 0.35), transparent 60%),
+      radial-gradient(ellipse 140% 100% at 10% 10%, rgba(56, 189, 248, 0.12), transparent 50%),
+      radial-gradient(ellipse 140% 100% at 90% 90%, rgba(40, 20, 112, 0.40), transparent 55%),
+      radial-gradient(ellipse 80% 50% at 75% 25%, rgba(247, 195, 1, 0.08), transparent 40%) !important;
+    background-attachment: fixed !important;
+    color: #f8fafc !important;
   }
   
   h1, h2, h3, h4, h5, h6 {
     @apply font-display font-bold tracking-tight text-slate-900 transition-colors duration-300;
   }
+  html.dark h1, html.dark h2, html.dark h3, html.dark h4, html.dark h5, html.dark h6,
   .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-    @apply text-slate-100;
+    color: #ffffff !important;
   }
 
   /* Improve contrast in dark mode */
+  html.dark .text-slate-400,
   .dark .text-slate-400 {
     color: #cbd5e1 !important;
   }
 }
 
 @layer components {
-  /* Glassmorphism utility for modern cards */
+  /* Glassmorphism utility for modern cards with resting visibility */
   .glass-card {
-    @apply border border-slate-200/80 bg-white/90 backdrop-blur-md shadow-xs transition-all duration-300;
+    background-color: #ffffff !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px -2px rgba(40, 20, 112, 0.06), 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
+  html.dark .glass-card,
   .dark .glass-card {
-    @apply border-white/10 bg-[#1b1145]/75 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.35)];
+    background-color: #170f33 !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55), 0 2px 8px 0 rgba(0, 0, 0, 0.3) !important;
+  }
+
+  /* Interactive hover lift for cards */
+  .glass-card-hover {
+    transition: all 0.25s ease-out;
+  }
+  .glass-card-hover:hover {
+    border-color: rgba(40, 20, 112, 0.25) !important;
+    box-shadow: 0 12px 28px -4px rgba(40, 20, 112, 0.12) !important;
+    transform: translateY(-2px);
+  }
+
+  html.dark .glass-card-hover:hover,
+  .dark .glass-card-hover:hover {
+    background-color: #201646 !important;
+    border-color: rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.7) !important;
+    transform: translateY(-2px);
   }
 
   /* Buttons */
   .btn-primary {
-    @apply bg-gradient-to-r from-emerald-600 to-teal-500 text-slate-950 px-5 py-2.5 rounded-xl font-bold shadow-md shadow-emerald-500/10 hover:shadow-lg hover:shadow-emerald-500/25 active:scale-98 transition-all duration-200 border-none;
+    @apply bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white px-5 py-2.5 rounded-xl font-bold shadow-md shadow-brand-primary/20 hover:shadow-lg hover:shadow-brand-primary/30 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30;
   }
   .btn-secondary {
-    @apply bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-medium hover:bg-slate-50 active:scale-98 transition-all duration-200;
+    @apply bg-white border border-slate-200 text-slate-700 px-5 py-2.5 rounded-xl font-medium hover:bg-slate-50 active:scale-[0.98] transition-all duration-200;
   }
+  html.dark .btn-secondary,
   .dark .btn-secondary {
-    @apply bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800;
+    @apply bg-[#170f33] border-white/10 text-slate-200 hover:bg-[#201646];
   }
 
   /* Cards */
   .card {
-    @apply bg-white rounded-2xl border border-slate-100 shadow-sm shadow-slate-100/50 p-6 hover:border-slate-200/60 hover:shadow-md transition-all duration-300;
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px -2px rgba(40, 20, 112, 0.06);
+    padding: 1.5rem;
+    transition: all 0.3s;
   }
+  html.dark .card,
   .dark .card {
-    @apply bg-[#1b1145]/70 border-white/10 shadow-xl shadow-black/45 hover:border-white/20 hover:bg-[#23175c]/80;
+    background-color: #170f33 !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.55) !important;
   }
 
   /* Inputs */
   .input-field {
-    @apply w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200;
+    @apply w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all duration-200;
   }
+  html.dark .input-field,
   .dark .input-field {
-    @apply bg-slate-950 border-slate-800 text-slate-100 placeholder-slate-600 focus:bg-slate-950;
+    @apply bg-[#110926] border-white/10 text-slate-100 placeholder-slate-400 focus:border-brand-secondary focus:ring-brand-secondary/20;
   }
 }
 

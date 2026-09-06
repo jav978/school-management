@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
       
       <!-- Students KPI with Gender Breakdown -->
-      <div class="glass-card rounded-3xl p-6 shadow-xs hover:shadow-md flex flex-col justify-between group">
+      <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between group shadow-sm dark:shadow-xl">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
@@ -45,7 +45,7 @@
       </div>
 
       <!-- Teachers KPI -->
-      <div class="glass-card rounded-3xl p-6 shadow-xs hover:shadow-md flex flex-col justify-between group">
+      <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between group shadow-sm dark:shadow-xl">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
@@ -75,7 +75,7 @@
       </div>
 
       <!-- Parents KPI -->
-      <div class="glass-card rounded-3xl p-6 shadow-xs hover:shadow-md flex flex-col justify-between group">
+      <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between group shadow-sm dark:shadow-xl">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
@@ -103,7 +103,7 @@
       </div>
 
       <!-- Earnings KPI -->
-      <div class="glass-card rounded-3xl p-6 shadow-xs hover:shadow-md flex flex-col justify-between group">
+      <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between group shadow-sm dark:shadow-xl">
         <div class="flex items-center justify-between">
           <div>
             <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
@@ -136,7 +136,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
       
       <!-- Earnings Chart Card (8 cols) -->
-      <div class="lg:col-span-8 glass-card rounded-3xl p-6 shadow-xs flex flex-col justify-between h-[420px]">
+      <div class="lg:col-span-8 glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between h-[420px] shadow-sm dark:shadow-xl">
         <div>
           <div class="flex items-center justify-between">
             <div>
@@ -244,7 +244,7 @@
       </div>
 
       <!-- Students Gender Ratio Card (4 cols) - Sincronizada a 420px de altura -->
-      <div class="lg:col-span-4 glass-card rounded-3xl p-6 shadow-xs flex flex-col justify-between h-[420px]">
+      <div class="lg:col-span-4 glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between h-[420px] shadow-sm dark:shadow-xl">
         <div class="flex items-center justify-between">
           <div>
             <h3 class="text-lg font-bold text-slate-900 dark:text-white font-display">
@@ -263,9 +263,10 @@
         <div class="my-2 relative flex items-center justify-center">
           <div class="relative w-48 h-48 flex items-center justify-center">
             <svg class="w-full h-full transform -rotate-110" viewBox="0 0 120 120">
-              <!-- Background Track Rings -->
-              <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" class="text-slate-100 dark:text-slate-800/80" stroke-width="7" stroke-dasharray="240" stroke-dashoffset="60" stroke-linecap="round" />
-              <circle cx="60" cy="60" r="37" fill="none" stroke="currentColor" class="text-slate-100 dark:text-slate-800/80" stroke-width="7" stroke-dasharray="190" stroke-dashoffset="50" stroke-linecap="round" />
+              <!-- Outer Background Track -->
+              <circle cx="60" cy="60" r="48" fill="none" stroke="currentColor" stroke-width="7" class="text-slate-100 dark:text-slate-800" />
+              <!-- Inner Background Track -->
+              <circle cx="60" cy="60" r="37" fill="none" stroke="currentColor" stroke-width="7" class="text-slate-100 dark:text-slate-800" />
               
               <!-- Outer Ring: Female (Brand Gold 45%) -->
               <circle 
@@ -326,7 +327,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
       
       <!-- Notice Board Section (8 cols) -->
-      <div class="lg:col-span-8 glass-card rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+      <div class="lg:col-span-8 glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between shadow-sm dark:shadow-xl">
         <div>
           <div class="flex items-center justify-between">
             <div>
@@ -361,7 +362,6 @@
                     {{ item.title }}
                   </h4>
                   <div class="flex items-center gap-2.5 mt-1">
-                    <!-- Date Badge with Brand Accent -->
                     <span class="px-2.5 py-0.5 rounded-full bg-brand-gold/15 text-amber-800 dark:text-brand-gold text-[10px] font-extrabold">
                       {{ item.date }}
                     </span>
@@ -370,12 +370,11 @@
                 </div>
               </div>
 
-              <!-- Right: View Counter & Action -->
-              <div class="flex items-center gap-4 justify-end flex-shrink-0">
-                <div class="flex items-center gap-1.5 text-xs font-bold text-slate-400">
-                  <span class="text-brand-gold text-sm">👁</span>
-                  <span class="text-slate-600 dark:text-slate-300">{{ item.views }}</span>
-                </div>
+              <!-- Right: Tag & Action -->
+              <div class="flex items-center gap-3 flex-shrink-0 self-start sm:self-center">
+                <span class="px-2.5 py-1 rounded-xl text-[10px] font-bold bg-brand-primary/10 dark:bg-brand-purple/25 text-brand-primary dark:text-brand-secondary border border-brand-primary/20">
+                  {{ item.tag }}
+                </span>
                 <NuxtLink to="/communication" class="text-slate-400 hover:text-brand-primary p-1">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -396,7 +395,7 @@
       <div class="lg:col-span-4 flex flex-col gap-6">
         
         <!-- School Calendar Card -->
-        <div class="glass-card rounded-3xl p-6 shadow-xs flex flex-col justify-between">
+        <div class="glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between shadow-sm dark:shadow-xl">
           <div>
             <div class="flex items-center justify-between">
               <h3 class="text-base font-bold font-display text-slate-900 dark:text-white">

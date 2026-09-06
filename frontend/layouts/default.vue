@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen w-screen overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 flex font-sans transition-colors duration-200">
+  <div class="h-screen w-screen overflow-hidden bg-slate-100 dark:bg-[#0c081e] text-slate-800 dark:text-slate-100 flex font-sans transition-colors duration-300">
     <!-- Sidebar - Desktop (Always visible) & Mobile (Slide-over drawer) -->
     <div 
       :class="[
@@ -26,6 +26,9 @@
         </div>
       </main>
     </div>
+
+    <!-- Global Institutional Toast Notifications -->
+    <ui-toast />
   </div>
 </template>
 

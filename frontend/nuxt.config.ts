@@ -8,13 +8,20 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/color-mode'
   ],
+  css: [
+    '~/assets/css/main.css'
+  ],
   tailwindcss: {
+    cssPath: '~/assets/css/main.css',
     configPath: 'tailwind.config.js'
   },
   colorMode: {
-    classSuffix: '',
     preference: 'dark',
-    fallback: 'dark'
+    fallback: 'dark',
+    classPrefix: '',
+    classSuffix: '',
+    dataValue: 'theme',
+    storageKey: 'school-theme'
   },
   app: {
     head: {

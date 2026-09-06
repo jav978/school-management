@@ -4,27 +4,25 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
       <div>
         <div class="flex items-center gap-2.5">
-          <div class="w-10 h-10 rounded-2xl bg-orange-50 dark:bg-orange-950/40 flex items-center justify-center text-orange-500">
-            <svg class="w-5 h-5 fill-none stroke-current" viewBox="0 0 24 24" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-            </svg>
+          <div class="w-10 h-10 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 flex items-center justify-center text-brand-primary dark:text-brand-gold border border-brand-primary/20 dark:border-brand-purple/40 text-xl shadow-xs">
+            📚
           </div>
-          <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-850 dark:text-white tracking-tight">
-            Gestión de Materias
+          <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight">
+            Gestión de Materias y Cátedras
           </h1>
         </div>
-        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-          Administra el plan de estudios
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
+          U.E Santa Luisa • Plan de estudios, departamentos curriculares, carga horaria y docentes
         </p>
       </div>
 
       <div class="flex items-center gap-3 w-full sm:w-auto">
-        <!-- New Subject Button with Spatial Origin Capture -->
+        <!-- New Subject Button -->
         <button 
           v-if="canManage"
           @click="openCreateModal($event)" 
           type="button"
-          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-emerald-500/20 active:scale-[0.98] transition-all duration-200"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
@@ -34,15 +32,15 @@
       </div>
     </div>
 
-    <!-- 4 KPI Summary Cards -->
+    <!-- 4 KPI Summary Cards - Standardized Glass Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Total Materias -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between min-h-[104px] transition-all hover:shadow-sm">
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Total Materias</p>
-          <p class="text-3xl font-black font-display text-slate-850 dark:text-white mt-1 leading-tight tracking-tight">{{ totalSubjects }}</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Materias</p>
+          <p class="text-3xl font-black font-display text-brand-primary dark:text-white mt-1 leading-tight tracking-tight">{{ totalSubjects }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/40 flex items-center justify-center text-blue-500 flex-shrink-0">
+        <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 border border-brand-primary/20 dark:border-brand-purple/40 flex items-center justify-center text-brand-primary dark:text-brand-secondary flex-shrink-0">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
@@ -50,12 +48,12 @@
       </div>
 
       <!-- Departamentos -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between min-h-[104px] transition-all hover:shadow-sm">
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Departamentos</p>
-          <p class="text-3xl font-black font-display text-slate-850 dark:text-white mt-1 leading-tight tracking-tight">{{ totalDepartments }}</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Departamentos</p>
+          <p class="text-3xl font-black font-display text-brand-purple dark:text-purple-300 mt-1 leading-tight tracking-tight">{{ totalDepartments }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/40 flex items-center justify-center text-indigo-500 flex-shrink-0">
+        <div class="w-12 h-12 rounded-2xl bg-brand-purple/10 dark:bg-brand-purple/25 border border-brand-purple/20 dark:border-brand-purple/40 flex items-center justify-center text-brand-purple dark:text-brand-gold flex-shrink-0">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
@@ -63,12 +61,12 @@
       </div>
 
       <!-- Profesores Asignados -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between min-h-[104px] transition-all hover:shadow-sm">
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Profesores Asignados</p>
-          <p class="text-3xl font-black font-display text-slate-850 dark:text-white mt-1 leading-tight tracking-tight">{{ assignedTeachersCount }}</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Profesores Asignados</p>
+          <p class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 mt-1 leading-tight tracking-tight">{{ assignedTeachersCount }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/40 flex items-center justify-center text-emerald-500 flex-shrink-0">
+        <div class="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/50 dark:border-emerald-800/40 flex items-center justify-center text-emerald-500 flex-shrink-0">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
@@ -76,12 +74,12 @@
       </div>
 
       <!-- Niveles Académicos -->
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex items-center justify-between min-h-[104px] transition-all hover:shadow-sm">
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Niveles Académicos</p>
-          <p class="text-3xl font-black font-display text-slate-850 dark:text-white mt-1 leading-tight tracking-tight">{{ academicLevelsCount }}</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Niveles Académicos</p>
+          <p class="text-3xl font-black font-display text-amber-600 dark:text-brand-gold mt-1 leading-tight tracking-tight">{{ academicLevelsCount }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-100 dark:border-cyan-900/40 flex items-center justify-center text-cyan-500 flex-shrink-0">
+        <div class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/50 dark:border-brand-gold/30 flex items-center justify-center text-amber-600 dark:text-brand-gold flex-shrink-0">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
@@ -90,7 +88,7 @@
     </div>
 
     <!-- Filter Bar Card -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs">
+    <div class="glass-card rounded-2xl p-4 shadow-sm">
       <div class="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
         
         <!-- Search Input -->
@@ -103,8 +101,8 @@
           <input 
             v-model="search" 
             type="text" 
-            placeholder="Buscar por nombre o código..." 
-            class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
+            placeholder="Buscar materia por nombre o código..." 
+            class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple transition-all"
           />
         </div>
 
@@ -113,7 +111,7 @@
           <!-- Department Select -->
           <select 
             v-model="filterDepartment"
-            class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 cursor-pointer"
+            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
           >
             <option value="">Todos los departamentos</option>
             <option v-for="dept in departmentsList" :key="dept" :value="dept">{{ dept }}</option>
@@ -122,7 +120,7 @@
           <!-- Teacher Select -->
           <select 
             v-model="filterTeacher"
-            class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 cursor-pointer"
+            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
           >
             <option value="">Todos los profesores</option>
             <option v-for="t in teachersList" :key="t" :value="t">{{ t }}</option>
@@ -131,18 +129,19 @@
           <!-- Level Select -->
           <select 
             v-model="filterLevel"
-            class="text-xs px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 cursor-pointer"
+            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
           >
             <option value="">Todos los niveles</option>
             <option value="media">Media / Bachillerato</option>
             <option value="primaria">Primaria</option>
+            <option value="inicial">Educación Inicial</option>
           </select>
 
-          <!-- View Mode Toggle (Grid / Table) with GPU View Transitions -->
-          <div class="flex items-center bg-slate-100 dark:bg-slate-950/70 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
+          <!-- View Mode Toggle (Grid / Table) -->
+          <div class="flex items-center bg-slate-100 dark:bg-[#110926] p-1 rounded-xl border border-slate-200 dark:border-white/10">
             <button 
               @click="switchViewMode('grid')" 
-              :class="[viewMode === 'grid' ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-xs' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all active:scale-95']"
+              :class="[viewMode === 'grid' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold font-bold shadow-xs' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all cursor-pointer']"
               title="Vista en cuadrícula"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -151,8 +150,8 @@
             </button>
             <button 
               @click="switchViewMode('table')" 
-              :class="[viewMode === 'table' ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-white shadow-xs' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all active:scale-95']"
-              title="Vista en tabla"
+              :class="[viewMode === 'table' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold font-bold shadow-xs' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all cursor-pointer']"
+              title="Vista en lista / tabla"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -160,59 +159,53 @@
             </button>
           </div>
         </div>
-
       </div>
     </div>
 
-    <!-- Empty State with Crafted SVG Icon -->
-    <div v-if="filteredSubjects.length === 0" class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-12 text-center shadow-xs">
-      <div class="w-16 h-16 rounded-2xl bg-orange-50 dark:bg-orange-950/30 border border-orange-100 dark:border-orange-900/30 flex items-center justify-center mx-auto text-orange-500 mb-4">
-        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-        </svg>
+    <!-- Empty State -->
+    <div v-if="filteredSubjects.length === 0" class="glass-card rounded-2xl p-12 text-center">
+      <div class="w-16 h-16 rounded-3xl bg-slate-100 dark:bg-white/5 flex items-center justify-center mx-auto text-3xl mb-3">
+        📚
       </div>
-      <h3 class="text-base font-bold text-slate-850 dark:text-white">No se encontraron materias</h3>
+      <h3 class="text-base font-bold text-slate-800 dark:text-slate-200">No se encontraron materias</h3>
       <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
         Prueba cambiando los filtros de búsqueda o agrega una nueva materia con el botón superior.
       </p>
       <button 
         v-if="canManage"
         @click="openCreateModal($event)"
-        class="mt-4 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs transition-all shadow-xs active:scale-95"
+        class="mt-4 px-4 py-2 bg-gradient-to-r from-brand-primary to-brand-purple text-white font-bold rounded-xl text-xs transition-all shadow-md active:scale-95 cursor-pointer"
       >
         + Registrar Materia
       </button>
     </div>
 
-    <!-- GRID VIEW: Subject Cards (Fluid Morphing) -->
+    <!-- GRID VIEW: Subject Cards (Institutional Aesthetic, NO Fluorescent Gradients) -->
     <div v-else-if="viewMode === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div 
         v-for="subject in filteredSubjects" 
         :key="subject.id"
-        :style="{ viewTransitionName: `subject-item-${subject.id}` }"
-        class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-xs hover:shadow-md hover:border-slate-200 dark:hover:border-slate-700 transition-all duration-200 flex flex-col justify-between"
+        class="glass-card glass-card-hover rounded-2xl overflow-hidden flex flex-col justify-between transition-all"
+        :class="!subject.is_active ? 'opacity-85 border-amber-500/30' : ''"
       >
-        <!-- Card Colored Header Banner -->
-        <div 
-          class="px-5 py-4 text-white relative transition-colors min-h-[96px] flex flex-col justify-between"
-          :style="{ background: getBannerGradient(subject) }"
-        >
+        <!-- Institutional Card Header Banner -->
+        <div class="px-5 py-4 bg-gradient-to-r from-brand-primary via-[#2e1773] to-brand-purple border-b border-brand-gold/30 text-white relative min-h-[96px] flex flex-col justify-between">
           <div class="flex items-start justify-between gap-3">
-            <h3 class="font-display font-extrabold text-base sm:text-lg tracking-tight leading-snug line-clamp-2 flex-1">
+            <h3 class="font-display font-extrabold text-base sm:text-lg tracking-tight leading-snug line-clamp-2 flex-1 text-white">
               {{ subject.name }}
             </h3>
             
-            <!-- Category Tag or Badge -->
-            <span v-if="subject.category_name" class="shrink-0 px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-white/25 backdrop-blur-xs text-white tracking-wide shadow-2xs">
+            <!-- Category Tag -->
+            <span v-if="subject.category_name" class="shrink-0 px-2.5 py-0.5 rounded-lg text-[10px] font-bold bg-white/15 text-brand-gold border border-brand-gold/40 tracking-wide shadow-2xs">
               {{ subject.category_name }}
             </span>
           </div>
 
           <div class="flex items-center justify-between mt-2 pt-1 border-t border-white/15">
-            <span class="text-[11px] font-bold text-white/90 uppercase tracking-wider font-mono">
+            <span class="text-[11px] font-bold text-white/95 uppercase tracking-wider font-mono">
               {{ subject.code }}
             </span>
-            <span v-if="subject.credits" class="text-[10px] font-semibold text-white/85">
+            <span v-if="subject.credits" class="text-[10px] font-bold text-brand-gold">
               {{ subject.credits }} CR
             </span>
           </div>
@@ -225,145 +218,120 @@
             {{ subject.description || 'Sin descripción curricular asignada.' }}
           </p>
 
-          <!-- Attributes list with strict vertical alignment -->
+          <!-- Attributes list -->
           <div class="space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
             <!-- Level -->
             <div class="flex items-center gap-2.5 h-5">
-              <svg class="w-4 h-4 text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-4 h-4 text-brand-secondary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
               </svg>
-              <span class="font-medium capitalize truncate">{{ subject.grade_level || 'General' }}</span>
+              <span class="font-medium capitalize truncate text-slate-700 dark:text-slate-300">{{ subject.grade_level || 'General' }}</span>
             </div>
 
             <!-- Assigned Teacher -->
             <div class="flex items-center gap-2.5 h-5">
-              <svg class="w-4 h-4 text-emerald-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
-              <span class="font-medium truncate" :class="subject.teacher_name ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 italic'">
+              <span class="font-medium truncate" :class="subject.teacher_name ? 'text-slate-800 dark:text-slate-200' : 'text-slate-400 italic'">
                 {{ subject.teacher_name || 'No asignado' }}
               </span>
             </div>
 
             <!-- Credits & Hours -->
             <div class="flex items-center gap-2.5 h-5">
-              <svg class="w-4 h-4 text-amber-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span class="truncate">{{ subject.hours_per_week || 4 }} horas semanales ({{ subject.credits || 0 }} créditos)</span>
+              <span class="truncate text-slate-700 dark:text-slate-300">{{ subject.hours_per_week || 4 }} horas semanales ({{ subject.credits || 0 }} créditos)</span>
             </div>
           </div>
 
-          <!-- Card Footer Actions: 3-dots Menu -->
-          <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between h-9">
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold" :class="getStatusBadgeClass(subject.is_active)">
+          <!-- Card Footer Actions -->
+          <div class="pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between h-9">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border" :class="getStatusBadgeClass(subject.is_active)">
               {{ subject.is_active ? 'Activa' : 'Inactiva' }}
             </span>
 
-            <!-- Actions Dropdown / Buttons -->
-            <div class="relative flex items-center" v-if="canManage">
+            <div class="flex items-center gap-1">
               <button 
-                @click="toggleCardMenu(subject.id)" 
-                type="button" 
-                class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center transition-all"
-                title="Opciones"
+                @click="openEditModal(subject, $event)"
+                class="px-2.5 py-1 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               >
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                </svg>
+                Editar
               </button>
-
-              <!-- Floating Dropdown Menu -->
-              <div 
-                v-if="activeMenuId === subject.id" 
-                class="absolute right-0 bottom-full mb-1 w-40 bg-white dark:bg-slate-900 rounded-xl shadow-xl border border-slate-100 dark:border-slate-800 py-1 z-30 text-xs font-medium animate-fade-in"
+              <button 
+                v-if="canManage"
+                @click="promptDeleteSubject(subject, $event)"
+                class="px-2.5 py-1 text-xs font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl transition-all cursor-pointer"
               >
-                <button 
-                  @click="openEditModal(subject, $event)" 
-                  class="w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200"
-                >
-                  <svg class="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                  </svg>
-                  <span>Editar</span>
-                </button>
-                <button 
-                  @click="promptDeleteSubject(subject, $event)" 
-                  class="w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400"
-                >
-                  <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                  <span>Eliminar</span>
-                </button>
-              </div>
+                Eliminar
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- TABLE VIEW: Dense Clerical Table with Morphing Transitions -->
-    <div v-else class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl overflow-hidden shadow-xs">
+    <!-- TABLE VIEW -->
+    <div v-else-if="viewMode === 'table'" class="glass-card rounded-2xl overflow-hidden shadow-sm">
       <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse text-xs">
-          <thead>
-            <tr class="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/50 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              <th class="py-3.5 px-4">Código</th>
-              <th class="py-3.5 px-4">Materia</th>
-              <th class="py-3.5 px-4">Nivel</th>
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-50/80 dark:bg-[#110926] text-slate-400 uppercase tracking-wider text-[10px] font-bold border-b border-slate-100 dark:border-white/10">
+            <tr>
+              <th class="py-3.5 px-4 sm:px-6">Código / Materia</th>
               <th class="py-3.5 px-4">Departamento</th>
+              <th class="py-3.5 px-4">Nivel</th>
               <th class="py-3.5 px-4">Profesor Asignado</th>
-              <th class="py-3.5 px-4">Créditos</th>
-              <th class="py-3.5 px-4">Estado</th>
-              <th v-if="canManage" class="py-3.5 px-4 text-right">Acciones</th>
+              <th class="py-3.5 px-4 text-center">Horas / Créditos</th>
+              <th class="py-3.5 px-4 text-center">Estado</th>
+              <th class="py-3.5 px-4 sm:px-6 text-right">Acciones</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          <tbody class="divide-y divide-slate-100 dark:divide-white/5">
             <tr 
-              v-for="subject in filteredSubjects" 
-              :key="subject.id"
-              :style="{ viewTransitionName: `subject-item-${subject.id}` }"
-              class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
+              v-for="s in filteredSubjects" 
+              :key="s.id"
+              class="hover:bg-slate-50/70 dark:hover:bg-white/5 transition-colors"
             >
-              <td class="py-3.5 px-4 font-mono font-bold text-slate-700 dark:text-slate-200">
-                {{ subject.code }}
+              <td class="py-3.5 px-4 sm:px-6">
+                <div>
+                  <p class="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">{{ s.name }}</p>
+                  <p class="font-mono text-[10px] text-brand-purple dark:text-brand-secondary font-bold">{{ s.code }}</p>
+                </div>
               </td>
-              <td class="py-3.5 px-4">
-                <div class="font-bold text-slate-850 dark:text-white">{{ subject.name }}</div>
-                <div class="text-[11px] text-slate-400 line-clamp-1">{{ subject.description }}</div>
+              <td class="py-3.5 px-4 text-xs font-medium text-slate-700 dark:text-slate-300">
+                {{ s.category_name || 'General' }}
               </td>
-              <td class="py-3.5 px-4 capitalize text-slate-600 dark:text-slate-300">
-                {{ subject.grade_level || 'General' }}
+              <td class="py-3.5 px-4 text-xs capitalize text-slate-600 dark:text-slate-400">
+                {{ s.grade_level }}
               </td>
-              <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">
-                {{ subject.category_name || 'General' }}
+              <td class="py-3.5 px-4 text-xs font-medium text-slate-800 dark:text-slate-200">
+                {{ s.teacher_name || 'No asignado' }}
               </td>
-              <td class="py-3.5 px-4 font-medium" :class="subject.teacher_name ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 italic'">
-                {{ subject.teacher_name || 'No asignado' }}
+              <td class="py-3.5 px-4 text-center text-xs text-slate-500 dark:text-slate-400">
+                {{ s.hours_per_week || 4 }}h / {{ s.credits || 0 }} CR
               </td>
-              <td class="py-3.5 px-4 text-slate-600 dark:text-slate-300">
-                {{ subject.credits || 0 }}
-              </td>
-              <td class="py-3.5 px-4">
-                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold" :class="getStatusBadgeClass(subject.is_active)">
-                  {{ subject.is_active ? 'Activa' : 'Inactiva' }}
+              <td class="py-3.5 px-4 text-center">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold border" :class="getStatusBadgeClass(s.is_active)">
+                  {{ s.is_active ? 'Activa' : 'Inactiva' }}
                 </span>
               </td>
-              <td v-if="canManage" class="py-3.5 px-4 text-right">
-                <div class="flex items-center justify-end gap-1">
+              <td class="py-3.5 px-4 sm:px-6 text-right">
+                <div class="inline-flex items-center gap-1">
                   <button 
-                    @click="openEditModal(subject, $event)"
-                    class="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/40 rounded-lg transition-colors"
+                    @click="openEditModal(s, $event)"
+                    class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-white/10 transition-colors cursor-pointer"
                     title="Editar"
                   >
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                   </button>
                   <button 
-                    @click="promptDeleteSubject(subject, $event)"
-                    class="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors"
+                    v-if="canManage"
+                    @click="promptDeleteSubject(s, $event)"
+                    class="p-1 text-rose-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                     title="Eliminar"
                   >
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -378,189 +346,273 @@
       </div>
     </div>
 
-    <!-- MODAL: Crear / Editar Materia (Teleported to body, spatial FLIP morph, centered, fixed footer) -->
+    <!-- STANDARDIZED MODAL: 3 NUMBERED SECTIONS & INSTITUTIONAL HEADER -->
     <Teleport to="body">
-      <div v-if="showModal" class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-slate-950/80 backdrop-blur-xs overflow-y-auto">
-        <!-- Backdrop click to close with fluid fade -->
+      <div 
+        v-if="showModal" 
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        @click.self="closeModal"
+      >
         <div 
-          @click="closeModal" 
-          class="fixed inset-0 transition-opacity" 
-          :class="isClosingModal ? 'backdrop-spatial-leave' : 'backdrop-spatial-enter'"
-          aria-hidden="true"
-        ></div>
-
-        <!-- Modal Container: Vertically centered in viewport with FLIP origin -->
-        <div 
-          class="relative w-full max-w-xl md:max-w-2xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl rounded-2xl flex flex-col max-h-[85vh] my-auto overflow-hidden z-10"
-          :class="isClosingModal ? 'modal-spatial-leave' : 'modal-spatial-enter'"
-          :style="{ transformOrigin: `${triggerOrigin.originPercentX}% ${triggerOrigin.originPercentY}%` }"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
         >
-          <!-- Gradient Top Banner (Fixed at top) -->
-          <div class="bg-gradient-to-r from-blue-600 via-indigo-600 to-teal-500 px-5 sm:px-6 py-3.5 flex items-center justify-between text-white flex-shrink-0">
-            <div class="flex items-center gap-2.5">
-              <svg class="w-5 h-5 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <h3 class="font-display font-extrabold text-base sm:text-lg">
-                {{ editingSubject ? 'Editar Materia' : 'Nueva Materia' }}
-              </h3>
+          <!-- Institutional Header Banner -->
+          <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/10 border border-brand-gold/50 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+                📚
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold font-display text-white tracking-tight">
+                  {{ editingSubject ? 'Editar Materia Curricular' : 'Nueva Materia Curricular' }}
+                </h2>
+                <p class="text-[11px] font-semibold text-brand-gold/90 uppercase tracking-wider">
+                  U.E Santa Luisa • Plan de Estudios y Asignación de Cátedra
+                </p>
+              </div>
             </div>
+
             <button 
               @click="closeModal" 
               type="button" 
-              class="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
-              title="Cerrar"
+              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              ✕
             </button>
           </div>
 
           <!-- Form Wrapping Body & Fixed Footer -->
-          <form @submit.prevent="saveSubject" class="flex-1 min-h-0 flex flex-col overflow-hidden">
+          <form @submit.prevent="saveSubject" class="flex-1 flex flex-col min-h-0">
             <!-- Scrollable Content Area -->
-            <div class="flex-1 overflow-y-auto min-h-0 p-5 sm:p-6 space-y-3.5 text-xs sm:text-sm">
-              <!-- Row 1: Código * & Nombre * -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-6">
+              
+              <!-- Section 1: Datos Curriculares Básicos -->
+              <div class="space-y-4">
+                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
+                  <span>1. Datos Curriculares Básicos</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Code -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Código de Materia *
+                    </label>
+                    <input 
+                      v-model="form.code" 
+                      type="text" 
+                      placeholder="Ej: MAT-M, CNAT-M" 
+                      :class="[
+                        formErrors.code ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10',
+                        'w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-mono uppercase transition-all'
+                      ]"
+                    />
+                    <p v-if="formErrors.code" class="text-rose-500 text-[11px] font-bold mt-1">
+                      {{ formErrors.code }}
+                    </p>
+                  </div>
+
+                  <!-- Name -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Nombre de la Asignatura *
+                    </label>
+                    <input 
+                      v-model="form.name" 
+                      type="text" 
+                      placeholder="Ej: Matemática, Ciencias Naturales" 
+                      :class="[
+                        formErrors.name ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10',
+                        'w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all'
+                      ]"
+                    />
+                    <p v-if="formErrors.name" class="text-rose-500 text-[11px] font-bold mt-1">
+                      {{ formErrors.name }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Grade Level -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Nivel Académico *
+                    </label>
+                    <select 
+                      v-model="form.grade_level" 
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
+                    >
+                      <option value="media">Media / Bachillerato</option>
+                      <option value="primaria">Primaria</option>
+                      <option value="inicial">Educación Inicial</option>
+                    </select>
+                  </div>
+
+                  <!-- Status Toggle Segmented -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                      Estado de la Asignatura
+                    </label>
+                    <div class="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        @click="form.is_active = true"
+                        :class="[
+                          form.is_active 
+                            ? 'bg-emerald-500/15 border-emerald-500 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs' 
+                            : 'bg-slate-50 dark:bg-[#110926] border-slate-200 dark:border-white/10 text-slate-500 hover:border-slate-300',
+                          'p-2 rounded-xl border text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer'
+                        ]"
+                      >
+                        <span>✓ Activa</span>
+                      </button>
+                      <button
+                        type="button"
+                        @click="form.is_active = false"
+                        :class="[
+                          !form.is_active 
+                            ? 'bg-amber-500/15 border-amber-500 text-amber-700 dark:text-amber-400 font-bold shadow-xs' 
+                            : 'bg-slate-50 dark:bg-[#110926] border-slate-200 dark:border-white/10 text-slate-500 hover:border-slate-300',
+                          'p-2 rounded-xl border text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer'
+                        ]"
+                      >
+                        <span>⚠️ Inactiva</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 2: Cátedra, Departamento y Docente -->
+              <div class="space-y-4">
+                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-600 dark:text-brand-secondary border-b border-slate-100 dark:border-white/10 pb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-secondary"></span>
+                  <span>2. Cátedra, Departamento y Asignación Docente</span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Department -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Departamento Curricular *
+                    </label>
+                    <input 
+                      v-model="form.category_name" 
+                      type="text" 
+                      placeholder="Ej: Ciencias Naturales y Exactas" 
+                      list="departments-datalist"
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+                    />
+                    <datalist id="departments-datalist">
+                      <option v-for="d in departmentsList" :key="d" :value="d" />
+                    </datalist>
+                  </div>
+
+                  <!-- Teacher Assigned -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Profesor Titular Asignado
+                    </label>
+                    <select 
+                      v-model="form.teacher_name" 
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer font-medium"
+                    >
+                      <option value="">Seleccionar profesor (Opcional)</option>
+                      <option v-for="teacher in teachersList" :key="teacher" :value="teacher">{{ teacher }}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <!-- Hours per week -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Horas Semanales de Clase
+                    </label>
+                    <input 
+                      v-model.number="form.hours_per_week" 
+                      type="number" 
+                      min="1" 
+                      max="30"
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+                    />
+                  </div>
+
+                  <!-- Credits -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Unidades de Crédito
+                    </label>
+                    <input 
+                      v-model.number="form.credits" 
+                      type="number" 
+                      min="0"
+                      max="20"
+                      placeholder="0" 
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Section 3: Requisitos y Contenido Programático -->
+              <div class="space-y-4">
+                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-brand-purple dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-purple dark:bg-brand-gold"></span>
+                  <span>3. Requisitos y Contenido Programático</span>
+                </div>
+
+                <!-- Prerequisites -->
                 <div>
-                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Código <span class="text-rose-500">*</span>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Materias Prerrequisito
                   </label>
                   <input 
-                    v-model="form.code" 
+                    v-model="form.prerequisites" 
                     type="text" 
-                    required 
-                    placeholder="Ej: MAT-M, CNAT-M" 
-                    class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 uppercase font-mono transition-all text-xs"
+                    placeholder="Ej: Matemática I, Física Básica (Opcional)" 
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
                   />
                 </div>
+
+                <!-- Description -->
                 <div>
-                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Nombre <span class="text-rose-500">*</span>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Descripción y Objetivos Pedagógicos
                   </label>
-                  <input 
-                    v-model="form.name" 
-                    type="text" 
-                    required 
-                    placeholder="Ej: Ciencias Naturales" 
-                    class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs"
-                  />
+                  <textarea 
+                    v-model="form.description" 
+                    rows="3" 
+                    placeholder="Descripción curricular y propósitos formativos de la asignatura en la U.E Santa Luisa..." 
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all resize-none"
+                  ></textarea>
                 </div>
               </div>
 
-              <!-- Row 2: Nivel Académico * & Créditos -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Nivel Académico <span class="text-rose-500">*</span>
-                  </label>
-                  <select 
-                    v-model="form.grade_level" 
-                    required
-                    class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer transition-all text-xs"
-                  >
-                    <option value="media">Media / Bachillerato</option>
-                    <option value="primaria">Primaria</option>
-                    <option value="inicial">Educación Inicial</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Créditos
-                  </label>
-                  <input 
-                    v-model.number="form.credits" 
-                    type="number" 
-                    min="0"
-                    max="20"
-                    placeholder="0" 
-                    class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs"
-                  />
-                </div>
-              </div>
-
-              <!-- Row 3: Profesor Asignado & Departamento -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Profesor Asignado
-                  </label>
-                  <select 
-                    v-model="form.teacher_name" 
-                    class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 cursor-pointer transition-all text-xs"
-                  >
-                    <option value="">Seleccionar profesor</option>
-                    <option v-for="teacher in teachersList" :key="teacher" :value="teacher">{{ teacher }}</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Departamento
-                  </label>
-                  <input 
-                    v-model="form.category_name" 
-                    type="text" 
-                    placeholder="Ej: Ciencias Naturales y Exactas" 
-                    list="departments-datalist"
-                    class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs"
-                  />
-                  <datalist id="departments-datalist">
-                    <option v-for="d in departmentsList" :key="d" :value="d" />
-                  </datalist>
-                </div>
-              </div>
-
-              <!-- Row 4: Materias Prerrequisito -->
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Materias Prerrequisito
-                </label>
-                <input 
-                  v-model="form.prerequisites" 
-                  type="text" 
-                  placeholder="Ej: Matemáticas I, Física Básica..." 
-                  class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs"
-                />
-              </div>
-
-              <!-- Row 5: Descripción -->
-              <div>
-                <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Descripción
-                </label>
-                <textarea 
-                  v-model="form.description" 
-                  rows="2" 
-                  placeholder="Descripción del contenido programático de la materia..." 
-                  class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs"
-                ></textarea>
-              </div>
-
-              <!-- Error Alert inside form if any -->
-              <div v-if="formError" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs font-medium">
-                {{ formError }}
-              </div>
             </div>
 
-            <!-- Sticky Modal Footer (ALWAYS visible at the bottom of the card!) -->
-            <div class="flex-shrink-0 px-5 sm:px-6 py-3 border-t border-slate-100 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-950/80 flex items-center justify-end gap-3">
+            <!-- Sticky Modal Footer -->
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50 dark:bg-[#110926] border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3">
               <button 
                 type="button" 
                 @click="closeModal" 
-                class="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-xl transition-all"
+                class="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
               >
                 ✕ Cancelar
               </button>
               <button 
                 type="submit" 
                 :disabled="isSubmitting"
-                class="px-5 py-2 text-xs font-bold bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white rounded-xl shadow-md transition-all flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
               >
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                </svg>
-                <span>{{ editingSubject ? 'Actualizar Materia' : 'Crear Materia' }}</span>
+                <span v-if="isSubmitting">Guardando...</span>
+                <span v-else class="flex items-center gap-2">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>{{ editingSubject ? 'Actualizar Materia' : 'Crear Materia' }}</span>
+                </span>
               </button>
             </div>
           </form>
@@ -568,45 +620,34 @@
       </div>
     </Teleport>
 
-    <!-- MODAL: Confirmar Eliminación Segura (Teleported to body with FLIP morph) -->
+    <!-- MODAL: Confirmar Eliminación Segura -->
     <Teleport to="body">
-      <div v-if="showDeleteModal" class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto">
-        <div 
-          @click="closeDeleteModal" 
-          class="fixed inset-0 transition-opacity" 
-          :class="isClosingDeleteModal ? 'backdrop-spatial-leave' : 'backdrop-spatial-enter'"
-          aria-hidden="true"
-        ></div>
-        
-        <div 
-          class="relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-2xl rounded-2xl p-6 z-10 space-y-4 my-auto"
-          :class="isClosingDeleteModal ? 'modal-spatial-leave' : 'modal-spatial-enter'"
-          :style="{ transformOrigin: `${triggerOrigin.originPercentX}% ${triggerOrigin.originPercentY}%` }"
-        >
-          <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/40 flex items-center justify-center text-rose-500 mx-auto">
-            <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+      <div 
+        v-if="showDeleteModal" 
+        class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
+        @click.self="closeDeleteModal"
+      >
+        <div class="bg-white dark:bg-[#170f33] rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md p-6 text-center animate-scale-up">
+          <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 text-rose-500 flex items-center justify-center mx-auto mb-4 text-2xl shadow-xs">
+            ⚠️
           </div>
 
-          <div class="text-center space-y-1">
-            <h3 class="font-display font-black text-lg text-slate-850 dark:text-white">
-              ¿Eliminar Materia?
-            </h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">
-              Estás a punto de eliminar <span class="font-bold text-slate-700 dark:text-slate-200">"{{ subjectToDelete?.name }}"</span> ({{ subjectToDelete?.code }}). Esta acción no se puede deshacer.
-            </p>
+          <h3 class="text-lg font-bold font-display text-slate-900 dark:text-white">
+            ¿Eliminar Materia?
+          </h3>
+          <p class="text-xs text-slate-500 dark:text-slate-300 mt-2 leading-relaxed">
+            Estás a punto de eliminar <strong class="text-slate-900 dark:text-white">"{{ subjectToDelete?.name }}"</strong> ({{ subjectToDelete?.code }}).
+          </p>
+
+          <div class="mt-3 p-3 bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400 text-left">
+            ℹ️ <strong>Nota Institucional:</strong> Se recomienda mantener la materia como "Inactiva" si existen calificaciones históricas o evaluaciones vinculadas.
           </div>
 
-          <div v-if="deleteError" class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-500 text-xs text-center font-medium">
-            {{ deleteError }}
-          </div>
-
-          <div class="flex items-center justify-center gap-3 pt-2">
+          <div class="flex items-center justify-center gap-3 mt-6">
             <button 
               type="button" 
               @click="closeDeleteModal"
-              class="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
+              class="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all cursor-pointer"
             >
               Cancelar
             </button>
@@ -614,7 +655,7 @@
               type="button" 
               @click="confirmDeleteSubject"
               :disabled="isDeleting"
-              class="px-5 py-2 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md transition-all active:scale-95 disabled:opacity-50"
+              class="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 active:scale-95 transition-all cursor-pointer"
             >
               {{ isDeleting ? 'Eliminando...' : 'Sí, Eliminar' }}
             </button>
@@ -623,33 +664,18 @@
       </div>
     </Teleport>
 
-    <!-- TOAST Notification with Crafted Vector Status Icons -->
-    <div 
-      v-if="toast.show" 
-      class="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-2xl shadow-2xl border text-xs font-bold transition-all animate-slide-toast"
-      :class="toast.type === 'success' ? 'bg-slate-900/95 dark:bg-slate-950/95 border-emerald-500/40 text-emerald-300' : 'bg-slate-900/95 dark:bg-slate-950/95 border-rose-500/40 text-rose-300'"
-    >
-      <div class="w-5 h-5 rounded-full flex items-center justify-center" :class="toast.type === 'success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'">
-        <svg v-if="toast.type === 'success'" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-        </svg>
-        <svg v-else class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </div>
-      <span>{{ toast.message }}</span>
-    </div>
-
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import { useToast } from '~/composables/useToast'
 
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase || 'http://localhost:3031'
 const authStore = useAuthStore()
+const toast = useToast()
 
 // Role-based authorization
 const canManage = computed(() => {
@@ -658,88 +684,35 @@ const canManage = computed(() => {
 })
 
 const viewMode = ref('grid') // 'grid' | 'table'
+
 const search = ref('')
 const filterDepartment = ref('')
 const filterTeacher = ref('')
 const filterLevel = ref('')
 
-// View Transitions API integration with GPU hardware acceleration
 const switchViewMode = (mode) => {
-  if (viewMode.value === mode) return
-  if (import.meta.client && typeof document !== 'undefined' && 'startViewTransition' in document) {
-    document.startViewTransition(() => {
-      viewMode.value = mode
-    })
-  } else {
-    viewMode.value = mode
-  }
-}
-
-// Spatial FLIP Morph Coordinates & Lifecycle
-const triggerOrigin = ref({ originPercentX: 50, originPercentY: 50, x: 0, y: 0 })
-const isClosingModal = ref(false)
-const isClosingDeleteModal = ref(false)
-
-const captureTriggerOrigin = (event) => {
-  if (import.meta.client && event && event.currentTarget) {
-    const rect = event.currentTarget.getBoundingClientRect()
-    const viewportWidth = window.innerWidth || 1280
-    const viewportHeight = window.innerHeight || 800
-    const centerX = rect.left + rect.width / 2
-    const centerY = rect.top + rect.height / 2
-    triggerOrigin.value = {
-      originPercentX: Math.min(Math.max(Math.round((centerX / viewportWidth) * 100), 5), 95),
-      originPercentY: Math.min(Math.max(Math.round((centerY / viewportHeight) * 100), 5), 95),
-      x: centerX,
-      y: centerY
-    }
-  } else {
-    triggerOrigin.value = { originPercentX: 50, originPercentY: 50, x: 0, y: 0 }
-  }
-}
-
-const activeMenuId = ref(null)
-const toggleCardMenu = (id) => {
-  activeMenuId.value = activeMenuId.value === id ? null : id
-}
-
-// Close card dropdown when clicking outside
-if (import.meta.client) {
-  window.addEventListener('click', (e) => {
-    if (!e.target.closest('.relative')) {
-      activeMenuId.value = null
-    }
-  })
-}
-
-// Toast state
-const toast = ref({ show: false, message: '', type: 'success' })
-const showToast = (message, type = 'success') => {
-  toast.value = { show: true, message, type }
-  setTimeout(() => {
-    toast.value.show = false
-  }, 3500)
+  viewMode.value = mode
 }
 
 // Modal State
 const showModal = ref(false)
 const editingSubject = ref(null)
 const isSubmitting = ref(false)
-const formError = ref('')
+const formErrors = ref({})
 
 // Delete Modal State
 const showDeleteModal = ref(false)
 const subjectToDelete = ref(null)
 const isDeleting = ref(false)
-const deleteError = ref('')
 
 const form = ref({
   code: '',
   name: '',
   grade_level: 'media',
   credits: 0,
+  hours_per_week: 4,
   teacher_name: '',
-  category_name: '',
+  category_name: 'Ciencias Naturales y Exactas',
   prerequisites: '',
   description: '',
   is_active: true
@@ -797,36 +770,11 @@ const filteredSubjects = computed(() => {
   })
 })
 
-// Card gradient background generator matching reference
-const getBannerGradient = (subject) => {
-  const code = (subject.code || '').toUpperCase()
-  if (code.includes('CNAT') || code.includes('BIO')) {
-    return 'linear-gradient(135deg, #2563EB 0%, #0D9488 100%)'
-  }
-  if (code.includes('CAST') || code.includes('LENG')) {
-    return 'linear-gradient(135deg, #4F46E5 0%, #06B6D4 100%)'
-  }
-  if (code.includes('MAT')) {
-    return 'linear-gradient(135deg, #3B82F6 0%, #10B981 100%)'
-  }
-  if (code.includes('EDFE') || code.includes('HIST')) {
-    return 'linear-gradient(135deg, #6366F1 0%, #14B8A6 100%)'
-  }
-  if (code.includes('QUIM')) {
-    return 'linear-gradient(135deg, #0284C7 0%, #0D9488 100%)'
-  }
-  if (code.includes('FIS')) {
-    return 'linear-gradient(135deg, #1E40AF 0%, #059669 100%)'
-  }
-  return 'linear-gradient(135deg, #2563EB 0%, #0D9488 100%)'
-}
-
-// Calibrated tonal status badges adhering to contrast guidelines
 const getStatusBadgeClass = (isActive) => {
   if (isActive) {
-    return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+    return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
   }
-  return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/30'
+  return 'bg-amber-500/10 text-amber-600 dark:text-brand-gold border-amber-500/30'
 }
 
 // Fetch Subjects from Backend API
@@ -858,21 +806,20 @@ const mapSubject = (s) => {
     prerequisites: s.prerequisites || '',
     category_name: s.category_name || (s.grade_level === 'primaria' ? 'Primaria' : 'Ciencias Naturales y Exactas'),
     teacher_name: s.teacher_name || '',
-    is_active: s.is_active !== undefined ? s.is_active : true,
-    color_hex: s.color_hex || '#3B82F6'
+    is_active: s.is_active !== undefined ? s.is_active : true
   }
 }
 
-// Fallback seed matching user's exact screenshots
+// Fallback seed
 const loadFallbackReferenceData = () => {
   subjects.value = [
     {
       id: 1,
       code: 'CNAT-M',
       name: 'Ciencias Naturales',
-      description: 'Ciencias Naturales para bachillerato',
+      description: 'Ciencias Naturales y Biología para bachillerato',
       grade_level: 'media',
-      teacher_name: 'No asignado',
+      teacher_name: 'Laura Méndez',
       credits: 0,
       hours_per_week: 4,
       category_name: 'Ciencias Naturales y Exactas',
@@ -881,10 +828,10 @@ const loadFallbackReferenceData = () => {
     {
       id: 2,
       code: 'CAST-M',
-      name: 'Castellano',
-      description: 'Lengua y Literatura para bachillerato',
+      name: 'Castellano y Literatura',
+      description: 'Lengua, Literatura y Comunicación para bachillerato',
       grade_level: 'media',
-      teacher_name: 'No asignado',
+      teacher_name: 'Carmen Domínguez',
       credits: 0,
       hours_per_week: 4,
       category_name: 'Lengua, Humanidades y Arte',
@@ -894,9 +841,9 @@ const loadFallbackReferenceData = () => {
       id: 3,
       code: 'MAT-M',
       name: 'Matemática',
-      description: 'Matemática para bachillerato',
+      description: 'Álgebra, Geometría y Razonamiento Lógico',
       grade_level: 'media',
-      teacher_name: 'No asignado',
+      teacher_name: 'Miguel Silva',
       credits: 0,
       hours_per_week: 5,
       category_name: 'Matemática y Lógica',
@@ -906,7 +853,7 @@ const loadFallbackReferenceData = () => {
       id: 4,
       code: 'EDFE-M',
       name: 'Educación de la Fe',
-      description: 'Educación Religiosa y de la Fe',
+      description: 'Formación Ética, Ciudadana y Valores Cristianos',
       grade_level: 'media',
       teacher_name: 'José Antonio Vásquez',
       credits: 0,
@@ -918,7 +865,7 @@ const loadFallbackReferenceData = () => {
       id: 5,
       code: 'QUIM-M',
       name: 'Química',
-      description: 'Química para bachillerato (4to-5to año)',
+      description: 'Química General y Orgánica de Educación Media',
       grade_level: 'media',
       teacher_name: 'Roberto Gómez',
       credits: 0,
@@ -930,7 +877,7 @@ const loadFallbackReferenceData = () => {
       id: 6,
       code: 'FIS-M',
       name: 'Física',
-      description: 'Física para bachillerato (4to-5to año)',
+      description: 'Mecánica clásica, cinemática y leyes de Newton',
       grade_level: 'media',
       teacher_name: 'Laura Méndez',
       credits: 0,
@@ -941,86 +888,79 @@ const loadFallbackReferenceData = () => {
   ]
 }
 
-// Open Create Modal with Spatial Trigger Origin
-const openCreateModal = (event) => {
-  captureTriggerOrigin(event)
+const validateForm = () => {
+  const errors = {}
+  if (!form.value.code?.trim()) errors.code = 'El código de la materia es obligatorio'
+  if (!form.value.name?.trim()) errors.name = 'El nombre de la materia es obligatorio'
+  
+  formErrors.value = errors
+  return Object.keys(errors).length === 0
+}
+
+const openCreateModal = () => {
   editingSubject.value = null
-  formError.value = ''
+  formErrors.value = {}
   form.value = {
     code: '',
     name: '',
     grade_level: 'media',
     credits: 0,
+    hours_per_week: 4,
     teacher_name: '',
     category_name: 'Ciencias Naturales y Exactas',
     prerequisites: '',
     description: '',
     is_active: true
   }
-  isClosingModal.value = false
   showModal.value = true
 }
 
-// Open Edit Modal with Spatial Trigger Origin
-const openEditModal = (subject, event) => {
-  captureTriggerOrigin(event)
-  activeMenuId.value = null
+const openEditModal = (subject) => {
   editingSubject.value = subject
-  formError.value = ''
+  formErrors.value = {}
   form.value = {
     code: subject.code,
     name: subject.name,
     grade_level: subject.grade_level || 'media',
     credits: subject.credits || 0,
+    hours_per_week: subject.hours_per_week || 4,
     teacher_name: subject.teacher_name === 'No asignado' ? '' : (subject.teacher_name || ''),
     category_name: subject.category_name || '',
     prerequisites: subject.prerequisites || '',
     description: subject.description || '',
     is_active: subject.is_active !== undefined ? subject.is_active : true
   }
-  isClosingModal.value = false
   showModal.value = true
 }
 
 const closeModal = () => {
-  isClosingModal.value = true
-  setTimeout(() => {
-    showModal.value = false
-    isClosingModal.value = false
-    editingSubject.value = null
-    formError.value = ''
-  }, 220)
+  showModal.value = false
+  editingSubject.value = null
+  formErrors.value = {}
 }
 
-// Save Subject (Create / Edit) with full trimming and validation
 const saveSubject = async () => {
-  formError.value = ''
-  
-  // Trim all string inputs
+  if (!validateForm()) {
+    toast.warning('Por favor completa los campos requeridos (*)')
+    return
+  }
+
   const code = form.value.code.trim().toUpperCase()
   const name = form.value.name.trim()
   const grade_level = form.value.grade_level.trim()
   const description = (form.value.description || '').trim()
-  const category_name = (form.value.category_name || '').trim()
+  const category_name = (form.value.category_name || '').trim() || 'General'
   const prerequisites = (form.value.prerequisites || '').trim()
   const teacher_name = form.value.teacher_name || 'No asignado'
   const credits = Number(form.value.credits) || 0
+  const hours_per_week = Number(form.value.hours_per_week) || 4
 
-  if (!code) {
-    formError.value = 'El código de la materia es obligatorio.'
-    return
-  }
-  if (!name) {
-    formError.value = 'El nombre de la materia es obligatorio.'
-    return
-  }
-
-  // Check duplicate code (if new or changed)
+  // Check duplicate code
   const isDuplicate = subjects.value.some(s => 
     s.code.toUpperCase() === code && (!editingSubject.value || s.id !== editingSubject.value.id)
   )
   if (isDuplicate) {
-    formError.value = `Ya existe una materia registrada con el código ${code}.`
+    toast.error(`Ya existe una materia registrada con el código ${code}.`)
     return
   }
 
@@ -1032,6 +972,7 @@ const saveSubject = async () => {
     grade_level,
     description,
     credits,
+    hours_per_week,
     category_name,
     prerequisites,
     teacher_name,
@@ -1044,18 +985,17 @@ const saveSubject = async () => {
 
     if (editingSubject.value) {
       // Update
-      const res = await $fetch(`${apiBase}/subjects/${editingSubject.value.id}`, {
+      await $fetch(`${apiBase}/subjects/${editingSubject.value.id}`, {
         method: 'PATCH',
         headers,
         body: payload
       }).catch(() => null)
 
-      // Update local state
       const index = subjects.value.findIndex(s => s.id === editingSubject.value.id)
       if (index !== -1) {
         subjects.value[index] = { ...subjects.value[index], ...payload }
       }
-      showToast(`Materia "${name}" actualizada exitosamente.`, 'success')
+      toast.success(`Materia "${name}" actualizada exitosamente.`)
     } else {
       // Create
       const res = await $fetch(`${apiBase}/subjects`, {
@@ -1066,42 +1006,30 @@ const saveSubject = async () => {
 
       const newId = res && res.id ? res.id : Date.now()
       subjects.value.unshift({ id: newId, ...payload })
-      showToast(`Materia "${name}" creada exitosamente.`, 'success')
+      toast.success(`Materia "${name}" creada exitosamente.`)
     }
 
     closeModal()
   } catch (err) {
-    formError.value = err?.data?.message || err?.message || 'Error al guardar la materia.'
+    toast.error(err?.data?.message || err?.message || 'Error al guardar la materia.')
   } finally {
     isSubmitting.value = false
   }
 }
 
-// Prompt Delete Confirmation Modal with Spatial Trigger Origin
-const promptDeleteSubject = (subject, event) => {
-  captureTriggerOrigin(event)
-  activeMenuId.value = null
+const promptDeleteSubject = (subject) => {
   subjectToDelete.value = subject
-  deleteError.value = ''
-  isClosingDeleteModal.value = false
   showDeleteModal.value = true
 }
 
 const closeDeleteModal = () => {
-  isClosingDeleteModal.value = true
-  setTimeout(() => {
-    showDeleteModal.value = false
-    isClosingDeleteModal.value = false
-    subjectToDelete.value = null
-    deleteError.value = ''
-  }, 200)
+  showDeleteModal.value = false
+  subjectToDelete.value = null
 }
 
-// Confirm Delete Subject
 const confirmDeleteSubject = async () => {
   if (!subjectToDelete.value) return
   isDeleting.value = true
-  deleteError.value = ''
 
   try {
     const token = localStorage.getItem('token') || localStorage.getItem('feathers-jwt') || localStorage.getItem('school_jwt')
@@ -1111,18 +1039,16 @@ const confirmDeleteSubject = async () => {
       method: 'DELETE',
       headers
     }).catch((err) => {
-      // If backend throws error (e.g. constraints violation), throw to catch block
       if (err && err.data) throw err
       return null
     })
 
-    // Remove from local list
     const deletedName = subjectToDelete.value.name
     subjects.value = subjects.value.filter(s => s.id !== subjectToDelete.value.id)
     closeDeleteModal()
-    showToast(`Materia "${deletedName}" eliminada exitosamente.`, 'success')
+    toast.warning(`Materia "${deletedName}" eliminada del plan de estudios.`)
   } catch (err) {
-    deleteError.value = err?.data?.message || err?.message || 'No se puede eliminar la materia porque tiene dependencias académicas activas.'
+    toast.error(err?.data?.message || err?.message || 'No se puede eliminar la materia debido a dependencias académicas.')
   } finally {
     isDeleting.value = false
   }
@@ -1132,120 +1058,3 @@ onMounted(() => {
   fetchSubjects()
 })
 </script>
-
-<style scoped>
-/* View Transitions API Core Timing & Interpolation */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.32s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-::view-transition-group(*) {
-  animation-duration: 0.36s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* Spatial FLIP Morph Animations (Apple Executive Curve) */
-@keyframes spatialMorphIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.35) translate3d(0, 30px, 0);
-    filter: blur(8px);
-  }
-  65% {
-    opacity: 1;
-    transform: scale(1.015) translate3d(0, -2px, 0);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translate3d(0, 0, 0);
-    filter: blur(0px);
-  }
-}
-
-@keyframes spatialMorphOut {
-  0% {
-    opacity: 1;
-    transform: scale(1) translate3d(0, 0, 0);
-    filter: blur(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0.38) translate3d(0, 20px, 0);
-    filter: blur(6px);
-  }
-}
-
-.modal-spatial-enter {
-  animation: spatialMorphIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  will-change: transform, opacity, filter;
-}
-
-.modal-spatial-leave {
-  animation: spatialMorphOut 0.22s cubic-bezier(0.4, 0, 1, 1) forwards;
-  will-change: transform, opacity, filter;
-}
-
-/* Backdrop Blur Fade Transitions */
-@keyframes backdropFadeIn {
-  from {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-  }
-  to {
-    opacity: 1;
-    backdrop-filter: blur(8px);
-  }
-}
-
-@keyframes backdropFadeOut {
-  from {
-    opacity: 1;
-    backdrop-filter: blur(8px);
-  }
-  to {
-    opacity: 0;
-    backdrop-filter: blur(0px);
-  }
-}
-
-.backdrop-spatial-enter {
-  animation: backdropFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.backdrop-spatial-leave {
-  animation: backdropFadeOut 0.2s ease-in forwards;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.25s ease-out forwards;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-slide-toast {
-  animation: slideToast 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes slideToast {
-  from {
-    opacity: 0;
-    transform: translateY(16px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-</style>

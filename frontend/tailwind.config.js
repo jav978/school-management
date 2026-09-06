@@ -45,5 +45,13 @@ export default {
   },
   plugins: [
     require('daisyui')
-  ]
+  ],
+  daisyui: {
+    themes: ["light", "dark"],
+    darkTheme: "dark",
+    base: false,
+    styled: true,
+    utils: true,
+    logs: false
+  }
 }
