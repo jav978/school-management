@@ -1,5 +1,6 @@
 const { AuthenticationService, JWTStrategy } = require('@feathersjs/authentication')
 const { LocalStrategy } = require('@feathersjs/authentication-local')
+const { oauth, OAuthStrategy } = require('@feathersjs/authentication-oauth')
 
 class CustomLocalStrategy extends LocalStrategy {
   get configuration() {
@@ -16,6 +17,11 @@ module.exports = function (app) {
 
   authentication.register('jwt', new JWTStrategy())
   authentication.register('local', new CustomLocalStrategy())
+
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    app.configure(oauth())
+    authentication.register('google', new OAuthStrategy())
+  }
 
   app.use('authentication', authentication)
 

@@ -27,7 +27,22 @@ app.set('authentication', {
   local: {
     usernameField: 'email',
     passwordField: 'password'
+  },
+  oauth: {
+    redirect: process.env.OAUTH_REDIRECT || 'http://localhost:3001/dashboard',
+    google: {
+      key: process.env.GOOGLE_CLIENT_ID || '',
+      secret: process.env.GOOGLE_CLIENT_SECRET || '',
+      scope: ['email', 'profile']
+    }
   }
+})
+
+// OAuth Provider Status Endpoint
+app.get('/oauth/status', (req, res) => {
+  res.json({
+    google: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET)
+  })
 })
 
 // Security Headers & CORS
