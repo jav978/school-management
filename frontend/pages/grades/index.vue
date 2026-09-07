@@ -12,8 +12,17 @@
         </p>
       </div>
 
-      <!-- Action Button -->
+      <!-- Action Button / Contextual Badge -->
       <div class="flex items-center gap-2.5">
+        <!-- Active child indicator for parents -->
+        <div v-if="isParent" class="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 text-xs">
+          <span class="text-base">{{ isCarlos ? '👦' : '👧' }}</span>
+          <div>
+            <span class="font-extrabold text-slate-800 dark:text-slate-100">{{ activeStudent.full_name }}</span>
+            <span class="text-[10px] text-amber-700 dark:text-brand-gold font-bold ml-1.5">{{ activeStudent.grade }}</span>
+          </div>
+        </div>
+
         <button 
           v-if="canManage"
           @click="openCreateModal($event)" 
@@ -192,7 +201,7 @@
               <th class="py-3.5 px-4">Aula</th>
               <th class="py-3.5 px-4 text-center">Nota</th>
               <th class="py-3.5 px-4 text-center">Rendimiento</th>
-              <th class="py-3.5 px-4 sm:px-6 text-right">Acciones</th>
+              <th v-if="canManage" class="py-3.5 px-4 sm:px-6 text-right">Acciones</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -266,7 +275,7 @@
               </td>
 
               <!-- Actions -->
-              <td class="py-3.5 px-4 sm:px-6 text-right">
+              <td v-if="canManage" class="py-3.5 px-4 sm:px-6 text-right">
                 <div class="inline-flex items-center gap-1">
                   <button
                     @click="openEditModal(grade, $event)"
@@ -501,9 +510,12 @@
             <button
               @click="closeModal"
               type="button"
-              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              ✕ Cancelar
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button
               @click="submitGrade"
@@ -549,9 +561,12 @@
             <button
               @click="isDeleteModalOpen = false"
               type="button"
-              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              ✕ Cancelar
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button
               @click="confirmDeleteGrade"
@@ -582,14 +597,19 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import { useActiveStudent } from '~/composables/useActiveStudent'
 
 const nuxtApp = useNuxtApp()
 const authStore = useAuthStore()
+const { activeStudent, isCarlos, isMaria } = useActiveStudent()
 
 const canManage = computed(() => {
-  const role = authStore.userRole || authStore.user?.role
-  return role === 'admin' || role === 'control_estudio' || role === 'coordinator' || role === 'teacher' || true
+  const role = authStore.userRole || authStore.user?.role || ''
+  return ['admin', 'control_estudio', 'coordinator', 'teacher'].includes(role)
 })
+
+const isStudent = computed(() => (authStore.userRole || authStore.user?.role) === 'student')
+const isParent = computed(() => (authStore.userRole || authStore.user?.role) === 'parent')
 
 // State
 const grades = ref([])
@@ -626,22 +646,42 @@ const form = ref({
 
 // KPIs
 const averageScore = computed(() => {
-  if (grades.value.length === 0) return '0.0'
-  const sum = grades.value.reduce((acc, g) => acc + Number(g.marks_obtained || 0), 0)
-  return (sum / grades.value.length).toFixed(1)
+  if (filteredGrades.value.length === 0) return '0.0'
+  const sum = filteredGrades.value.reduce((acc, g) => acc + Number(g.marks_obtained || 0), 0)
+  return (sum / filteredGrades.value.length).toFixed(1)
 })
 
-const passedCount = computed(() => grades.value.filter(g => g.is_passed).length)
-const failedCount = computed(() => grades.value.filter(g => !g.is_passed).length)
+const passedCount = computed(() => filteredGrades.value.filter(g => g.is_passed).length)
+const failedCount = computed(() => filteredGrades.value.filter(g => !g.is_passed).length)
 
 const passRate = computed(() => {
-  if (grades.value.length === 0) return 0
-  return Math.round((passedCount.value / grades.value.length) * 100)
+  if (filteredGrades.value.length === 0) return 0
+  return Math.round((passedCount.value / filteredGrades.value.length) * 100)
 })
 
 // Filtered grades list
 const filteredGrades = computed(() => {
   let list = grades.value
+
+  // If student persona, only show their own records
+  if (isStudent.value) {
+    list = list.filter(g => 
+      g.student_id === 1 || 
+      `${g.student_first_name} ${g.student_last_name}`.toLowerCase().includes('gabriel') ||
+      `${g.student_first_name} ${g.student_last_name}`.toLowerCase().includes('carlos')
+    )
+  }
+
+  // If parent persona, filter records strictly for the active child (Carlos or Maria)
+  if (isParent.value && activeStudent.value) {
+    const targetName = isCarlos.value ? 'carlos' : 'maría'
+    const targetCode = activeStudent.value.student_code.toLowerCase()
+    list = list.filter(g => {
+      const studentFullName = `${g.student_first_name || ''} ${g.student_last_name || ''}`.toLowerCase()
+      const studentCode = (g.student_code || '').toLowerCase()
+      return studentFullName.includes(targetName) || studentCode === targetCode || g.student_id === activeStudent.value.id
+    })
+  }
 
   if (selectedClassFilter.value) {
     list = list.filter(g => String(g.class_id) === String(selectedClassFilter.value))

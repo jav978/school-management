@@ -443,22 +443,81 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <!-- National ID -->
+                  <!-- National ID with Smart Type Detection -->
                   <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Cédula / Documento de Identidad *
-                    </label>
-                    <input
-                      v-model="form.national_id"
-                      type="text"
-                      placeholder="Ej. V-15982012"
-                      :class="[
-                        formErrors.national_id ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10',
-                        'w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-mono transition-all'
-                      ]"
-                    />
+                    <div class="flex items-center justify-between mb-1">
+                      <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Cédula / Documento de Identidad *
+                      </label>
+                      <span v-if="form.id_type === 'V'" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                        🇻🇪 Venezolano (&lt; 80M)
+                      </span>
+                      <span v-else-if="form.id_type === 'E'" class="text-[10px] font-bold text-amber-600 dark:text-brand-gold bg-amber-500/10 px-2 py-0.5 rounded-md">
+                        🌐 Extranjero (&ge; 80M)
+                      </span>
+                      <span v-else class="text-[10px] font-bold text-purple-600 dark:text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-md">
+                        🛂 Pasaporte
+                      </span>
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                      <!-- Type Selector Buttons -->
+                      <div class="inline-flex rounded-xl bg-slate-200/80 dark:bg-white/5 p-1 border border-slate-200 dark:border-white/10 shrink-0">
+                        <button
+                          type="button"
+                          @click="selectIdType('V')"
+                          :class="form.id_type === 'V' ? 'bg-white dark:bg-brand-primary text-brand-primary dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 font-semibold hover:text-slate-900 dark:hover:text-white'"
+                          class="px-2.5 py-1 text-xs rounded-lg transition-all cursor-pointer"
+                          title="Venezolano (Cédula < 80M)"
+                        >
+                          V
+                        </button>
+                        <button
+                          type="button"
+                          @click="selectIdType('E')"
+                          :class="form.id_type === 'E' ? 'bg-white dark:bg-brand-primary text-brand-primary dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 font-semibold hover:text-slate-900 dark:hover:text-white'"
+                          class="px-2.5 py-1 text-xs rounded-lg transition-all cursor-pointer"
+                          title="Extranjero (Cédula ≥ 80M)"
+                        >
+                          E
+                        </button>
+                        <button
+                          type="button"
+                          @click="selectIdType('P')"
+                          :class="form.id_type === 'P' ? 'bg-white dark:bg-brand-primary text-brand-primary dark:text-white shadow-xs font-black' : 'text-slate-500 dark:text-slate-400 font-semibold hover:text-slate-900 dark:hover:text-white'"
+                          class="px-2 py-1 text-xs rounded-lg transition-all cursor-pointer"
+                          title="Pasaporte"
+                        >
+                          P
+                        </button>
+                      </div>
+
+                      <!-- Prefix & Number Input -->
+                      <div class="relative flex-1">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <span class="text-xs font-bold font-mono text-slate-400 dark:text-slate-500">
+                            {{ form.id_type }}-
+                          </span>
+                        </div>
+                        <input
+                          :value="form.id_number"
+                          @input="onIdNumberInput"
+                          type="text"
+                          :placeholder="form.id_type === 'P' ? 'Ej. AB123456' : (form.id_type === 'E' ? 'Ej. 80123456' : 'Ej. 14645240')"
+                          maxlength="15"
+                          :class="[
+                            formErrors.national_id ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10',
+                            'w-full pl-9 pr-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-mono transition-all font-semibold'
+                          ]"
+                        />
+                      </div>
+                    </div>
+
                     <p v-if="formErrors.national_id" class="text-rose-500 text-[11px] font-bold mt-1">
                       {{ formErrors.national_id }}
+                    </p>
+                    <p v-else class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                      Detecta automáticamente venezolano (&lt; 80M) o extranjero (&ge; 80M).
                     </p>
                   </div>
 
@@ -629,14 +688,17 @@
               <button
                 @click="closeModal"
                 type="button"
-                class="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+                class="inline-flex items-center justify-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
               >
-                ✕ Cancelar
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
               </button>
               <button
                 type="submit"
                 :disabled="isSubmitting"
-                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
+                class="inline-flex items-center justify-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
               >
                 <span v-if="isSubmitting">Guardando...</span>
                 <span v-else class="flex items-center gap-2">
@@ -677,14 +739,17 @@
             <button
               @click="isDeleteModalOpen = false"
               type="button"
-              class="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all cursor-pointer"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer"
             >
-              Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button
               @click="confirmDeleteParent"
               type="button"
-              class="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 active:scale-95 transition-all cursor-pointer"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 active:scale-[0.98] transition-all cursor-pointer"
             >
               Confirmar Eliminación
             </button>
@@ -724,11 +789,14 @@ const isModalOpen = ref(false)
 const isEditing = ref(false)
 const isDeleteModalOpen = ref(false)
 const parentToDelete = ref(null)
+const isManualTypeSelection = ref(false)
 
 const form = ref({
   id: null,
   first_name: '',
   last_name: '',
+  id_type: 'V',
+  id_number: '',
   national_id: '',
   relationship: 'Padre',
   occupation: '',
@@ -740,9 +808,93 @@ const form = ref({
 
 const formErrors = ref({})
 
+// Type selection handler
+const selectIdType = (type) => {
+  form.value.id_type = type
+  isManualTypeSelection.value = true
+  if (form.value.id_number) {
+    form.value.national_id = `${type}-${form.value.id_number}`
+  }
+  validateIdField()
+}
+
+// Input handler with auto-detection (<80M -> V, >=80M -> E)
+const onIdNumberInput = (e) => {
+  let val = (e.target.value || '').trim()
+
+  // Detect explicit prefix typed into input (e.g., "v14645240", "e80123456", "p12345")
+  if (/^v/i.test(val)) {
+    form.value.id_type = 'V'
+    isManualTypeSelection.value = true
+    val = val.replace(/^v-?/i, '')
+  } else if (/^e/i.test(val)) {
+    form.value.id_type = 'E'
+    isManualTypeSelection.value = true
+    val = val.replace(/^e-?/i, '')
+  } else if (/^p/i.test(val)) {
+    form.value.id_type = 'P'
+    isManualTypeSelection.value = true
+    val = val.replace(/^p-?/i, '')
+  }
+
+  if (form.value.id_type === 'P') {
+    val = val.replace(/[^a-zA-Z0-9]/g, '').toUpperCase().slice(0, 15)
+  } else {
+    val = val.replace(/\D/g, '').slice(0, 8)
+    
+    // Auto-detect based on numeric range
+    if (val.length > 0) {
+      const num = parseInt(val, 10)
+      if (!isNaN(num)) {
+        if (num >= 80000000) {
+          form.value.id_type = 'E'
+        } else if (!isManualTypeSelection.value || form.value.id_type === 'E') {
+          // If < 80M and not manually locked to P, auto-switch to Venezuelan
+          if (num < 80000000 && !isManualTypeSelection.value) {
+            form.value.id_type = 'V'
+          }
+        }
+      }
+    }
+  }
+
+  form.value.id_number = val
+  form.value.national_id = val ? `${form.value.id_type}-${val}` : ''
+  validateIdField()
+}
+
+const validateIdField = () => {
+  if (!form.value.id_number?.trim()) {
+    formErrors.value.national_id = 'La cédula o documento de identidad es obligatorio'
+    return false
+  }
+
+  if (form.value.id_type === 'P') {
+    if (form.value.id_number.length < 5) {
+      formErrors.value.national_id = 'El pasaporte debe tener al menos 5 caracteres'
+      return false
+    }
+  } else {
+    if (form.value.id_number.length < 6 || form.value.id_number.length > 8) {
+      formErrors.value.national_id = `La cédula debe contener entre 6 y 8 dígitos (actual: ${form.value.id_number.length})`
+      return false
+    }
+    const num = parseInt(form.value.id_number, 10)
+    if (form.value.id_type === 'V' && num >= 80000000) {
+      formErrors.value.national_id = 'Los números a partir de 80.000.000 corresponden a Extranjero (E)'
+      return false
+    }
+  }
+
+  delete formErrors.value.national_id
+  return true
+}
+
 const validateForm = () => {
   const errors = {}
-  if (!form.value.national_id?.trim()) errors.national_id = 'La cédula o documento es obligatorio'
+  if (!validateIdField()) {
+    errors.national_id = formErrors.value.national_id || 'Documento inválido'
+  }
   if (!form.value.first_name?.trim()) errors.first_name = 'El nombre es obligatorio'
   if (!form.value.last_name?.trim()) errors.last_name = 'El apellido es obligatorio'
   if (!form.value.phone_mobile?.trim()) errors.phone_mobile = 'El teléfono de contacto es obligatorio'
@@ -773,6 +925,7 @@ const filteredParents = computed(() => {
     list = list.filter(p => 
       `${p.first_name} ${p.last_name}`.toLowerCase().includes(q) ||
       (p.national_id && p.national_id.toLowerCase().includes(q)) ||
+      (p.id_number && p.id_number.toLowerCase().includes(q)) ||
       (p.phone_mobile && p.phone_mobile.toLowerCase().includes(q)) ||
       (p.email_primary && p.email_primary.toLowerCase().includes(q)) ||
       (p.students && p.students.some(s => `${s.first_name} ${s.last_name}`.toLowerCase().includes(q)))
@@ -800,11 +953,14 @@ const switchViewMode = (mode) => {
 
 const openCreateModal = () => {
   isEditing.value = false
+  isManualTypeSelection.value = false
   formErrors.value = {}
   form.value = {
     id: null,
     first_name: '',
     last_name: '',
+    id_type: 'V',
+    id_number: '',
     national_id: '',
     relationship: 'Padre',
     occupation: '',
@@ -818,12 +974,38 @@ const openCreateModal = () => {
 
 const openEditModal = (parent) => {
   isEditing.value = true
+  isManualTypeSelection.value = false
   formErrors.value = {}
+
+  let idType = parent.id_type || 'V'
+  let idNumber = parent.id_number || ''
+  let natId = (parent.national_id || '').trim().toUpperCase()
+
+  if (!idNumber && natId) {
+    if (natId.includes('-')) {
+      const parts = natId.split('-')
+      idType = parts[0].toUpperCase()
+      idNumber = parts.slice(1).join('-')
+    } else {
+      const firstChar = natId[0]
+      if (['V', 'E', 'P', 'J'].includes(firstChar)) {
+        idType = firstChar
+        idNumber = natId.slice(1)
+      } else {
+        const num = parseInt(natId, 10)
+        idType = (!isNaN(num) && num >= 80000000) ? 'E' : 'V'
+        idNumber = natId
+      }
+    }
+  }
+
   form.value = {
     id: parent.id,
     first_name: parent.first_name,
     last_name: parent.last_name,
-    national_id: parent.national_id,
+    id_type: idType,
+    id_number: idNumber,
+    national_id: natId || `${idType}-${idNumber}`,
     relationship: parent.relationship || 'Padre',
     occupation: parent.occupation || '',
     email_primary: parent.email_primary || '',
@@ -848,12 +1030,19 @@ const submitParent = async () => {
 
   isSubmitting.value = true
   try {
+    const payload = {
+      ...form.value,
+      id_type: form.value.id_type,
+      id_number: form.value.id_number,
+      national_id: `${form.value.id_type}-${form.value.id_number}`
+    }
+
     if (isEditing.value) {
-      await nuxtApp.$api.service('parents').patch(form.value.id, form.value)
-      toast.success(`Ficha de ${form.value.first_name} ${form.value.last_name} actualizada exitosamente`)
+      await nuxtApp.$api.service('parents').patch(payload.id, payload)
+      toast.success(`Ficha de ${payload.first_name} ${payload.last_name} actualizada exitosamente`)
     } else {
-      await nuxtApp.$api.service('parents').create(form.value)
-      toast.success(`Representante ${form.value.first_name} ${form.value.last_name} registrado en la institución`)
+      await nuxtApp.$api.service('parents').create(payload)
+      toast.success(`Representante ${payload.first_name} ${payload.last_name} registrado en la institución`)
     }
     await fetchParents()
     closeModal()

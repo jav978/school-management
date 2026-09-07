@@ -218,37 +218,327 @@
       </div>
     </div>
 
-    <!-- TAB 4: ARQUITECTURA TÉCNICA -->
-    <div v-else-if="activeTab === 'architecture'" class="space-y-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold">
-            FE
+    <!-- TAB 4: ARQUITECTURA TÉCNICA Y DIAGRAMAS -->
+    <div v-else-if="activeTab === 'architecture'" class="space-y-8">
+      <!-- Banner Informativo de Ubicación de Archivos -->
+      <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 text-white border border-indigo-500/20 shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+              Diagrama Guardado en Repositorio
+            </span>
+            <span class="text-xs font-mono text-slate-400">docs/ARCHITECTURE.md</span>
           </div>
-          <h4 class="text-base font-black text-slate-900 dark:text-white">Frontend Nuxt 3</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            Vue 3 Composition API con Vite, Tailwind CSS v4, soporte Dark/Light mode, pinia store de autenticación, y motor de renderizado de boletas con soporte nativo para impresión CSS y generación de códigos QR de validación criptográfica.
+          <h2 class="text-xl font-black font-display text-white">
+            Topología de Ejecución, Fronteras de Confianza & 2FA
+          </h2>
+          <p class="text-xs text-slate-300 max-w-3xl leading-relaxed">
+            El diagrama de arquitectura fue generado y persistido en el repositorio en dos formatos: 
+            <code class="px-1.5 py-0.5 rounded bg-white/10 font-mono text-amber-300">docs/ARCHITECTURE.md</code> (Mermaid y especificación completa) y 
+            <code class="px-1.5 py-0.5 rounded bg-white/10 font-mono text-sky-300">docs/architecture-runtime.excalidraw</code> (lienzo vectorial editable).
           </p>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-600 flex items-center justify-center font-bold">
-            BE
+        <div class="flex flex-wrap gap-2">
+          <div class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs font-mono text-slate-200 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Frontend: Port 3001
           </div>
-          <h4 class="text-base font-black text-slate-900 dark:text-white">Backend FeathersJS</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            API REST y WebSockets en Node.js, 20 servicios modulares bajo la ruta <code class="bg-slate-100 dark:bg-slate-900 px-1 py-0.5 rounded">/api/*</code>, JWT authentication, paginación adaptativa, y adaptadores Knex para PostgreSQL.
-          </p>
+          <div class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs font-mono text-slate-200 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+            Backend: Port 3031
+          </div>
+          <div class="px-3 py-2 rounded-xl bg-white/10 border border-white/10 text-xs font-mono text-slate-200 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            PostgreSQL: Port 5432
+          </div>
+        </div>
+      </div>
+
+      <!-- MAPA VISUAL DE LAS 4 ZONAS DE CONFIANZA -->
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-indigo-500"></span>
+              Mapa de Zonas y Componentes (12 Componentes en Tiempo de Ejecución)
+            </h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">
+              Visualización por fronteras de confianza (Trust Boundaries) de izquierda a derecha.
+            </p>
+          </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center font-bold">
-            DB
+        <div class="grid grid-cols-1 xl:grid-cols-4 gap-5">
+          <!-- ZONA 1: CLIENTE -->
+          <div class="bg-indigo-50/60 dark:bg-indigo-950/20 rounded-3xl p-5 border-2 border-indigo-200 dark:border-indigo-900/50 flex flex-col justify-between space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-indigo-200 dark:border-indigo-800 pb-2">
+                <span class="text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300">
+                  Zona 1: Cliente
+                </span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-700 dark:text-indigo-300 font-bold">
+                  Untrusted Tier
+                </span>
+              </div>
+
+              <!-- Comp 1 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-indigo-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-indigo-600 dark:text-indigo-400">#1 Nuxt 3 SPA / PWA</span>
+                  <span class="text-[10px] font-mono bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">Port 3001</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Vue 3 Composition API, Vite, Tailwind v4, Pinia Auth Store y generador de boletas con QR.
+                </p>
+              </div>
+
+              <!-- Comp 2 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-indigo-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-purple-600 dark:text-purple-400">#2 Guardia Global Rutas</span>
+                  <span class="text-[10px] font-mono bg-purple-100 dark:bg-purple-950 px-1.5 py-0.5 rounded text-purple-600">auth.global.ts</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Bloqueo estricto de rutas si 2FA está pendiente (`/auth/2fa-challenge`) y verificación de RBAC.
+                </p>
+              </div>
+
+              <!-- Comp 12 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-amber-200 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-amber-600 dark:text-amber-400">#12 App Autenticadora</span>
+                  <span class="text-[10px] font-mono bg-amber-100 dark:bg-amber-950 px-1.5 py-0.5 rounded text-amber-600">RFC 6238</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Google Authenticator, Aegis o Microsoft Authenticator (códigos TOTP de 6 dígitos cada 30s).
+                </p>
+              </div>
+            </div>
+
+            <!-- Tarjeta Detalle Zona 1 -->
+            <div class="bg-amber-50 dark:bg-amber-950/30 rounded-2xl p-3 border border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-900 dark:text-amber-300 space-y-1">
+              <strong class="font-bold block">Tarjeta de Apoyo: Cliente</strong>
+              <div>• Manejador de errores en <code>error.vue</code></div>
+              <div>• Redirección dinámica por Rol (6 roles)</div>
+              <div>• Persistencia segura en sessionStorage</div>
+            </div>
           </div>
-          <h4 class="text-base font-black text-slate-900 dark:text-white">PostgreSQL Relacional</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-            Esquema <code class="bg-slate-100 dark:bg-slate-900 px-1 py-0.5 rounded">school.*</code> con 20 tablas relacionales, llaves foráneas íntegras con cascada, índices B-Tree en identificadores de cédula, código QR hash y triggers automáticos de <code class="text-indigo-400">updated_at</code>.
-          </p>
+
+          <!-- ZONA 2: INGRESS & PERÍMETRO -->
+          <div class="bg-rose-50/60 dark:bg-rose-950/20 rounded-3xl p-5 border-2 border-rose-200 dark:border-rose-900/50 flex flex-col justify-between space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-rose-200 dark:border-rose-800 pb-2">
+                <span class="text-xs font-black uppercase tracking-wider text-rose-700 dark:text-rose-300">
+                  Zona 2: Perímetro
+                </span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-300 font-bold">
+                  Ingress & WAF
+                </span>
+              </div>
+
+              <!-- Comp 3 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-rose-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-rose-600 dark:text-rose-400">#3 Rate Limiter Guard</span>
+                  <span class="text-[10px] font-mono bg-rose-100 dark:bg-rose-950 px-1.5 py-0.5 rounded text-rose-600">Anti-DDoS</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  15 intentos/15 min en autenticación (mitigación de fuerza bruta) y 300 req/min en API.
+                </p>
+              </div>
+
+              <!-- Comp 4 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-rose-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-amber-600 dark:text-amber-400">#4 Filtro Helmet & CORS</span>
+                  <span class="text-[10px] font-mono bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">Cabeceras</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Protección HSTS, X-Content-Type-Options: nosniff, bloqueo de iframes (clickjacking) y límite body 2MB.
+                </p>
+              </div>
+            </div>
+
+            <!-- Tarjeta Detalle Zona 2 -->
+            <div class="bg-amber-50 dark:bg-amber-950/30 rounded-2xl p-3 border border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-900 dark:text-amber-300 space-y-1">
+              <strong class="font-bold block">Tarjeta de Apoyo: Ingress</strong>
+              <div>• Filtro en <code>backend/src/middleware/rate-limiter.js</code></div>
+              <div>• Corta tráfico malicioso antes del ORM</div>
+              <div>• Respuestas HTTP 429 estandarizadas</div>
+            </div>
+          </div>
+
+          <!-- ZONA 3: CORE APPLICATION TIER -->
+          <div class="bg-purple-50/60 dark:bg-purple-950/20 rounded-3xl p-5 border-2 border-purple-200 dark:border-purple-900/50 flex flex-col justify-between space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-2">
+                <span class="text-xs font-black uppercase tracking-wider text-purple-700 dark:text-purple-300">
+                  Zona 3: App Core
+                </span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-bold">
+                  Private App Tier
+                </span>
+              </div>
+
+              <!-- Comp 5 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-purple-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-purple-600 dark:text-purple-400">#5 Servidor Feathers</span>
+                  <span class="text-[10px] font-mono bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">Port 3031</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Microframework modular en Node.js, despacho REST y WebSockets en tiempo real.
+                </p>
+              </div>
+
+              <!-- Comp 6 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-purple-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-blue-600 dark:text-blue-400">#6 Motor 2FA & Auth</span>
+                  <span class="text-[10px] font-mono bg-blue-100 dark:bg-blue-950 px-1.5 py-0.5 rounded text-blue-600">otplib</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Servicio <code>/api/two-factor</code> (setup, enable, disable, challenge) con backup codes hasheados.
+                </p>
+              </div>
+
+              <!-- Comp 7 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-purple-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-emerald-600 dark:text-emerald-400">#7 Servicios Escolares</span>
+                  <span class="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded text-emerald-600">20 Servicios</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Estudiantes, Docentes, Secciones, Calificaciones MPPE, Asistencia, Horarios, Pagos, etc.
+                </p>
+              </div>
+
+              <!-- Comp 8 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-purple-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-cyan-600 dark:text-cyan-400">#8 Resilient Error Handler</span>
+                  <span class="text-[10px] font-mono bg-cyan-100 dark:bg-cyan-950 px-1.5 py-0.5 rounded text-cyan-600">Fail-safe</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Enmascara errores SQL/Postgres, genera errorId único y previene caídas por <code>uncaughtException</code>.
+                </p>
+              </div>
+            </div>
+
+            <!-- Tarjeta Detalle Zona 3 -->
+            <div class="bg-amber-50 dark:bg-amber-950/30 rounded-2xl p-3 border border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-900 dark:text-amber-300 space-y-1">
+              <strong class="font-bold block">Tarjeta de Apoyo: App Core</strong>
+              <div>• Tokens temporales de 2FA aislados (5m de expiración)</div>
+              <div>• 8 Códigos de Respaldo Bcrypt de 8 caracteres</div>
+              <div>• Hook global deniega acceso si 2FA pendiente</div>
+            </div>
+          </div>
+
+          <!-- ZONA 4: SECURE DATA TIER -->
+          <div class="bg-emerald-50/60 dark:bg-emerald-950/20 rounded-3xl p-5 border-2 border-emerald-200 dark:border-emerald-900/50 flex flex-col justify-between space-y-4">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between border-b border-emerald-200 dark:border-emerald-800 pb-2">
+                <span class="text-xs font-black uppercase tracking-wider text-emerald-700 dark:text-emerald-300">
+                  Zona 4: Datos
+                </span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-300 font-bold">
+                  Secure Storage
+                </span>
+              </div>
+
+              <!-- Comp 9 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-emerald-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-emerald-600 dark:text-emerald-400">#9 Knex.js Query Builder</span>
+                  <span class="text-[10px] font-mono bg-emerald-100 dark:bg-emerald-950 px-1.5 py-0.5 rounded text-emerald-600">ORM / Pool</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Pool de conexiones, transacciones atómicas y migraciones versionadas en <code>backend/migrations</code>.
+                </p>
+              </div>
+
+              <!-- Comp 10 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-emerald-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-teal-600 dark:text-teal-400">#10 PostgreSQL Relacional</span>
+                  <span class="text-[10px] font-mono bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">Port 5432</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Esquema <code>school.*</code> con 20 tablas, índices B-Tree de cédula y relaciones con integridad referencial.
+                </p>
+              </div>
+
+              <!-- Comp 11 -->
+              <div class="bg-white dark:bg-slate-800 rounded-2xl p-3.5 border border-emerald-100 dark:border-slate-700 shadow-xs">
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-xs font-black text-green-600 dark:text-green-400">#11 Storage de Archivos</span>
+                  <span class="text-[10px] font-mono bg-green-100 dark:bg-green-950 px-1.5 py-0.5 rounded text-green-600">Local Uploads</span>
+                </div>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                  Comprobantes de pago bancario, fotos institucionales y códigos QR de boletas generados localmente.
+                </p>
+              </div>
+            </div>
+
+            <!-- Tarjeta Detalle Zona 4 -->
+            <div class="bg-amber-50 dark:bg-amber-950/30 rounded-2xl p-3 border border-amber-200 dark:border-amber-900/40 text-[11px] text-amber-900 dark:text-amber-300 space-y-1">
+              <strong class="font-bold block">Tarjeta de Apoyo: Datos</strong>
+              <div>• Passwords con Bcrypt Salt (10 rondas)</div>
+              <div>• Secretos 2FA en reposo en <code>school.users</code></div>
+              <div>• Base de datos inaccesible fuera de red interna</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RUTA PRIMARIA DE EJECUCIÓN (PRIMARY PATH STEP-BY-STEP) -->
+      <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm space-y-4">
+        <h3 class="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          Ruta Primaria de Ejecución (Primary Execution Path)
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-3">
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-1">
+            <span class="text-xs font-black text-indigo-500">Paso 1: Solicitud</span>
+            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Credenciales</h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              El cliente envía POST <code>/authentication</code> con correo y contraseña.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-1">
+            <span class="text-xs font-black text-rose-500">Paso 2: Ingress</span>
+            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Rate Limiter</h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Verifica ventana de 15 intentos en 15 min. Si se excede, devuelve 429.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-1">
+            <span class="text-xs font-black text-amber-500">Paso 3: 2FA Check</span>
+            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Desafío TOTP</h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Si el usuario activó 2FA, recibe token temporal y valida código de 6 dígitos en <code>/auth/2fa-challenge</code>.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-1">
+            <span class="text-xs font-black text-purple-500">Paso 4: Autorización</span>
+            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">JWT & RBAC</h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Emisión de token JWT definitivo con rol escolar y restricciones de acceso.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-100 dark:border-slate-800 space-y-1">
+            <span class="text-xs font-black text-emerald-500">Paso 5: Persistencia</span>
+            <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200">Knex + Postgres</h4>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
+              Servicios consultan la BD relacional bajo transacciones ACID en el esquema <code>school.*</code>.
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -266,7 +556,7 @@ const tabs = [
   { id: 'entities', label: '20 Entidades del Sistema' },
   { id: 'normativa', label: 'Normativa Evaluativa (1-20 & A-E)' },
   { id: 'roles', label: 'Matriz de Roles y Permisos' },
-  { id: 'architecture', label: 'Arquitectura Técnica' }
+  { id: 'architecture', label: 'Arquitectura Técnica & Diagramas' }
 ]
 
 const categories = ['Todas', 'Académico', 'Personal & Aulas', 'Evaluaciones', 'Credenciales & Reportes', 'Gestión']

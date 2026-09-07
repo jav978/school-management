@@ -83,9 +83,37 @@
             <h2 class="text-base font-bold text-slate-850 dark:text-white">{{ card.recipient_name }}</h2>
             <p class="text-xs text-slate-400 font-mono">{{ card.card_code }} • C.I: {{ card.recipient_id_card }}</p>
           </div>
-          <span class="px-3 py-1 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs rounded-full uppercase">
-            {{ card.recipient_type }}
-          </span>
+          <div class="flex items-center gap-2">
+            <span class="px-3 py-1 bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 font-bold text-xs rounded-full uppercase">
+              {{ card.recipient_type }}
+            </span>
+
+            <!-- Edit Button -->
+            <button
+              @click="openEditModal(card)"
+              type="button"
+              class="px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              title="Modificar datos del carnet"
+            >
+              <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+              <span>Editar</span>
+            </button>
+
+            <!-- Revoke / Delete Button -->
+            <button
+              @click="openDeleteModal(card)"
+              type="button"
+              class="px-2.5 py-1 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+              title="Revocar carnet"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span>Revocar</span>
+            </button>
+          </div>
         </div>
 
         <!-- Pair of Front and Back Cards (Standard Vertical CR80 Credential) -->
@@ -193,13 +221,15 @@
       </div>
     </div>
 
-    <!-- Create Modal -->
+    <!-- Create / Edit Modal -->
     <div 
       v-if="isModalOpen"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
     >
       <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
-        <h2 class="text-xl font-bold text-slate-850 dark:text-white mb-4">Emitir Nuevo Carnet</h2>
+        <h2 class="text-xl font-bold text-slate-850 dark:text-white mb-4">
+          {{ isEditingCard ? 'Editar Carnet Escolar' : 'Emitir Nuevo Carnet' }}
+        </h2>
 
         <form @submit.prevent="saveCard" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
@@ -278,18 +308,67 @@
             <button 
               type="button" 
               @click="isModalOpen = false"
-              class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button 
               type="submit" 
-              class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20"
+              class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 cursor-pointer"
             >
-              Emitir Carnet
+              {{ isEditingCard ? 'Guardar Cambios' : 'Emitir Carnet' }}
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Revocar / Eliminar Carnet Confirmation Modal -->
+    <div 
+      v-if="isDeleteModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fade-in"
+    >
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-rose-150 dark:border-rose-900/40 text-slate-850 dark:text-slate-100">
+        <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
+          <div class="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/50 flex items-center justify-center border border-rose-200/60 dark:border-rose-800/40">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">¿Revocar este Carnet?</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">El carnet quedará inactivo e invalidado para acceso</p>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+          Está a punto de revocar el carnet escolar de 
+          <strong class="text-slate-900 dark:text-white font-bold">{{ cardToDelete?.recipient_name }}</strong> 
+          (Cód: <span class="font-mono text-blue-600 dark:text-blue-400 font-bold">{{ cardToDelete?.card_code }}</span>).
+        </p>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <button 
+            type="button" 
+            @click="isDeleteModalOpen = false"
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>Cancelar</span>
+          </button>
+          <button 
+            type="button" 
+            @click="confirmDeleteCard"
+            class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 cursor-pointer"
+          >
+            Confirmar Revocación
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -298,12 +377,19 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
+import { useToast } from '~/composables/useToast'
 
 const api = useApi()
+const toast = useToast()
+
 const idCards = ref([])
 const loading = ref(true)
 const filterType = ref('')
 const isModalOpen = ref(false)
+const isEditingCard = ref(false)
+const editingCardId = ref(null)
+const isDeleteModalOpen = ref(false)
+const cardToDelete = ref(null)
 
 const cardForm = ref({
   recipient_name: '',
@@ -322,7 +408,8 @@ const fetchIdCards = async () => {
   loading.value = true
   try {
     const res = await api.get('id-cards')
-    idCards.value = res.data || res || []
+    const list = res.data || res || []
+    idCards.value = list.filter(c => !c.is_deleted && c.status !== 'inactivo')
   } catch (err) {
     console.error('Error fetching id cards:', err)
   } finally {
@@ -355,6 +442,8 @@ const triggerPrint = () => {
 }
 
 const openCreateModal = () => {
+  isEditingCard.value = false
+  editingCardId.value = null
   cardForm.value = {
     recipient_name: '',
     recipient_id_card: '',
@@ -370,23 +459,72 @@ const openCreateModal = () => {
   isModalOpen.value = true
 }
 
-const saveCard = async () => {
-  const code = `CRD-${cardForm.value.recipient_type.slice(0, 3).toUpperCase()}-2026-${String(idCards.value.length + 1).padStart(3, '0')}`
-  const payload = {
-    ...cardForm.value,
-    card_code: code,
-    issue_date: new Date().toISOString().split('T')[0],
-    expiry_date: '2027-07-31',
-    status: 'activo',
-    is_printed: true
+const openEditModal = (card) => {
+  isEditingCard.value = true
+  editingCardId.value = card.id
+  cardForm.value = {
+    recipient_name: card.recipient_name || '',
+    recipient_id_card: card.recipient_id_card || '',
+    recipient_type: card.recipient_type || 'estudiante',
+    position: card.position || '',
+    department: card.department || '',
+    blood_type: card.blood_type || 'O+',
+    emergency_contact: card.emergency_contact || '',
+    emergency_phone: card.emergency_phone || '',
+    address: card.address || '',
+    photo_url: card.photo_url || ''
   }
+  isModalOpen.value = true
+}
 
+const openDeleteModal = (card) => {
+  cardToDelete.value = card
+  isDeleteModalOpen.value = true
+}
+
+const confirmDeleteCard = async () => {
+  if (!cardToDelete.value) return
+  const id = cardToDelete.value.id
   try {
-    await api.post('id-cards', payload)
+    await api.patch(`id-cards/${id}`, { status: 'inactivo', is_deleted: true }).catch(() => null)
+    idCards.value = idCards.value.filter(c => c.id !== id)
+    isDeleteModalOpen.value = false
+    toast.success('Carnet Revocado', 'El carnet escolar ha sido revocado e inactivado con éxito.')
+  } catch (err) {
+    toast.error('Error al revocar', err.message || 'No se pudo revocar el carnet')
+  }
+}
+
+const saveCard = async () => {
+  try {
+    if (isEditingCard.value && editingCardId.value) {
+      const payload = { ...cardForm.value }
+      await api.patch(`id-cards/${editingCardId.value}`, payload)
+      const idx = idCards.value.findIndex(c => c.id === editingCardId.value)
+      if (idx !== -1) {
+        idCards.value[idx] = { ...idCards.value[idx], ...payload }
+      }
+      isModalOpen.value = false
+      toast.success('Carnet Actualizado', 'Los datos del carnet escolar han sido actualizados con éxito.')
+      return
+    }
+
+    const code = `CRD-${cardForm.value.recipient_type.slice(0, 3).toUpperCase()}-2026-${String(idCards.value.length + 1).padStart(3, '0')}`
+    const payload = {
+      ...cardForm.value,
+      card_code: code,
+      issue_date: new Date().toISOString().split('T')[0],
+      expiry_date: '2027-07-31',
+      status: 'activo',
+      is_printed: true
+    }
+
+    const created = await api.post('id-cards', payload)
     isModalOpen.value = false
     await fetchIdCards()
+    toast.success('Carnet Emitido', 'El nuevo carnet escolar fue emitido exitosamente.')
   } catch (err) {
-    alert('Error al guardar carnet: ' + err.message)
+    toast.error('Error al guardar', err.message || 'No se pudo guardar el carnet')
   }
 }
 

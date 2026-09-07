@@ -64,14 +64,39 @@
         </span>
       </div>
 
-      <!-- Orientación y Formato Info -->
-      <div class="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
-        <span class="flex items-center gap-1.5 font-bold">
+      <!-- Actions for Selected Certificate & Info -->
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Edit & Delete buttons for active certificate -->
+        <div v-if="activeCert && activeCert.id" class="flex items-center gap-2">
+          <button
+            @click="openEditModal()"
+            type="button"
+            class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+            title="Modificar datos del certificado"
+          >
+            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+            <span>Editar</span>
+          </button>
+
+          <button
+            @click="openDeleteModal()"
+            type="button"
+            class="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+            title="Anular y eliminar diploma"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+            <span>Anular</span>
+          </button>
+        </div>
+
+        <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 pl-2 border-l border-slate-200 dark:border-white/10">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>Formato Carta Horizontal (Landscape)</span>
-        </span>
-        <span class="text-slate-300 dark:text-slate-700">•</span>
-        <span>Marco Ceremonial y Marca de Agua Oficial</span>
+          <span>Carta Horizontal</span>
+        </div>
       </div>
     </div>
 
@@ -264,14 +289,16 @@
       </div>
     </div>
 
-    <!-- Issue Certificate Modal -->
+    <!-- Issue / Edit Certificate Modal -->
     <div 
       v-if="isModalOpen"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
     >
       <div class="bg-white dark:bg-[#170f33] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100">
         <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-white/10">
-          <h2 class="text-xl font-black font-display text-slate-900 dark:text-white">Emitir Diploma de Honor</h2>
+          <h2 class="text-xl font-black font-display text-slate-900 dark:text-white">
+            {{ isEditingCert ? 'Editar Diploma de Honor' : 'Emitir Diploma de Honor' }}
+          </h2>
           <button @click="isModalOpen = false" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white">
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -360,18 +387,67 @@
             <button 
               type="button" 
               @click="isModalOpen = false"
-              class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-white/10 cursor-pointer"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button 
               type="submit" 
               class="px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 cursor-pointer"
             >
-              Emitir y Guardar Diploma
+              {{ isEditingCert ? 'Guardar Cambios' : 'Emitir y Guardar Diploma' }}
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Anular / Eliminar Certificate Confirmation Modal -->
+    <div 
+      v-if="isDeleteModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in"
+    >
+      <div class="bg-white dark:bg-[#170f33] rounded-3xl p-6 max-w-md w-full shadow-2xl border border-rose-150 dark:border-rose-900/40 text-slate-800 dark:text-slate-100">
+        <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
+          <div class="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/50 flex items-center justify-center border border-rose-200/60 dark:border-rose-800/40">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white">¿Anular este Diploma?</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Esta acción deshabilitará la verificación oficial</p>
+          </div>
+        </div>
+
+        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
+          Está a punto de anular el diploma otorgado a 
+          <strong class="text-slate-900 dark:text-white font-bold">{{ certToDelete?.recipient_name }}</strong>.
+          El certificado será retirado de la lista activa y su código de verificación quedará invalidado.
+        </p>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-white/10">
+          <button 
+            type="button" 
+            @click="isDeleteModalOpen = false"
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>Cancelar</span>
+          </button>
+          <button 
+            type="button" 
+            @click="confirmDeleteCert"
+            class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Confirmar Anulación</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -380,12 +456,18 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
+import { useToast } from '~/composables/useToast'
 
 const api = useApi()
+const toast = useToast()
+
 const certificates = ref([])
 const loading = ref(true)
 const selectedCertId = ref(null)
 const isModalOpen = ref(false)
+const isEditingCert = ref(false)
+const isDeleteModalOpen = ref(false)
+const certToDelete = ref(null)
 
 const certForm = ref({
   recipient_name: 'Pedro Pérez Gómez',
@@ -437,7 +519,7 @@ const fetchCertificates = async () => {
         }
       ]
     } else {
-      certificates.value = list
+      certificates.value = list.filter(c => !c.is_deleted && c.status !== 'anulado')
     }
 
     if (certificates.value.length > 0 && !selectedCertId.value) {
@@ -488,6 +570,7 @@ const triggerPrint = () => {
 }
 
 const openCreateModal = () => {
+  isEditingCert.value = false
   certForm.value = {
     recipient_name: 'Pedro Pérez Gómez',
     recipient_type: 'estudiante',
@@ -502,16 +585,67 @@ const openCreateModal = () => {
   isModalOpen.value = true
 }
 
-const saveCertificate = async () => {
-  const code = `CERT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`
-  const payload = {
-    ...certForm.value,
-    issue_date: new Date().toLocaleDateString('es-VE', { day: 'numeric', month: 'long', year: 'numeric' }),
-    verification_code: code,
-    status: 'emitido'
+const openEditModal = () => {
+  if (!activeCert.value || !activeCert.value.id) return
+  isEditingCert.value = true
+  certForm.value = {
+    recipient_name: activeCert.value.recipient_name || '',
+    recipient_type: activeCert.value.recipient_type || 'estudiante',
+    certificate_type: activeCert.value.certificate_type || 'excelencia_academica',
+    academic_year: activeCert.value.academic_year || '2025-2026',
+    grade_level: activeCert.value.grade_level || '',
+    average_grade: activeCert.value.average_grade || 19,
+    issued_by: activeCert.value.issued_by || 'Sor María Dolores Amaya',
+    issued_role: activeCert.value.issued_role || 'Directora',
+    description: activeCert.value.description || ''
   }
+  isModalOpen.value = true
+}
 
+const openDeleteModal = (cert = null) => {
+  certToDelete.value = cert || activeCert.value
+  isDeleteModalOpen.value = true
+}
+
+const confirmDeleteCert = async () => {
+  if (!certToDelete.value) return
+  const id = certToDelete.value.id
   try {
+    await api.patch(`certificates/${id}`, { status: 'anulado', is_deleted: true }).catch(() => null)
+    certificates.value = certificates.value.filter(c => c.id !== id)
+    if (selectedCertId.value === id) {
+      selectedCertId.value = certificates.value[0]?.id || null
+    }
+    isDeleteModalOpen.value = false
+    toast.success('Certificado Anulado', 'El diploma ha sido revocado y retirado con éxito.')
+  } catch (err) {
+    toast.error('Error', 'No se pudo anular el certificado: ' + err.message)
+  }
+}
+
+const saveCertificate = async () => {
+  try {
+    if (isEditingCert.value && selectedCertId.value) {
+      const payload = { ...certForm.value }
+      await api.patch(`certificates/${selectedCertId.value}`, payload).catch(() => null)
+      
+      const idx = certificates.value.findIndex(c => c.id === selectedCertId.value)
+      if (idx !== -1) {
+        certificates.value[idx] = { ...certificates.value[idx], ...payload }
+      }
+      isModalOpen.value = false
+      toast.success('Diploma Actualizado', 'Los datos del certificado han sido actualizados con éxito.')
+      return
+    }
+
+    const code = `CERT-${Math.random().toString(36).substring(2, 10).toUpperCase()}`
+    const payload = {
+      ...certForm.value,
+      issue_date: new Date().toLocaleDateString('es-VE', { day: 'numeric', month: 'long', year: 'numeric' }),
+      verification_code: code,
+      status: 'emitido'
+    }
+
     const created = await api.post('certificates', payload).catch(() => null)
     if (created?.id) {
       certificates.value.unshift(created)
@@ -521,8 +655,9 @@ const saveCertificate = async () => {
       selectedCertId.value = certificates.value[0].id
     }
     isModalOpen.value = false
+    toast.success('Diploma Emitido', 'El certificado ceremonial se ha registrado y firmado exitosamente.')
   } catch (err) {
-    alert('Error al emitir diploma: ' + err.message)
+    toast.error('Error al guardar', err.message || 'No se pudo guardar el certificado')
   }
 }
 

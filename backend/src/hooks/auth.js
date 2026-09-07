@@ -1,7 +1,15 @@
 const { authenticate } = require('@feathersjs/authentication')
 const { Forbidden } = require('@feathersjs/errors')
 
-const authenticateHook = authenticate('jwt')
+const baseAuthenticate = authenticate('jwt')
+
+const authenticateHook = async (context) => {
+  await baseAuthenticate(context)
+  if (context.params.authentication && context.params.authentication.payload && context.params.authentication.payload.two_factor_pending) {
+    throw new Forbidden('Se requiere verificación de dos factores (2FA) para acceder a este recurso')
+  }
+  return context
+}
 
 const restrictToAdmin = (context) => {
   if (!context.params.provider) {

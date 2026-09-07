@@ -13,54 +13,65 @@
       </div>
 
       <div class="flex items-center gap-2.5 flex-wrap">
-        <!-- QR Attendance Scanner Button -->
-        <button
-          @click="openQrScannerModal"
-          type="button"
-          class="inline-flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200 active:scale-[0.98]"
-        >
-          <span>📷 Escanear QR</span>
-        </button>
+        <!-- Active child indicator for parents -->
+        <div v-if="isParent && activeStudent" class="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 text-xs">
+          <span class="text-base">{{ isCarlos ? '👦' : '👧' }}</span>
+          <div>
+            <span class="font-extrabold text-slate-800 dark:text-slate-100">{{ activeStudent.full_name }}</span>
+            <span class="text-[10px] text-amber-700 dark:text-brand-gold font-bold ml-1.5">{{ activeStudent.grade }}</span>
+          </div>
+        </div>
 
-        <!-- Printable Student QR Cards Button -->
-        <button
-          v-if="students.length > 0"
-          @click="openPrintableQrModal"
-          type="button"
-          class="inline-flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200"
-        >
-          <span>🪪 Tarjetas QR</span>
-        </button>
+        <template v-if="canManage">
+          <!-- QR Attendance Scanner Button -->
+          <button
+            @click="openQrScannerModal"
+            type="button"
+            class="inline-flex items-center justify-center gap-2 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200 active:scale-[0.98]"
+          >
+            <span>📷 Escanear QR</span>
+          </button>
 
-        <!-- Mark all present -->
-        <button
-          v-if="students.length > 0"
-          @click="markAllPresent"
-          type="button"
-          class="inline-flex items-center justify-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200 active:scale-[0.98]"
-        >
-          <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
-          </svg>
-          <span>Todos Presentes</span>
-        </button>
+          <!-- Printable Student QR Cards Button -->
+          <button
+            v-if="students.length > 0"
+            @click="openPrintableQrModal"
+            type="button"
+            class="inline-flex items-center justify-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200"
+          >
+            <span>🪪 Tarjetas QR</span>
+          </button>
 
-        <!-- Save Button -->
-        <button
-          @click="saveAttendance"
-          :disabled="isSaving || students.length === 0"
-          type="button"
-          class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none"
-        >
-          <svg v-if="isSaving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-          </svg>
-          <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-          </svg>
-          <span>{{ isSaving ? 'Guardando...' : 'Guardar Asistencia' }}</span>
-        </button>
+          <!-- Mark all present -->
+          <button
+            v-if="students.length > 0"
+            @click="markAllPresent"
+            type="button"
+            class="inline-flex items-center justify-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200 active:scale-[0.98]"
+          >
+            <svg class="w-4 h-4 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Todos Presentes</span>
+          </button>
+
+          <!-- Save Button -->
+          <button
+            @click="saveAttendance"
+            :disabled="isSaving || students.length === 0"
+            type="button"
+            class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:pointer-events-none"
+          >
+            <svg v-if="isSaving" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+            </svg>
+            <span>{{ isSaving ? 'Guardando...' : 'Guardar Asistencia' }}</span>
+          </button>
+        </template>
       </div>
     </div>
 
@@ -76,7 +87,9 @@
             <select
               v-model="selectedClassId"
               @change="onClassChange"
-              class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 appearance-none pr-9 cursor-pointer transition-all"
+              :disabled="isParent"
+              class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 appearance-none pr-9 transition-all"
+              :class="isParent ? 'cursor-not-allowed opacity-90' : 'cursor-pointer'"
             >
               <option v-for="cls in classes" :key="cls.id" :value="cls.id">
                 {{ cls.name }} (Sección {{ cls.section || 'A' }})
@@ -293,7 +306,25 @@
 
               <!-- Attendance State Selector Buttons -->
               <td class="py-3.5 px-4 text-center">
-                <div class="inline-flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl gap-1">
+                <span 
+                  v-if="!canManage"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border"
+                  :class="{
+                    'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30': student.attendance_status === 'present',
+                    'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30': student.attendance_status === 'late',
+                    'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30': student.attendance_status === 'absent',
+                    'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30': student.attendance_status === 'excused'
+                  }"
+                >
+                  <span class="w-2 h-2 rounded-full" :class="{
+                    'bg-emerald-500': student.attendance_status === 'present',
+                    'bg-amber-500': student.attendance_status === 'late',
+                    'bg-rose-500': student.attendance_status === 'absent',
+                    'bg-sky-500': student.attendance_status === 'excused'
+                  }"></span>
+                  <span>{{ student.attendance_status === 'present' ? 'Presente' : student.attendance_status === 'late' ? 'Tardanza' : student.attendance_status === 'absent' ? 'Inasistencia' : 'Justificado' }}</span>
+                </span>
+                <div v-else class="inline-flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl gap-1">
                   <!-- Presente -->
                   <button
                     @click="setStudentStatus(student, 'present')"
@@ -394,7 +425,11 @@
 
               <!-- Notes Input -->
               <td class="py-3.5 px-4 sm:px-6">
+                <span v-if="!canManage" class="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                  {{ student.notes || 'Asistencia regular registrada' }}
+                </span>
                 <input
+                  v-else
                   v-model="student.notes"
                   type="text"
                   placeholder="Nota u observación opcional..."
@@ -499,9 +534,12 @@
             <button
               @click="closeJustifyModal"
               type="button"
-              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              ✕ Cancelar
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button
               @click="saveJustification"
@@ -619,9 +657,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+import { useAuthStore } from '~/stores/auth'
+import { useActiveStudent } from '~/composables/useActiveStudent'
 
 const nuxtApp = useNuxtApp()
+const authStore = useAuthStore()
+const { activeStudent, isCarlos, isMaria } = useActiveStudent()
+
+const currentRole = computed(() => authStore.userRole || authStore.user?.role || 'admin')
+const canManage = computed(() => ['admin', 'control_estudio', 'coordinator', 'teacher'].includes(currentRole.value))
+const isStudent = computed(() => currentRole.value === 'student')
+const isParent = computed(() => currentRole.value === 'parent')
 
 // State
 const classes = ref([])
@@ -690,6 +737,40 @@ const attendanceRate = computed(() => {
 // Filtered student roster
 const filteredStudents = computed(() => {
   let list = students.value
+
+  if (isStudent.value) {
+    list = list.filter(s => 
+      s.id === 1 || 
+      `${s.first_name} ${s.last_name}`.toLowerCase().includes('gabriel') ||
+      `${s.first_name} ${s.last_name}`.toLowerCase().includes('carlos')
+    )
+    if (list.length === 0 && students.value.length > 0) {
+      list = [students.value[0]]
+    }
+  }
+
+  // Filter strictly for parent's active represented child
+  if (isParent.value && activeStudent.value) {
+    const targetName = isCarlos.value ? 'carlos' : 'maría'
+    const targetCode = activeStudent.value.student_code.toLowerCase()
+    list = list.filter(s => {
+      const name = `${s.first_name || ''} ${s.last_name || ''}`.toLowerCase()
+      const code = (s.student_id || '').toLowerCase()
+      return name.includes(targetName) || code === targetCode || s.id === activeStudent.value.id
+    })
+
+    // Fallback if no db student matches exactly: create virtual row for the active child
+    if (list.length === 0) {
+      list = [{
+        id: activeStudent.value.id,
+        first_name: activeStudent.value.first_name,
+        last_name: activeStudent.value.last_name,
+        student_id: activeStudent.value.student_code,
+        attendance_status: isCarlos.value ? 'present' : 'present',
+        notes: isCarlos.value ? 'Asistencia regular' : 'Puntualidad perfecta'
+      }]
+    }
+  }
 
   if (activeStatusFilter.value !== 'all') {
     list = list.filter(s => s.attendance_status === activeStatusFilter.value)
@@ -934,8 +1015,34 @@ const windowPrint = () => {
   window.print()
 }
 
+const autoSelectClassForParent = () => {
+  if (!isParent.value || !activeStudent.value || classes.value.length === 0) return
+  const isCarlosChild = isCarlos.value
+  const targetClass = classes.value.find(c => {
+    const name = (c.name || '').toLowerCase()
+    if (isCarlosChild) {
+      return name.includes('3') || name.includes('secundaria') || name.includes('media')
+    } else {
+      return name.includes('1') || name.includes('primaria') || name.includes('2')
+    }
+  }) || classes.value[0]
+
+  if (targetClass && targetClass.id !== selectedClassId.value) {
+    selectedClassId.value = targetClass.id
+    fetchStudentsAndAttendance()
+  }
+}
+
+watch(activeStudent, () => {
+  autoSelectClassForParent()
+})
+
 onMounted(async () => {
   await fetchClasses()
-  await fetchStudentsAndAttendance()
+  if (isParent.value) {
+    autoSelectClassForParent()
+  } else {
+    await fetchStudentsAndAttendance()
+  }
 })
 </script>

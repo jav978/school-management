@@ -1,23 +1,23 @@
 <template>
   <div>
-    <div class="border-b border-gray-200">
-      <nav class="-mb-px flex space-x-8">
+    <div class="border-b border-slate-200 dark:border-white/10 mb-6">
+      <nav class="-mb-px flex space-x-6">
         <button
           v-for="tab in tabs"
           :key="tab.id"
           @click="activeTab = tab.id"
           :class="[
-            'py-4 px-1 border-b-2 font-medium text-sm',
+            'py-3 px-2 border-b-2 font-bold text-sm transition-all cursor-pointer',
             activeTab === tab.id
-              ? 'border-primary-500 text-primary-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              ? 'border-brand-primary text-brand-primary dark:text-brand-gold border-b-2'
+              : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:border-slate-300 dark:hover:border-slate-700'
           ]"
         >
           {{ tab.label }}
         </button>
       </nav>
     </div>
-    <div class="py-4">
+    <div>
       <slot :name="activeTab" />
     </div>
   </div>

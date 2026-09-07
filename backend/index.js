@@ -7,8 +7,18 @@ const PORT = process.env.BACKEND_PORT || 3031
 
 app.set('knexClient', db)
 
+// Process-level Fault Tolerance & Error Trapping (Zero-Crash)
+process.on('uncaughtException', (err) => {
+  console.error(`[${new Date().toISOString()}] [CRITICAL UNCAUGHT EXCEPTION]:`, err.message, err.stack)
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(`[${new Date().toISOString()}] [UNHANDLED PROMISE REJECTION]:`, reason)
+})
+
 // Core & Personnel services
 require('./src/services/authentication')(app)
+require('./src/services/two-factor')(app)
 require('./src/services/users')(app)
 require('./src/services/students')(app)
 require('./src/services/teachers')(app)

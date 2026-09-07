@@ -2,7 +2,10 @@ const feathers = require('@feathersjs/feathers')
 const express = require('@feathersjs/express')
 const socketio = require('@feathersjs/socketio')
 const cors = require('cors')
+const helmet = require('helmet')
 const dotenv = require('dotenv')
+const { authLimiter, apiLimiter } = require('./middleware/rate-limiter')
+const errorHandler = require('./middleware/error-handler')
 
 dotenv.config()
 
@@ -27,12 +30,25 @@ app.set('authentication', {
   }
 })
 
+// Security Headers & CORS
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: false
+}))
 app.use(cors())
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+
+// Concurrency & Brute-Force Protection (Rate Limiters)
+app.use('/authentication', authLimiter)
+app.use('/two-factor', authLimiter)
+app.use(apiLimiter)
+
+// Controlled Payload parsing
+app.use(express.json({ limit: '2mb' }))
+app.use(express.urlencoded({ extended: true, limit: '2mb' }))
 app.configure(express.rest())
 app.configure(socketio())
 
-app.use(express.errorHandler())
+// Sanitized Global Exception Handler (Zero-Crash)
+app.use(errorHandler(app))
 
 module.exports = app

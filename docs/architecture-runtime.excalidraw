@@ -1,0 +1,861 @@
+{
+  "elements": [
+    {
+      "type": "cameraUpdate",
+      "width": 800,
+      "height": 600,
+      "x": 380,
+      "y": -30
+    },
+    {
+      "type": "text",
+      "id": "main_title",
+      "x": 450,
+      "y": 0,
+      "text": "Arquitectura de Tiempo de Ejecucion - Sistema Escolar Santa Luisa",
+      "fontSize": 24,
+      "strokeColor": "#1e1e1e"
+    },
+    {
+      "type": "text",
+      "id": "sub_title",
+      "x": 520,
+      "y": 32,
+      "text": "Diagrama de Alto Nivel: Flujo Principal, 2FA, Limites de Confianza y Resiliencia",
+      "fontSize": 16,
+      "strokeColor": "#757575"
+    },
+    {
+      "type": "cameraUpdate",
+      "width": 1600,
+      "height": 1200,
+      "x": -30,
+      "y": -40
+    },
+    {
+      "type": "rectangle",
+      "id": "zone_client",
+      "x": 40,
+      "y": 90,
+      "width": 340,
+      "height": 720,
+      "backgroundColor": "#dbe4ff",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "opacity": 35
+    },
+    {
+      "type": "text",
+      "id": "label_zone_client",
+      "x": 60,
+      "y": 105,
+      "text": "Zona 1: Cliente y Navegador (No Confiable)",
+      "fontSize": 18,
+      "strokeColor": "#1e40af"
+    },
+    {
+      "type": "rectangle",
+      "id": "zone_ingress",
+      "x": 410,
+      "y": 90,
+      "width": 340,
+      "height": 720,
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#f59e0b",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "opacity": 35
+    },
+    {
+      "type": "text",
+      "id": "label_zone_ingress",
+      "x": 430,
+      "y": 105,
+      "text": "Zona 2: Defensa Perimetral e Ingress",
+      "fontSize": 18,
+      "strokeColor": "#b45309"
+    },
+    {
+      "type": "rectangle",
+      "id": "zone_app",
+      "x": 780,
+      "y": 90,
+      "width": 380,
+      "height": 720,
+      "backgroundColor": "#e5dbff",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#8b5cf6",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "opacity": 35
+    },
+    {
+      "type": "text",
+      "id": "label_zone_app",
+      "x": 800,
+      "y": 105,
+      "text": "Zona 3: Nucleo de Aplicacion y Servicios",
+      "fontSize": 18,
+      "strokeColor": "#6b21a8"
+    },
+    {
+      "type": "rectangle",
+      "id": "zone_data",
+      "x": 1190,
+      "y": 90,
+      "width": 350,
+      "height": 720,
+      "backgroundColor": "#d3f9d8",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#22c55e",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "opacity": 35
+    },
+    {
+      "type": "text",
+      "id": "label_zone_data",
+      "x": 1210,
+      "y": 105,
+      "text": "Zona 4: Persistencia Segura y Base de Datos",
+      "fontSize": 18,
+      "strokeColor": "#15803d"
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_nuxt",
+      "x": 70,
+      "y": 160,
+      "width": 280,
+      "height": 85,
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#1e40af",
+      "strokeWidth": 2,
+      "label": {
+        "text": "1. Cliente Web Nuxt 4\nVue 3 + Pinia + Nitro SSR",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_guard",
+      "x": 70,
+      "y": 290,
+      "width": 280,
+      "height": 85,
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#6b21a8",
+      "strokeWidth": 2,
+      "label": {
+        "text": "2. Guardia Global de Rutas\nauth.global.ts (RBAC y 2FA)",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_1",
+      "x": 210,
+      "y": 245,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 3,
+      "endArrowhead": "arrow",
+      "startBinding": {
+        "elementId": "comp_nuxt",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_guard",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "card_client_details",
+      "x": 70,
+      "y": 420,
+      "width": 280,
+      "height": 140,
+      "backgroundColor": "#fff3bf",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#f59e0b",
+      "strokeWidth": 1,
+      "label": {
+        "text": "Tarjeta de Apoyo: Cliente\n• Sincronizacion useActiveStudent\n• Bloqueo estricto si 2FA pendiente\n• Redireccion inteligente por Rol\n• Manejador de Error en error.vue",
+        "fontSize": 16
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_totp_app",
+      "x": 70,
+      "y": 610,
+      "width": 280,
+      "height": 85,
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#b45309",
+      "strokeWidth": 2,
+      "label": {
+        "text": "12. Ext: App Autenticadora\nGoogle / Microsoft / Aegis (TOTP)",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_totp",
+      "x": 210,
+      "y": 610,
+      "width": 0,
+      "height": -35,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          -35
+        ]
+      ],
+      "strokeColor": "#b45309",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "endArrowhead": "arrow",
+      "label": {
+        "text": "Codigo 6 digitos (30s)",
+        "fontSize": 16
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_ratelimit",
+      "x": 440,
+      "y": 160,
+      "width": 280,
+      "height": 85,
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#ef4444",
+      "strokeWidth": 2,
+      "label": {
+        "text": "3. Rate Limiter Guard\nAnti-Brute Force y Anti-DoS",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_2",
+      "x": 350,
+      "y": 200,
+      "width": 90,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          90,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 3,
+      "endArrowhead": "arrow",
+      "label": {
+        "text": "HTTPS / JSON",
+        "fontSize": 16
+      },
+      "startBinding": {
+        "elementId": "comp_nuxt",
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_ratelimit",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_helmet",
+      "x": 440,
+      "y": 290,
+      "width": 280,
+      "height": 85,
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#f59e0b",
+      "strokeWidth": 2,
+      "label": {
+        "text": "4. Filtro Helmet y CORS\nCabeceras HSTS, NoSniff, Frames",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_ingress_flow",
+      "x": 580,
+      "y": 245,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#757575",
+      "strokeWidth": 2,
+      "endArrowhead": "arrow",
+      "startBinding": {
+        "elementId": "comp_ratelimit",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_helmet",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "card_ingress_details",
+      "x": 440,
+      "y": 420,
+      "width": 280,
+      "height": 150,
+      "backgroundColor": "#fff3bf",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#f59e0b",
+      "strokeWidth": 1,
+      "label": {
+        "text": "Tarjeta de Apoyo: Ingress\n• Auth Limiter: 15 req / 15 min\n• API Limiter: 300 req / min\n• Proteccion contra colapso DoS\n• Limite Body Payload: 2 MB",
+        "fontSize": 16
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_core_app",
+      "x": 810,
+      "y": 160,
+      "width": 320,
+      "height": 85,
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#6b21a8",
+      "strokeWidth": 2,
+      "label": {
+        "text": "5. Servidor Core Feathers/Express\nREST APIs y Canales WebSocket",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_3",
+      "x": 720,
+      "y": 200,
+      "width": 90,
+      "height": 0,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          90,
+          0
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 3,
+      "endArrowhead": "arrow",
+      "startBinding": {
+        "elementId": "comp_ratelimit",
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_core_app",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_auth_2fa",
+      "x": 810,
+      "y": 290,
+      "width": 320,
+      "height": 85,
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#1e40af",
+      "strokeWidth": 2,
+      "label": {
+        "text": "6. Motor de Auth y 2FA\notplib (RFC 6238) y JWT Strategy",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_4",
+      "x": 970,
+      "y": 245,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 3,
+      "endArrowhead": "arrow",
+      "startBinding": {
+        "elementId": "comp_core_app",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_auth_2fa",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_services",
+      "x": 810,
+      "y": 420,
+      "width": 320,
+      "height": 85,
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#15803d",
+      "strokeWidth": 2,
+      "label": {
+        "text": "7. Capa de Servicios Escolares\nSchedules, Grades, Attendance, Finance",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_5",
+      "x": 970,
+      "y": 375,
+      "width": 0,
+      "height": 45,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          45
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 3,
+      "endArrowhead": "arrow",
+      "startBinding": {
+        "elementId": "comp_auth_2fa",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_services",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_error_handler",
+      "x": 810,
+      "y": 545,
+      "width": 320,
+      "height": 85,
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#06b6d4",
+      "strokeWidth": 2,
+      "label": {
+        "text": "8. Captura Global de Errores\nuncaughtException y Mascara Sanitizada",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_err",
+      "x": 970,
+      "y": 505,
+      "width": 0,
+      "height": 40,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          40
+        ]
+      ],
+      "strokeColor": "#06b6d4",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "endArrowhead": "arrow",
+      "startBinding": {
+        "elementId": "comp_services",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_error_handler",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "card_app_details",
+      "x": 810,
+      "y": 660,
+      "width": 320,
+      "height": 130,
+      "backgroundColor": "#fff3bf",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#f59e0b",
+      "strokeWidth": 1,
+      "label": {
+        "text": "Tarjeta de Apoyo: Logica y Resiliencia\n• Token temporal 2FA aislado (5m)\n• 8 codigos de respaldo (Bcrypt)\n• Cero caidas ante excepciones no controladas\n• Ocultamiento de SQL a clientes",
+        "fontSize": 16
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_knex",
+      "x": 1220,
+      "y": 200,
+      "width": 290,
+      "height": 85,
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#15803d",
+      "strokeWidth": 2,
+      "label": {
+        "text": "9. Knex.js Query Builder\nPool de Conexiones y Migraciones",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_6",
+      "x": 1130,
+      "y": 460,
+      "width": 90,
+      "height": -215,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          45,
+          0
+        ],
+        [
+          45,
+          -215
+        ],
+        [
+          90,
+          -215
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 3,
+      "endArrowhead": "arrow",
+      "label": {
+        "text": "Queries",
+        "fontSize": 16
+      },
+      "startBinding": {
+        "elementId": "comp_services",
+        "fixedPoint": [
+          1,
+          0.5
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_knex",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_postgres",
+      "x": 1220,
+      "y": 350,
+      "width": 290,
+      "height": 95,
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#15803d",
+      "strokeWidth": 2,
+      "label": {
+        "text": "10. PostgreSQL Database\nEsquema school (Tablas y Vistas)",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_7",
+      "x": 1365,
+      "y": 285,
+      "width": 0,
+      "height": 65,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          65
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 3,
+      "endArrowhead": "arrow",
+      "label": {
+        "text": "SQL TCP:5432",
+        "fontSize": 16
+      },
+      "startBinding": {
+        "elementId": "comp_knex",
+        "fixedPoint": [
+          0.5,
+          1
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_postgres",
+        "fixedPoint": [
+          0.5,
+          0
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "comp_storage",
+      "x": 1220,
+      "y": 490,
+      "width": 290,
+      "height": 85,
+      "backgroundColor": "#d3f9d8",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#22c55e",
+      "strokeWidth": 2,
+      "label": {
+        "text": "11. Sistema de Archivos Local\nComprobantes de Pago y Codigos QR",
+        "fontSize": 18
+      }
+    },
+    {
+      "type": "arrow",
+      "id": "arr_storage",
+      "x": 1130,
+      "y": 480,
+      "width": 90,
+      "height": 50,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          45,
+          0
+        ],
+        [
+          45,
+          50
+        ],
+        [
+          90,
+          50
+        ]
+      ],
+      "strokeColor": "#757575",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "endArrowhead": "arrow",
+      "label": {
+        "text": "Adjuntos",
+        "fontSize": 16
+      },
+      "startBinding": {
+        "elementId": "comp_services",
+        "fixedPoint": [
+          1,
+          0.7
+        ]
+      },
+      "endBinding": {
+        "elementId": "comp_storage",
+        "fixedPoint": [
+          0,
+          0.5
+        ]
+      }
+    },
+    {
+      "type": "rectangle",
+      "id": "card_db_details",
+      "x": 1220,
+      "y": 610,
+      "width": 290,
+      "height": 140,
+      "backgroundColor": "#fff3bf",
+      "fillStyle": "solid",
+      "roundness": {
+        "type": 3
+      },
+      "strokeColor": "#f59e0b",
+      "strokeWidth": 1,
+      "label": {
+        "text": "Tarjeta de Apoyo: Datos y Cifrado\n• Passwords con Bcrypt Salt\n• Secretos 2FA en reposo\n• Transacciones Atomicas Knex\n• Respaldos y Migraciones Versionadas",
+        "fontSize": 16
+      }
+    },
+    {
+      "type": "cameraUpdate",
+      "width": 1600,
+      "height": 1200,
+      "x": -30,
+      "y": -40
+    }
+  ]
+}

@@ -135,14 +135,14 @@ const allMenuItems = [
   { path: '/exams', key: 'exams', icon: icons.exam, roles: ['admin', 'control_estudio', 'coordinator', 'teacher'] },
   { path: '/grades', key: 'grades', icon: icons.grades, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/boletas', key: 'boletas', icon: icons.boletas, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
-  { path: '/certificates', key: 'certificates', icon: icons.certificates, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
+  { path: '/certificates', key: 'certificates', icon: icons.certificates, roles: ['admin', 'control_estudio', 'coordinator', 'teacher'] },
   { path: '/reports', key: 'reports', icon: icons.reports, roles: ['admin', 'control_estudio', 'coordinator', 'teacher'] },
   { path: '/idcards', key: 'idcards', icon: icons.idcards, roles: ['admin', 'control_estudio', 'coordinator'] },
   { path: '/attendance', key: 'attendance', icon: icons.attendance, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/finance', key: 'account', icon: icons.account, roles: ['admin', 'parent'] },
   { path: '/communication', key: 'notice', icon: icons.notice, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] },
   { path: '/users', key: 'users', icon: icons.users, roles: ['admin'] },
-  { path: '/documentation', key: 'documentation', icon: icons.documentation, roles: ['admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent'] }
+  { path: '/documentation', key: 'documentation', icon: icons.documentation, roles: ['admin', 'control_estudio', 'coordinator'] }
 ]
 
 const currentRole = computed(() => {

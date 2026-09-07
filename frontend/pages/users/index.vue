@@ -171,13 +171,27 @@
                 {{ user.status || 'Activo' }}
               </span>
             </td>
-            <td class="p-4 text-right space-x-2">
-              <button 
-                @click="editUser(user)"
-                class="px-3 py-1.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
-              >
-                Editar
-              </button>
+            <td class="p-4 text-right">
+              <div class="inline-flex items-center gap-1 justify-end">
+                <button 
+                  @click="editUser(user)"
+                  class="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                  title="Editar Usuario"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </button>
+                <button 
+                  @click="promptDeleteUser(user)"
+                  class="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                  title="Desactivar Usuario"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -201,7 +215,7 @@
               v-model="userForm.full_name" 
               required 
               placeholder="Ej: Carmen Rivas"
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
             />
           </div>
 
@@ -212,7 +226,7 @@
               type="email"
               required 
               placeholder="usuario@santaluisa.edu.ve"
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
             />
           </div>
 
@@ -223,30 +237,30 @@
               type="password"
               required 
               placeholder="••••••••"
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
             />
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Rol / Tipo de Usuario *</label>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Usuario</label>
               <select 
                 v-model="userForm.user_type"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
               >
                 <option value="admin">Administrador</option>
-                <option value="teacher">Profesor</option>
-                <option value="student">Estudiante</option>
-                <option value="parent">Representante / Padre</option>
-                <option value="administrative">Administrativo</option>
                 <option value="academic_control">Control de Estudios</option>
+                <option value="teacher">Profesor</option>
+                <option value="administrative">Administrativo</option>
+                <option value="parent">Representante</option>
+                <option value="student">Estudiante</option>
               </select>
             </div>
             <div>
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Estado</label>
               <select 
                 v-model="userForm.status"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
               >
                 <option value="active">Activo</option>
                 <option value="inactive">Inactivo</option>
@@ -258,18 +272,58 @@
             <button 
               type="button" 
               @click="isModalOpen = false"
-              class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button 
               type="submit" 
-              class="px-5 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-xl text-xs font-bold shadow-md shadow-violet-600/20"
+              class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20 transition-all cursor-pointer"
             >
-              Guardar Usuario
+              {{ isEditing ? 'Guardar Cambios' : 'Crear Usuario' }}
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Delete / Deactivate User Confirmation Modal -->
+    <div 
+      v-if="isDeleteUserModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+    >
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-800 text-center animate-scale-up">
+        <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/60 dark:border-rose-800/40">
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-black text-slate-900 dark:text-white">¿Desactivar este usuario?</h3>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+          Estás por inhabilitar el acceso de <strong class="text-slate-900 dark:text-slate-100">{{ userToDelete?.full_name || userToDelete?.email }}</strong>. No podrá iniciar sesión hasta que sea reactivado.
+        </p>
+        <div class="flex items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button 
+            type="button" 
+            @click="isDeleteUserModalOpen = false; userToDelete = null"
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>Cancelar</span>
+          </button>
+          <button 
+            type="button" 
+            @click="confirmDeleteUser"
+            class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
+          >
+            Sí, Desactivar Usuario
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -278,8 +332,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
+import { useToast } from '~/composables/useToast'
 
 const api = useApi()
+const toast = useToast()
+
 const users = ref([])
 const loading = ref(true)
 const searchQuery = ref('')
@@ -287,6 +344,9 @@ const selectedRole = ref('')
 const isModalOpen = ref(false)
 const isEditing = ref(false)
 const currentUserId = ref(null)
+
+const isDeleteUserModalOpen = ref(false)
+const userToDelete = ref(null)
 
 const userForm = ref({
   full_name: '',
@@ -376,6 +436,32 @@ const editUser = (user) => {
   isModalOpen.value = true
 }
 
+// Prompt Delete User
+const promptDeleteUser = (user) => {
+  const currentEmail = localStorage.getItem('user_email') || 'admin@santaluisa.edu.ve'
+  if (user.email === currentEmail) {
+    toast.error('No puedes desactivar tu propia cuenta en sesión activa.', 'Acción Denegada')
+    return
+  }
+  userToDelete.value = user
+  isDeleteUserModalOpen.value = true
+}
+
+// Confirm Delete User (Soft delete status: inactive)
+const confirmDeleteUser = async () => {
+  if (!userToDelete.value) return
+  const id = userToDelete.value.id
+  try {
+    await api.patch(`users/${id}`, { status: 'inactive' })
+    toast.warning(`Usuario ${userToDelete.value.full_name || userToDelete.value.email} desactivado.`)
+    isDeleteUserModalOpen.value = false
+    userToDelete.value = null
+    await fetchUsers()
+  } catch (err) {
+    toast.error('Error al desactivar usuario: ' + err.message)
+  }
+}
+
 const saveUser = async () => {
   try {
     if (isEditing.value) {
@@ -386,16 +472,18 @@ const saveUser = async () => {
         role: userForm.value.user_type === 'admin' ? 'admin' : 'user',
         status: userForm.value.status
       })
+      toast.success('Usuario actualizado exitosamente.')
     } else {
       await api.post('users', {
         ...userForm.value,
         role: userForm.value.user_type === 'admin' ? 'admin' : 'user'
       })
+      toast.success('Nuevo usuario registrado en la plataforma.')
     }
     isModalOpen.value = false
     await fetchUsers()
   } catch (err) {
-    alert('Error al guardar usuario: ' + err.message)
+    toast.error('Error al guardar usuario: ' + err.message)
   }
 }
 

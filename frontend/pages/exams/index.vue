@@ -122,7 +122,7 @@
                   ? 'border-rose-500 bg-rose-50/40 dark:bg-rose-950/20 shadow-xs' 
                   : 'border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900'
               ]"
-              class="p-4 rounded-xl border transition-all cursor-pointer text-left"
+              class="p-4 rounded-xl border transition-all cursor-pointer text-left group"
             >
               <div class="flex items-start justify-between gap-2">
                 <div>
@@ -133,9 +133,32 @@
                     {{ exam.title }}
                   </h3>
                 </div>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold capitalize bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
-                  {{ exam.status || 'programado' }}
-                </span>
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded-full text-[10px] font-bold capitalize bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+                    {{ exam.status || 'programado' }}
+                  </span>
+                  <!-- Quick actions on card -->
+                  <div class="opacity-80 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                    <button 
+                      @click.stop="openEditExamModal(exam)" 
+                      class="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" 
+                      title="Editar Examen"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                    <button 
+                      @click.stop="promptDeleteExam(exam)" 
+                      class="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" 
+                      title="Eliminar Examen"
+                    >
+                      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div class="flex items-center justify-between text-xs text-slate-400 mt-3 pt-2 border-t border-slate-100 dark:border-slate-800/60">
@@ -173,18 +196,41 @@
             </div>
 
             <!-- Print & Question Action Buttons -->
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2">
               <button 
                 @click="openQuestionModal()"
-                class="px-3.5 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5"
+                class="px-3 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <span>+ Pregunta</span>
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+                </svg>
+                <span>Pregunta</span>
+              </button>
+              <button 
+                @click="openEditExamModal(selectedExam)" 
+                class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Editar este examen"
+              >
+                <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                <span>Editar</span>
+              </button>
+              <button 
+                @click="promptDeleteExam(selectedExam)" 
+                class="px-3 py-2 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Eliminar este examen"
+              >
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                <span>Eliminar</span>
               </button>
               <button 
                 @click="printExamMode = true"
-                class="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                class="px-3 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <span>🖨️ Imprimir Prueba</span>
+                <span>🖨️ Imprimir</span>
               </button>
             </div>
           </div>
@@ -204,7 +250,7 @@
               <p class="text-slate-400 text-xs">Este examen aún no tiene preguntas configuradas.</p>
               <button 
                 @click="openQuestionModal()"
-                class="mt-2 text-xs font-bold text-rose-500 hover:underline"
+                class="mt-2 text-xs font-bold text-rose-500 hover:underline cursor-pointer"
               >
                 + Agregar la primera pregunta
               </button>
@@ -214,7 +260,7 @@
               <div 
                 v-for="(q, idx) in examQuestions" 
                 :key="q.id"
-                class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 space-y-2"
+                class="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800 space-y-2 group"
               >
                 <div class="flex items-start justify-between gap-2">
                   <div class="flex items-center gap-2">
@@ -225,9 +271,32 @@
                       {{ formatQuestionType(q.question_type) }}
                     </span>
                   </div>
-                  <span class="text-xs font-black text-rose-600 dark:text-rose-400">
-                    {{ q.marks || 5 }} pts
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-black text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 px-2 py-0.5 rounded-md">
+                      {{ q.marks || 5 }} pts
+                    </span>
+                    <!-- Edit / Delete Question Actions -->
+                    <div class="flex items-center gap-1">
+                      <button 
+                        @click="openEditQuestionModal(q)" 
+                        class="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" 
+                        title="Editar Pregunta"
+                      >
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button 
+                        @click="promptDeleteQuestion(q)" 
+                        class="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors" 
+                        title="Eliminar Pregunta"
+                      >
+                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <p class="text-sm font-bold text-slate-850 dark:text-white pt-1">
@@ -347,13 +416,29 @@
       </div>
     </div>
 
-    <!-- Create Exam Modal -->
+    <!-- Create / Edit Exam Modal -->
     <div 
       v-if="isExamModalOpen"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
     >
-      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-100 dark:border-slate-800">
-        <h2 class="text-xl font-bold text-slate-850 dark:text-white mb-4">Nueva Evaluación / Examen</h2>
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-100 dark:border-slate-800 animate-scale-up">
+        <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+          <div class="flex items-center gap-2">
+            <span class="w-8 h-8 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center font-bold text-sm">
+              📝
+            </span>
+            <h2 class="text-lg font-bold text-slate-850 dark:text-white">
+              {{ isEditingExam ? 'Editar Evaluación / Examen' : 'Nueva Evaluación / Examen' }}
+            </h2>
+          </div>
+          <button 
+            @click="isExamModalOpen = false" 
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none"
+          >
+            ✕
+          </button>
+        </div>
+
         <form @submit.prevent="saveExam" class="space-y-4">
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Título de la Prueba *</label>
@@ -361,7 +446,7 @@
               v-model="examForm.title" 
               required 
               placeholder="Ej: 2do Parcial: Leyes de Newton y Dinámica"
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
             />
           </div>
 
@@ -372,7 +457,7 @@
                 v-model="examForm.exam_date" 
                 type="date"
                 required 
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
               />
             </div>
             <div>
@@ -380,27 +465,31 @@
               <input 
                 v-model.number="examForm.duration_minutes" 
                 type="number" 
+                min="15"
+                max="300"
                 placeholder="90"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
               />
             </div>
           </div>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Puntaje Total</label>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Escala / Puntaje Total</label>
               <input 
                 v-model.number="examForm.total_marks" 
                 type="number" 
+                min="1"
+                max="100"
                 placeholder="20"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo</label>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Prueba</label>
               <select 
                 v-model="examForm.exam_type"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
               >
                 <option value="written">Escrito</option>
                 <option value="practical">Práctico / Laboratorio</option>
@@ -415,7 +504,7 @@
               v-model="examForm.instructions" 
               rows="2"
               placeholder="Instrucciones para los alumnos..."
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-rose-500/20"
             ></textarea>
           </div>
 
@@ -423,28 +512,78 @@
             <button 
               type="button" 
               @click="isExamModalOpen = false"
-              class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button 
               type="submit" 
-              class="px-5 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20"
+              class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20 transition-all cursor-pointer"
             >
-              Crear Examen
+              {{ isEditingExam ? 'Guardar Cambios' : 'Crear Examen' }}
             </button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- Create Question Modal -->
+    <!-- Delete Exam Confirmation Modal -->
+    <div 
+      v-if="isDeleteExamModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+    >
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-800 animate-scale-up text-center">
+        <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/60 dark:border-rose-800/40">
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-black text-slate-900 dark:text-white">¿Eliminar este examen?</h3>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+          Estás a punto de dar de baja la evaluación <strong class="text-slate-900 dark:text-slate-100">"{{ examToDelete?.title }}"</strong>. Se archivará lógicamente preservando la integridad histórica.
+        </p>
+        <div class="flex items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button 
+            type="button" 
+            @click="isDeleteExamModalOpen = false; examToDelete = null"
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>Cancelar</span>
+          </button>
+          <button 
+            type="button" 
+            @click="confirmDeleteExam"
+            class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
+          >
+            Sí, Eliminar Examen
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create / Edit Question Modal -->
     <div 
       v-if="isQuestionModalOpen"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
     >
-      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
-        <h2 class="text-xl font-bold text-slate-850 dark:text-white mb-4">Nueva Pregunta</h2>
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto animate-scale-up">
+        <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+          <h2 class="text-lg font-bold text-slate-850 dark:text-white">
+            {{ isEditingQuestion ? 'Editar Pregunta del Examen' : 'Nueva Pregunta para el Examen' }}
+          </h2>
+          <button 
+            @click="isQuestionModalOpen = false" 
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-lg leading-none"
+          >
+            ✕
+          </button>
+        </div>
 
         <form @submit.prevent="saveQuestion" class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
@@ -452,7 +591,7 @@
               <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Pregunta</label>
               <select 
                 v-model="questionForm.question_type"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100"
               >
                 <option value="seleccion_simple">Selección Simple</option>
                 <option value="verdadero_falso">Verdadero / Falso</option>
@@ -466,9 +605,11 @@
               <input 
                 v-model.number="questionForm.marks" 
                 type="number" 
+                min="0.5"
+                step="0.5"
                 required 
                 placeholder="5"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+                class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100" 
               />
             </div>
           </div>
@@ -480,7 +621,7 @@
               required
               rows="3"
               placeholder="Escribe aquí el texto de la pregunta..."
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100"
             ></textarea>
           </div>
 
@@ -490,7 +631,7 @@
             <input 
               v-model="questionForm.optionsRaw" 
               placeholder="Opción A, Opción B, Opción C, Opción D"
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100" 
             />
           </div>
 
@@ -500,7 +641,7 @@
               v-model="questionForm.correct_answer" 
               required 
               placeholder="Texto o letra de la respuesta correcta"
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100" 
             />
           </div>
 
@@ -510,7 +651,7 @@
               v-model="questionForm.explanation" 
               rows="2"
               placeholder="Justificación de la respuesta correcta..."
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+              class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100"
             ></textarea>
           </div>
 
@@ -518,18 +659,58 @@
             <button 
               type="button" 
               @click="isQuestionModalOpen = false"
-              class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button 
               type="submit" 
-              class="px-5 py-2 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20"
+              class="px-5 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-500/20 transition-all cursor-pointer"
             >
-              Guardar Pregunta
+              {{ isEditingQuestion ? 'Actualizar Pregunta' : 'Guardar Pregunta' }}
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <!-- Delete Question Confirmation Modal -->
+    <div 
+      v-if="isDeleteQuestionModalOpen"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
+    >
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 dark:border-slate-800 animate-scale-up text-center">
+        <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/60 dark:border-rose-800/40">
+          <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-black text-slate-900 dark:text-white">¿Eliminar esta pregunta?</h3>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+          Se removerá esta pregunta del examen. Podrás agregar o ajustar las preguntas restantes en cualquier momento.
+        </p>
+        <div class="flex items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <button 
+            type="button" 
+            @click="isDeleteQuestionModalOpen = false; questionToDelete = null"
+            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>Cancelar</span>
+          </button>
+          <button 
+            type="button" 
+            @click="confirmDeleteQuestion"
+            class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
+          >
+            Sí, Eliminar Pregunta
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -538,16 +719,30 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
+import { useToast } from '~/composables/useToast'
 
 const api = useApi()
+const toast = useToast()
+
 const exams = ref([])
 const questions = ref([])
 const loadingExams = ref(true)
 const selectedExam = ref(null)
 const printExamMode = ref(false)
 
+// Exam Modals State
 const isExamModalOpen = ref(false)
+const isEditingExam = ref(false)
+const editingExamId = ref(null)
+const isDeleteExamModalOpen = ref(false)
+const examToDelete = ref(null)
+
+// Question Modals State
 const isQuestionModalOpen = ref(false)
+const isEditingQuestion = ref(false)
+const editingQuestionId = ref(null)
+const isDeleteQuestionModalOpen = ref(false)
+const questionToDelete = ref(null)
 
 const examForm = ref({
   title: '',
@@ -573,7 +768,8 @@ const fetchExams = async () => {
   loadingExams.value = true
   try {
     const res = await api.get('exams')
-    exams.value = res.data || res || []
+    const list = res.data || res || []
+    exams.value = list.filter(e => !e.is_deleted)
     if (exams.value.length > 0 && !selectedExam.value) {
       selectExam(exams.value[0])
     }
@@ -587,7 +783,8 @@ const fetchExams = async () => {
 const fetchQuestions = async () => {
   try {
     const res = await api.get('exam-questions')
-    questions.value = res.data || res || []
+    const list = res.data || res || []
+    questions.value = list.filter(q => !q.is_deleted)
   } catch (err) {
     console.error('Error fetching questions:', err)
   }
@@ -647,7 +844,10 @@ const isCorrectOption = (opt, correct) => {
          correct.toLowerCase().includes(opt.toLowerCase().trim())
 }
 
+// Open Exam Create Modal
 const openExamModal = () => {
+  isEditingExam.value = false
+  editingExamId.value = null
   examForm.value = {
     title: '',
     class_subject_id: 1,
@@ -661,18 +861,73 @@ const openExamModal = () => {
   isExamModalOpen.value = true
 }
 
-const saveExam = async () => {
+// Open Exam Edit Modal
+const openEditExamModal = (exam) => {
+  isEditingExam.value = true
+  editingExamId.value = exam.id
+  examForm.value = {
+    title: exam.title || '',
+    class_subject_id: exam.class_subject_id || 1,
+    term_id: exam.term_id || 1,
+    exam_date: exam.exam_date ? exam.exam_date.split('T')[0] : new Date().toISOString().split('T')[0],
+    duration_minutes: exam.duration_minutes || 90,
+    total_marks: exam.total_marks || 20,
+    exam_type: exam.exam_type || 'written',
+    instructions: exam.instructions || ''
+  }
+  isExamModalOpen.value = true
+}
+
+// Prompt Delete Exam
+const promptDeleteExam = (exam) => {
+  examToDelete.value = exam
+  isDeleteExamModalOpen.value = true
+}
+
+// Confirm Delete Exam (Soft Delete)
+const confirmDeleteExam = async () => {
+  if (!examToDelete.value) return
+  const id = examToDelete.value.id
   try {
-    const created = await api.post('exams', examForm.value)
-    isExamModalOpen.value = false
+    await api.patch(`exams/${id}`, { is_deleted: true })
+    toast.warning('Examen eliminado exitosamente de la programación.')
+    isDeleteExamModalOpen.value = false
+    examToDelete.value = null
     await fetchExams()
-    if (created) selectExam(created)
+    if (selectedExam.value?.id === id) {
+      selectedExam.value = exams.value[0] || null
+    }
   } catch (err) {
-    alert('Error al crear examen: ' + err.message)
+    toast.error('Error al eliminar el examen: ' + err.message)
   }
 }
 
+// Save Exam (Create or Update)
+const saveExam = async () => {
+  try {
+    if (isEditingExam.value && editingExamId.value) {
+      await api.patch(`exams/${editingExamId.value}`, examForm.value)
+      toast.success('Evaluación actualizada con éxito.')
+      isExamModalOpen.value = false
+      await fetchExams()
+      const updated = exams.value.find(e => e.id === editingExamId.value)
+      if (updated) selectExam(updated)
+    } else {
+      const created = await api.post('exams', examForm.value)
+      toast.success('Nueva evaluación registrada exitosamente.')
+      isExamModalOpen.value = false
+      await fetchExams()
+      if (created) selectExam(created)
+    }
+  } catch (err) {
+    toast.error('Error al procesar examen: ' + err.message)
+  }
+}
+
+// Open Question Create Modal
 const openQuestionModal = () => {
+  isEditingQuestion.value = false
+  editingQuestionId.value = null
   questionForm.value = {
     question_type: 'seleccion_simple',
     question_text: '',
@@ -684,6 +939,48 @@ const openQuestionModal = () => {
   isQuestionModalOpen.value = true
 }
 
+// Open Question Edit Modal
+const openEditQuestionModal = (q) => {
+  isEditingQuestion.value = true
+  editingQuestionId.value = q.id
+  let rawOpts = ''
+  const parsed = getOptions(q.options)
+  if (parsed && parsed.length > 0) {
+    rawOpts = parsed.join(', ')
+  }
+  questionForm.value = {
+    question_type: q.question_type || 'seleccion_simple',
+    question_text: q.question_text || '',
+    optionsRaw: rawOpts,
+    correct_answer: q.correct_answer || '',
+    marks: q.marks || 5,
+    explanation: q.explanation || ''
+  }
+  isQuestionModalOpen.value = true
+}
+
+// Prompt Delete Question
+const promptDeleteQuestion = (q) => {
+  questionToDelete.value = q
+  isDeleteQuestionModalOpen.value = true
+}
+
+// Confirm Delete Question (Soft Delete)
+const confirmDeleteQuestion = async () => {
+  if (!questionToDelete.value) return
+  const id = questionToDelete.value.id
+  try {
+    await api.patch(`exam-questions/${id}`, { is_deleted: true })
+    toast.info('Pregunta eliminada de la evaluación.')
+    isDeleteQuestionModalOpen.value = false
+    questionToDelete.value = null
+    await fetchQuestions()
+  } catch (err) {
+    toast.error('Error al eliminar la pregunta: ' + err.message)
+  }
+}
+
+// Save Question (Create or Update)
 const saveQuestion = async () => {
   if (!selectedExam.value) return
   const options = questionForm.value.question_type === 'verdadero_falso'
@@ -697,18 +994,24 @@ const saveQuestion = async () => {
     options: JSON.stringify(options),
     correct_answer: questionForm.value.correct_answer,
     marks: questionForm.value.marks,
-    order_num: examQuestions.value.length + 1,
+    order_num: isEditingQuestion.value ? undefined : examQuestions.value.length + 1,
     explanation: questionForm.value.explanation,
     is_deleted: false,
     version: 1
   }
 
   try {
-    await api.post('exam-questions', payload)
+    if (isEditingQuestion.value && editingQuestionId.value) {
+      await api.patch(`exam-questions/${editingQuestionId.value}`, payload)
+      toast.success('Pregunta actualizada correctamente.')
+    } else {
+      await api.post('exam-questions', payload)
+      toast.success('Pregunta agregada a la evaluación.')
+    }
     isQuestionModalOpen.value = false
     await fetchQuestions()
   } catch (err) {
-    alert('Error al guardar pregunta: ' + err.message)
+    toast.error('Error al guardar pregunta: ' + err.message)
   }
 }
 

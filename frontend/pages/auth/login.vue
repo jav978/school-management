@@ -155,10 +155,18 @@ const handleLogin = async () => {
   error.value = ''
 
   try {
-    await authStore.login(email.value, password.value)
-    navigateTo('/dashboard')
+    const res = await authStore.login(email.value, password.value)
+    if (res && res.two_factor_required) {
+      navigateTo('/auth/2fa-challenge')
+    } else {
+      navigateTo('/dashboard')
+    }
   } catch (err) {
-    error.value = 'Credenciales inválidas. Por favor verifique sus datos.'
+    if (err.statusCode === 429 || err.status === 429 || err.data?.code === 429) {
+      error.value = 'Demasiados intentos de acceso. Por seguridad, su IP ha sido bloqueada temporalmente.'
+    } else {
+      error.value = err.data?.message || err.message || 'Credenciales inválidas. Por favor verifique sus datos.'
+    }
   } finally {
     loading.value = false
   }

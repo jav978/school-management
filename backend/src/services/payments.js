@@ -75,6 +75,12 @@ class PaymentsService extends KnexService {
       status = 'verificado'
     }
 
+    // Role security: Parents can never self-verify payments; they are strictly 'pendiente'
+    const callerRole = params?.user?.role || data?.caller_role
+    if (callerRole === 'parent') {
+      status = 'pendiente'
+    }
+
     const payload = {
       id,
       payer_first_name: data.payer_first_name.trim(),

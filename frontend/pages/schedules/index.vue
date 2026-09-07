@@ -12,11 +12,21 @@
           <p class="text-[11px] font-semibold text-slate-600">Prado de María – Caracas | RIF: J-00123456-7</p>
         </div>
       </div>
-      <div class="flex items-center justify-between text-xs font-bold text-slate-800 mt-2 px-2">
-        <span>Horario de Clases — Año Escolar 2025-2026</span>
-        <span v-if="viewMode === 'section'">{{ selectedGrade }} - Sección {{ selectedSection }}</span>
-        <span v-else>{{ selectedTeacherName }}</span>
-        <span>Jornada: 7:00 am a 3:00 pm</span>
+      <div class="flex items-center justify-between text-xs font-bold text-slate-800 mt-2 px-2 border-t border-slate-300 pt-1.5">
+        <div>
+          <span class="font-extrabold uppercase">Estudiante: </span>
+          <span v-if="isParent">{{ activeStudent.full_name }} ({{ activeStudent.id_card }})</span>
+          <span v-else-if="isStudent">Carlos Johnson Vásquez (V-32.485.912)</span>
+          <span v-else>Registro General</span>
+        </div>
+        <div>
+          <span class="font-extrabold uppercase">Grado / Nivel: </span>
+          <span>{{ selectedGrade }} - Sección {{ selectedSection }} ({{ educationLevel === 'primaria' ? 'Primaria' : 'Media General' }})</span>
+        </div>
+        <div>
+          <span class="font-extrabold uppercase">Año Escolar: </span>
+          <span>2025-2026</span>
+        </div>
       </div>
     </div>
 
@@ -127,73 +137,109 @@
 
     <!-- View Mode Switcher & Filter Controls (print:hidden) -->
     <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 print:hidden">
-      <!-- Tabs Switcher: Por Sección vs. Por Profesor Especialista -->
-      <div class="flex items-center gap-1 bg-slate-100 dark:bg-[#110926] p-1 rounded-xl border border-slate-200 dark:border-white/10">
-        <button
-          @click="viewMode = 'section'"
-          :class="viewMode === 'section' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
-          class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
-        >
-          <span>🏫 Por Grado / Sección</span>
-        </button>
-        <button
-          @click="viewMode = 'specialist'"
-          :class="viewMode === 'specialist' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
-          class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
-        >
-          <span>👨‍🏫 Por Docente Especialista</span>
-        </button>
-      </div>
-
-      <!-- Contextual Selectors based on View Mode -->
-      <div class="flex flex-wrap items-center gap-2.5">
-        <!-- If By Section Mode -->
-        <template v-if="viewMode === 'section'">
-          <!-- Level selector -->
-          <select
-            v-model="educationLevel"
-            @change="handleLevelChange"
-            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-bold"
-          >
-            <option value="primaria">Primaria (1° a 6°)</option>
-            <option value="media">Media General (1er a 5to Año)</option>
-          </select>
-
-          <!-- Grade selector -->
-          <select
-            v-model="selectedGrade"
-            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-semibold"
-          >
-            <option v-for="g in currentGradesList" :key="g" :value="g">{{ g }}</option>
-          </select>
-
-          <!-- Section selector -->
-          <div class="flex items-center bg-slate-100 dark:bg-[#110926] p-1 rounded-xl border border-slate-200 dark:border-white/10">
-            <button
-              v-for="sec in ['A', 'B']"
-              :key="sec"
-              @click="selectedSection = sec"
-              :class="selectedSection === sec ? 'bg-brand-primary text-white font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
-              class="w-7 h-7 rounded-lg text-xs transition-all font-mono cursor-pointer"
-            >
-              {{ sec }}
-            </button>
+      <!-- Representante View: Direct Student Card Indicator -->
+      <div v-if="isParent" class="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl overflow-hidden border-2 border-amber-500/60 shadow-xs flex-shrink-0">
+            <img :src="activeStudent.avatar" :alt="activeStudent.first_name" class="w-full h-full object-cover" />
           </div>
-        </template>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-black text-slate-850 dark:text-white">{{ activeStudent.full_name }}</span>
+              <span class="font-mono text-[10px] text-slate-400 font-bold">({{ activeStudent.id_card }})</span>
+            </div>
+            <p class="text-xs text-amber-700 dark:text-brand-gold font-bold flex items-center gap-1.5 mt-0.5">
+              <span>🏫 {{ activeStudent.grade }} • Sección {{ activeStudent.section }}</span>
+              <span>•</span>
+              <span class="text-slate-500 dark:text-slate-400 font-normal">{{ activeStudent.level_name }}</span>
+            </p>
+          </div>
+        </div>
 
-        <!-- If By Specialist Teacher Mode -->
-        <template v-else>
-          <select
-            v-model="selectedTeacherId"
-            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-semibold min-w-[200px]"
-          >
-            <option :value="null">Seleccionar Docente...</option>
-            <option v-for="t in teachersList" :key="t.id" :value="t.id">
-              Prof. {{ t.first_name }} {{ t.last_name }} ({{ t.specialization || 'Docente' }})
-            </option>
-          </select>
-        </template>
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 rounded-xl bg-amber-100/80 dark:bg-amber-950/40 text-amber-800 dark:text-brand-gold text-xs font-black border border-amber-300/60">
+            {{ activeStudent.turn }}
+          </span>
+        </div>
       </div>
+
+      <!-- Administration / Teacher Controls -->
+      <template v-else>
+        <!-- Tabs Switcher: Por Sección vs. Por Profesor Especialista -->
+        <div class="flex items-center gap-1 bg-slate-100 dark:bg-[#110926] p-1 rounded-xl border border-slate-200 dark:border-white/10">
+          <button
+            @click="viewMode = 'section'"
+            :class="viewMode === 'section' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
+            class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
+          >
+            <span>🏫 Por Grado / Sección</span>
+          </button>
+          <button
+            @click="viewMode = 'specialist'"
+            :class="viewMode === 'specialist' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
+            class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 cursor-pointer"
+          >
+            <span>👨‍🏫 Por Docente Especialista</span>
+          </button>
+        </div>
+
+        <!-- Contextual Selectors based on View Mode -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          <!-- If By Section Mode -->
+          <template v-if="viewMode === 'section'">
+            <!-- Locked view for Student -->
+            <div v-if="isStudent" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold">
+              <span>🎓</span>
+              <span>3er Año • Sección U (Única)</span>
+            </div>
+
+            <!-- Selectors for teachers & administration -->
+            <template v-else>
+              <!-- Level selector -->
+              <select
+                v-model="educationLevel"
+                @change="handleLevelChange"
+                class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-bold"
+              >
+                <option value="primaria">Primaria (1° a 6°)</option>
+                <option value="media">Media General (1er a 5to Año)</option>
+              </select>
+
+              <!-- Grade selector -->
+              <select
+                v-model="selectedGrade"
+                class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-semibold"
+              >
+                <option v-for="g in currentGradesList" :key="g" :value="g">{{ g }}</option>
+              </select>
+
+              <!-- Section selector (U.E Santa Luisa Sección Única) -->
+              <div class="flex items-center bg-slate-100 dark:bg-[#110926] p-1 rounded-xl border border-slate-200 dark:border-white/10">
+                <button
+                  @click="selectedSection = 'U'"
+                  :class="selectedSection === 'U' ? 'bg-brand-primary text-white font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
+                  class="px-3 py-1 rounded-lg text-xs transition-all font-mono font-bold cursor-pointer"
+                >
+                  Sección U
+                </button>
+              </div>
+            </template>
+          </template>
+
+          <!-- If By Specialist Teacher Mode -->
+          <template v-else>
+            <select
+              v-model="selectedTeacherId"
+              class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-semibold min-w-[200px]"
+            >
+              <option :value="null">Seleccionar Docente...</option>
+              <option v-for="t in teachersList" :key="t.id" :value="t.id">
+                Prof. {{ t.first_name }} {{ t.last_name }} ({{ t.specialization || 'Docente' }})
+              </option>
+            </select>
+          </template>
+        </div>
+      </template>
     </div>
 
     <!-- Official Class Timetable Matrix -->
@@ -311,6 +357,49 @@
       </div>
     </div>
 
+    <!-- Assigned Teachers & Subjects Roster (Useful for parents and visible in print) -->
+    <div class="glass-card rounded-2xl p-5 shadow-xs">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-white/10 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm">
+            👨‍🏫
+          </div>
+          <div>
+            <h3 class="text-sm font-black text-slate-850 dark:text-white">
+              Carga Académica y Plantel Docente Asignado
+            </h3>
+            <p class="text-[11px] text-slate-400">
+              {{ isParent ? `Profesores y materias correspondientes a ${activeStudent.first_name} (${activeStudent.grade})` : `Equipo docente para ${selectedGrade}` }}
+            </p>
+          </div>
+        </div>
+        <span class="text-xs font-bold text-brand-purple dark:text-brand-gold px-3 py-1 bg-brand-purple/10 rounded-xl">
+          {{ assignedSubjectsRoster.length }} Asignaturas
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div 
+          v-for="item in assignedSubjectsRoster" 
+          :key="item.subject"
+          class="p-3 rounded-xl bg-slate-50/70 dark:bg-white/[0.02] border border-slate-200/60 dark:border-white/5 flex items-center justify-between"
+        >
+          <div class="min-w-0 pr-2">
+            <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+              {{ item.subject }}
+            </p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
+              <span>👨‍🏫</span>
+              <span class="font-medium truncate">{{ item.teacher }}</span>
+            </p>
+          </div>
+          <span class="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-slate-200/80 dark:bg-white/10 text-slate-600 dark:text-slate-300 flex-shrink-0">
+            {{ item.hours }} h/sem
+          </span>
+        </div>
+      </div>
+    </div>
+
     <!-- Official Footer for Print -->
     <div class="hidden print:flex justify-between items-end pt-12 text-center text-xs font-bold text-slate-800">
       <div class="w-64 border-t border-slate-900 pt-1">
@@ -394,8 +483,7 @@
                       v-model="form.section"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
-                      <option value="A">Sección A</option>
-                      <option value="B">Sección B</option>
+                      <option value="U">Sección U (Única)</option>
                     </select>
                   </div>
                 </div>
@@ -515,9 +603,12 @@
               <button
                 @click="closeModal"
                 type="button"
-                class="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+                class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
               >
-                ✕ Cancelar
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
               </button>
               <button
                 type="submit"
@@ -556,9 +647,12 @@
           <div class="flex items-center justify-center gap-3 mt-6">
             <button 
               @click="isDeleteModalOpen = false" 
-              class="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all cursor-pointer"
+              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              Cancelar
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button 
               @click="confirmDeleteSchedule" 
@@ -575,17 +669,24 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useToast } from '~/composables/useToast'
+import { useActiveStudent } from '~/composables/useActiveStudent'
 
 const nuxtApp = useNuxtApp()
 const authStore = useAuthStore()
 const toast = useToast()
+const { activeStudent, isCarlos, isMaria } = useActiveStudent()
 
 // Strict Role Check
+const currentRole = computed(() => authStore.userRole || authStore.user?.role || 'admin')
+const isParent = computed(() => currentRole.value === 'parent')
+const isStudent = computed(() => currentRole.value === 'student')
+const isTeacher = computed(() => currentRole.value === 'teacher')
+
 const canManage = computed(() => {
-  const role = authStore.userRole || authStore.user?.role || ''
+  const role = currentRole.value
   return role === 'admin' || role === 'control_estudio' || role === 'coordinator'
 })
 
@@ -593,8 +694,28 @@ const canManage = computed(() => {
 const viewMode = ref('section')
 const educationLevel = ref('media') // 'primaria' or 'media'
 const selectedGrade = ref('1er Año')
-const selectedSection = ref('A')
+const selectedSection = ref('U')
 const selectedTeacherId = ref(null)
+
+// Auto-lock for student persona
+watch(isStudent, (val) => {
+  if (val) {
+    viewMode.value = 'section'
+    educationLevel.value = 'media'
+    selectedGrade.value = '3er Año'
+    selectedSection.value = 'U'
+  }
+}, { immediate: true })
+
+// Auto-sync for parent persona with active represented student (Carlos / María)
+watch([isParent, activeStudent], ([parent, student]) => {
+  if (parent && student) {
+    viewMode.value = 'section'
+    educationLevel.value = student.level
+    selectedGrade.value = student.grade
+    selectedSection.value = student.section || 'U'
+  }
+}, { immediate: true })
 
 const schedules = ref([])
 const subjectsList = ref([])
@@ -674,7 +795,7 @@ const form = ref({
   start_time: '07:00',
   end_time: '07:45',
   grade: '1er Año',
-  section: 'A'
+  section: 'U'
 })
 
 const formErrors = ref({})
@@ -695,7 +816,11 @@ const handleLevelChange = () => {
 // Filtered Schedules based on View Mode
 const filteredSchedules = computed(() => {
   if (viewMode.value === 'section') {
-    return schedules.value.filter(s => s.grade === selectedGrade.value && s.section === selectedSection.value)
+    return schedules.value.filter(s => {
+      const matchGrade = s.grade === selectedGrade.value
+      const matchSection = s.section === selectedSection.value || s.section === 'U' || !s.section
+      return matchGrade && matchSection
+    })
   } else {
     if (!selectedTeacherId.value) return []
     return schedules.value.filter(s => s.teacher_id === selectedTeacherId.value)
@@ -714,6 +839,22 @@ const uniqueTeachersCount = computed(() => {
 
 const totalAcademicHours = computed(() => {
   return filteredSchedules.value.length
+})
+
+const assignedSubjectsRoster = computed(() => {
+  const map = new Map()
+  filteredSchedules.value.forEach(s => {
+    const key = s.subject_name || 'Asignatura'
+    if (!map.has(key)) {
+      map.set(key, {
+        subject: key,
+        teacher: s.teacher_name || 'Profesor Especialista',
+        hours: 0
+      })
+    }
+    map.get(key).hours += 1
+  })
+  return Array.from(map.values()).sort((a, b) => b.hours - a.hours)
 })
 
 const selectedTeacherName = computed(() => {
@@ -885,3 +1026,29 @@ onMounted(async () => {
   await fetchSchedules()
 })
 </script>
+
+<style scoped>
+@media print {
+  @page {
+    size: landscape;
+    margin: 8mm;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Force full width on print */
+  table {
+    width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid;
+  }
+}
+</style>

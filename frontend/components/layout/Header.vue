@@ -219,10 +219,43 @@
                 </div>
               </div>
             </div>
+
+            <!-- Footer Link -->
+            <div class="px-4 pt-2 border-t border-slate-100 dark:border-white/10 text-center">
+              <NuxtLink 
+                to="/communication" 
+                @click="isNotificationsOpen = false"
+                class="text-xs font-bold text-amber-600 dark:text-brand-gold hover:underline block py-1"
+              >
+                Ver todas las notificaciones →
+              </NuxtLink>
+            </div>
           </div>
         </div>
 
-        <div class="h-6 w-[1px] bg-slate-200 dark:bg-white/10 mx-1"></div>
+        <!-- Represented Student Switcher (Visible ONLY when user is 'parent') -->
+        <div v-if="currentRole === 'parent'" class="flex items-center bg-slate-100/90 dark:bg-white/5 p-1 rounded-2xl border border-slate-200/80 dark:border-white/10 gap-1">
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 hidden md:inline">
+            Hijo:
+          </span>
+          <button
+            v-for="st in representedStudents"
+            :key="st.key"
+            type="button"
+            @click="setActiveStudent(st.key)"
+            :class="activeStudentKey === st.key 
+              ? 'bg-white dark:bg-brand-primary text-amber-700 dark:text-brand-gold font-black shadow-xs border border-amber-500/30' 
+              : 'text-slate-600 dark:text-slate-400 font-semibold hover:text-slate-900 dark:hover:text-white border border-transparent'"
+            class="px-2.5 py-1 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5"
+            :title="`Gestionar vista para ${st.full_name} (${st.grade})`"
+          >
+            <span class="text-sm">{{ st.key === 'carlos' ? '👦' : '👧' }}</span>
+            <span class="font-bold">{{ st.first_name }}</span>
+            <span class="text-[10px] opacity-75 hidden sm:inline">({{ st.grade }})</span>
+          </button>
+        </div>
+
+        <div v-if="currentRole === 'parent'" class="h-6 w-[1px] bg-slate-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
 
         <!-- User Profile Avatar & Interactive Dropdown -->
         <div class="relative" ref="profileDropdownRef">
@@ -311,7 +344,9 @@
               </NuxtLink>
             </div>
 
-            <div class="pt-1 border-t border-slate-100 dark:border-white/10">
+
+            <!-- Logout Link -->
+            <div class="py-1 border-t border-slate-100 dark:border-white/10">
               <button 
                 @click="handleLogout"
                 type="button"
@@ -335,10 +370,12 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useLanguage } from '~/composables/useLanguage'
+import { useActiveStudent } from '~/composables/useActiveStudent'
 
 const authStore = useAuthStore()
 const { currentLang, setLanguage, t } = useLanguage()
 const colorMode = useColorMode()
+const { representedStudents, activeStudentKey, setActiveStudent } = useActiveStudent()
 
 const searchQuery = ref('')
 const isLangOpen = ref(false)
@@ -385,8 +422,12 @@ const userEmail = computed(() => {
   return authStore.user?.email || 'director@santaluisa.edu.ve'
 })
 
+const currentRole = computed(() => {
+  return authStore.userRole || authStore.user?.role || 'admin'
+})
+
 const userRoleName = computed(() => {
-  const r = authStore.userRole || authStore.user?.role || 'admin'
+  const r = currentRole.value
   if (r === 'admin') return 'Administrador'
   if (r === 'teacher') return 'Docente Titular'
   if (r === 'coordinator') return 'Coordinador'
@@ -395,6 +436,7 @@ const userRoleName = computed(() => {
   if (r === 'student') return 'Estudiante'
   return 'Usuario'
 })
+
 
 const userAvatarUrl = computed(() => {
   return authStore.user?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120'

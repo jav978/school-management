@@ -77,9 +77,33 @@ class ParentsService extends KnexService {
 
     if (!data.first_name) throw new BadRequest('El nombre del representante es requerido')
     if (!data.last_name) throw new BadRequest('El apellido del representante es requerido')
-    if (!data.national_id) throw new BadRequest('La cédula o documento de identidad es requerido')
+    if (!data.national_id && !data.id_number) throw new BadRequest('La cédula o documento de identidad es requerido')
 
-    const nationalId = data.national_id.trim().toUpperCase()
+    let idType = (data.id_type || 'V').trim().toUpperCase()
+    let idNumber = (data.id_number || '').trim()
+    let nationalId = (data.national_id || '').trim().toUpperCase()
+
+    if (!nationalId && idNumber) {
+      nationalId = `${idType}-${idNumber}`
+    } else if (nationalId) {
+      if (nationalId.includes('-')) {
+        const parts = nationalId.split('-')
+        idType = parts[0].toUpperCase()
+        idNumber = parts.slice(1).join('-')
+      } else {
+        const firstChar = nationalId[0]
+        if (['V', 'E', 'P', 'J'].includes(firstChar)) {
+          idType = firstChar
+          idNumber = nationalId.slice(1)
+        } else {
+          const num = parseInt(nationalId, 10)
+          idType = (!isNaN(num) && num >= 80000000) ? 'E' : 'V'
+          idNumber = nationalId
+        }
+        nationalId = `${idType}-${idNumber}`
+      }
+    }
+
     const existing = await db('school.parents')
       .where({ national_id: nationalId, is_deleted: false })
       .first()
@@ -97,6 +121,8 @@ class ParentsService extends KnexService {
       parent_id: parentCode,
       first_name: data.first_name.trim(),
       last_name: data.last_name.trim(),
+      id_type: idType,
+      id_number: idNumber,
       national_id: nationalId,
       relationship: data.relationship || 'Representante Legal',
       occupation: data.occupation || null,
@@ -136,6 +162,36 @@ class ParentsService extends KnexService {
     const patchData = { ...data, updated_at: new Date() }
     delete patchData.students
     delete patchData.student_id
+
+    if (patchData.national_id || patchData.id_number) {
+      let idType = (patchData.id_type || 'V').trim().toUpperCase()
+      let idNumber = (patchData.id_number || '').trim()
+      let nationalId = (patchData.national_id || '').trim().toUpperCase()
+
+      if (!nationalId && idNumber) {
+        nationalId = `${idType}-${idNumber}`
+      } else if (nationalId) {
+        if (nationalId.includes('-')) {
+          const parts = nationalId.split('-')
+          idType = parts[0].toUpperCase()
+          idNumber = parts.slice(1).join('-')
+        } else {
+          const firstChar = nationalId[0]
+          if (['V', 'E', 'P', 'J'].includes(firstChar)) {
+            idType = firstChar
+            idNumber = nationalId.slice(1)
+          } else {
+            const num = parseInt(nationalId, 10)
+            idType = (!isNaN(num) && num >= 80000000) ? 'E' : 'V'
+            idNumber = nationalId
+          }
+          nationalId = `${idType}-${idNumber}`
+        }
+      }
+      patchData.id_type = idType
+      patchData.id_number = idNumber
+      patchData.national_id = nationalId
+    }
 
     const [updated] = await db('school.parents').where({ id }).update(patchData).returning('*')
 

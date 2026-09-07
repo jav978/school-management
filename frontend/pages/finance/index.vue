@@ -196,6 +196,7 @@
               <th class="py-3.5 px-4 text-center">Monto</th>
               <th class="py-3.5 px-4">Fecha</th>
               <th class="py-3.5 px-4 text-center">Estado</th>
+              <th class="py-3.5 px-4 text-center">Comprobante</th>
               <th class="py-3.5 px-4 sm:px-6 text-right">Acciones</th>
             </tr>
           </thead>
@@ -263,6 +264,23 @@
                 </span>
               </td>
 
+              <!-- Comprobante / Recibo -->
+              <td class="py-3.5 px-4 text-center">
+                <button
+                  v-if="p.receipt_image_url"
+                  @click="openReceiptViewer(p, $event)"
+                  type="button"
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-orange-50 dark:bg-slate-800 dark:hover:bg-orange-950/30 text-slate-700 hover:text-orange-600 dark:text-slate-300 dark:hover:text-orange-400 text-xs font-bold transition-all border border-slate-200/80 dark:border-white/10 group cursor-pointer"
+                  title="Ver comprobante adjunto"
+                >
+                  <span class="text-sm group-hover:scale-110 transition-transform">📄</span>
+                  <span>Ver Recibo</span>
+                </button>
+                <span v-else class="text-[11px] text-slate-400 italic">
+                  Sin adjunto
+                </span>
+              </td>
+
               <!-- Actions -->
               <td class="py-3.5 px-4 sm:px-6 text-right">
                 <div class="inline-flex items-center gap-1">
@@ -285,6 +303,17 @@
                     title="Rechazar pago"
                   >
                     Rechazar
+                  </button>
+
+                  <button
+                    @click="openEditPaymentModal(p, $event)"
+                    type="button"
+                    class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    title="Editar datos del pago"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
                   </button>
 
                   <button
@@ -362,6 +391,16 @@
 
           <div class="flex items-center gap-1.5">
             <button
+              v-if="p.receipt_image_url"
+              @click="openReceiptViewer(p, $event)"
+              type="button"
+              class="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-orange-50 dark:hover:bg-orange-950/40 hover:text-orange-600 text-[11px] font-bold transition-colors flex items-center gap-1 cursor-pointer"
+              title="Ver comprobante"
+            >
+              <span>📄</span>
+              <span>Recibo</span>
+            </button>
+            <button
               v-if="p.status === 'pendiente'"
               @click="updateStatus(p, 'verificado')"
               type="button"
@@ -370,9 +409,20 @@
               Aprobar
             </button>
             <button
+              @click="openEditPaymentModal(p, $event)"
+              type="button"
+              class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="Editar datos del pago"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            </button>
+            <button
               @click="promptDeletePayment(p, $event)"
               type="button"
               class="w-7 h-7 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+              title="Eliminar registro"
             >
               <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -383,7 +433,7 @@
       </div>
     </div>
 
-    <!-- Standardized Modal: Registrar Pago -->
+    <!-- Standardized Modal: Registrar / Editar Pago -->
     <Teleport to="body">
       <div 
         v-if="isModalOpen" 
@@ -404,10 +454,10 @@
               </div>
               <div>
                 <h3 class="text-base sm:text-lg font-bold font-display text-slate-850 dark:text-white">
-                  Registrar Operación de Pago
+                  {{ isEditingPayment ? 'Editar Registro de Pago' : 'Registrar Operación de Pago' }}
                 </h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Ingrese los datos del comprobante y conciliación bancaria
+                  {{ isEditingPayment ? 'Actualice los datos del comprobante y conciliación bancaria' : 'Ingrese los datos del comprobante y conciliación bancaria' }}
                 </p>
               </div>
             </div>
@@ -546,8 +596,8 @@
               </div>
             </div>
 
-            <!-- Payment Date & Status -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- Payment Date & Status (Status visible only for staff) -->
+            <div class="grid grid-cols-1 gap-3" :class="isStaff ? 'sm:grid-cols-2' : 'sm:grid-cols-1'">
               <div>
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   Fecha de Operación *
@@ -559,7 +609,7 @@
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
               </div>
-              <div>
+              <div v-if="isStaff">
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
                   Estado Inicial
                 </label>
@@ -569,6 +619,7 @@
                 >
                   <option value="verificado">Verificado</option>
                   <option value="pendiente">Pendiente</option>
+                  <option value="rechazado">Rechazado</option>
                 </select>
               </div>
             </div>
@@ -585,6 +636,90 @@
                 class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 text-xs sm:text-sm text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
               ></textarea>
             </div>
+
+            <!-- Adjuntar Comprobante de Pago (Recibo / Capture) -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>Comprobante de Pago (Capture / PDF)</span>
+                <span class="text-[10px] font-normal text-slate-400">Opcional pero recomendado</span>
+              </label>
+
+              <!-- Upload Drag & Drop Area -->
+              <div 
+                class="relative border-2 border-dashed rounded-2xl p-3 sm:p-4 text-center transition-all"
+                :class="isDragging ? 'border-orange-500 bg-orange-50/40 dark:bg-orange-950/20' : 'border-slate-200 dark:border-slate-700/80 hover:border-orange-400/60 dark:hover:border-orange-500/40 bg-slate-50/50 dark:bg-slate-800/40'"
+                @dragover.prevent="isDragging = true"
+                @dragleave.prevent="isDragging = false"
+                @drop.prevent="handleReceiptDrop"
+              >
+                <input 
+                  type="file" 
+                  ref="receiptFileInputRef"
+                  @change="handleReceiptFileChange"
+                  accept="image/png,image/jpeg,image/webp,image/jpg,application/pdf"
+                  class="hidden"
+                />
+
+                <!-- File Preview / Upload Status -->
+                <div v-if="form.receipt_image_url" class="flex items-center gap-3 text-left">
+                  <!-- Thumbnail / Icon -->
+                  <div class="w-14 h-14 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-700 flex-shrink-0 border border-slate-200 dark:border-slate-700">
+                    <img 
+                      v-if="isImageUrl(form.receipt_image_url)" 
+                      :src="form.receipt_image_url" 
+                      alt="Comprobante" 
+                      class="w-full h-full object-cover cursor-pointer"
+                      @click="previewReceiptFull(form.receipt_image_url)"
+                    />
+                    <div v-else class="w-full h-full flex flex-col items-center justify-center text-rose-500">
+                      <span class="text-xl">📄</span>
+                      <span class="text-[9px] font-bold uppercase">PDF</span>
+                    </div>
+                  </div>
+
+                  <!-- File Info -->
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">
+                      {{ receiptFileName || 'Comprobante_adjunto' }}
+                    </p>
+                    <p class="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5 flex items-center gap-1">
+                      <span>✓</span> Listo para registrar
+                    </p>
+                    <div class="flex items-center gap-2 mt-1">
+                      <button 
+                        type="button" 
+                        @click="triggerFileInput"
+                        class="text-[11px] text-orange-600 hover:text-orange-700 font-bold underline cursor-pointer"
+                      >
+                        Cambiar
+                      </button>
+                      <button 
+                        type="button" 
+                        @click="removeAttachedReceipt"
+                        class="text-[11px] text-rose-500 hover:text-rose-700 font-bold underline cursor-pointer"
+                      >
+                        Quitar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Empty State Dropzone -->
+                <div v-else class="cursor-pointer py-2" @click="triggerFileInput">
+                  <div class="w-10 h-10 mx-auto rounded-full bg-orange-100/80 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 flex items-center justify-center mb-2">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <p class="text-xs font-bold text-slate-700 dark:text-slate-200">
+                    Arrastra el comprobante o <span class="text-orange-600 dark:text-orange-400 underline">haz clic aquí</span>
+                  </p>
+                  <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-1">
+                    Captura Pago Móvil, transferencia bancaria (PNG, JPG, PDF máx. 5MB)
+                  </p>
+                </div>
+              </div>
+            </div>
           </form>
 
           <!-- Permanent Sticky Footer -->
@@ -592,17 +727,20 @@
             <button
               @click="closeModal"
               type="button"
-              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-800/60 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              ✕ Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button
               @click="submitPayment"
               :disabled="isSubmitting"
               type="button"
-              class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-sm shadow-orange-500/20 active:scale-[0.98] transition-all disabled:opacity-50"
+              class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-sm shadow-orange-500/20 active:scale-[0.98] transition-all disabled:opacity-50 cursor-pointer"
             >
-              {{ isSubmitting ? 'Guardando...' : 'Guardar Pago' }}
+              {{ isSubmitting ? 'Guardando...' : (isEditingPayment ? 'Guardar Cambios' : 'Registrar Pago') }}
             </button>
           </div>
         </div>
@@ -639,9 +777,12 @@
             <button
               @click="isDeleteModalOpen = false"
               type="button"
-              class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              ✕ Cancelar
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button
               @click="confirmDeletePayment"
@@ -666,6 +807,156 @@
       </div>
     </Teleport>
 
+    <!-- Modal: Inspección de Comprobante / Recibo de Pago -->
+    <Teleport to="body">
+      <div 
+        v-if="isReceiptModalOpen" 
+        class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs transition-opacity duration-200"
+        @click.self="closeReceiptViewer"
+      >
+        <div 
+          class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-white/10 w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all transform animate-in fade-in zoom-in-95"
+          :style="modalSpatialStyle"
+        >
+          <!-- Header -->
+          <div class="px-6 py-4 border-b border-slate-100 dark:border-white/10 flex items-center justify-between bg-slate-50/70 dark:bg-white/[0.02]">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-orange-100/80 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center text-lg">
+                📄
+              </div>
+              <div>
+                <h3 class="text-sm sm:text-base font-black text-slate-850 dark:text-white">
+                  Comprobante de Operación
+                </h3>
+                <p class="text-xs text-slate-400">
+                  Ref: <span class="font-mono font-bold text-slate-600 dark:text-slate-300">{{ selectedReceiptPayment?.reference_number }}</span>
+                  • {{ selectedReceiptPayment?.bank_name }}
+                </p>
+              </div>
+            </div>
+            <button 
+              @click="closeReceiptViewer"
+              type="button"
+              class="w-8 h-8 rounded-full bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/20 text-slate-500 flex items-center justify-center font-bold text-sm cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Body: Image / Document Viewer & Payment Details -->
+          <div class="p-4 sm:p-6 overflow-y-auto flex-1 space-y-4">
+            <!-- Payment Quick Summary Card -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-100 dark:border-white/5 text-xs">
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Titular</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200 truncate block">
+                  {{ selectedReceiptPayment?.payer_first_name }} {{ selectedReceiptPayment?.payer_last_name }}
+                </span>
+                <span class="text-[10px] font-mono text-slate-400">{{ selectedReceiptPayment?.payer_id_card }}</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Monto</span>
+                <span class="text-sm font-black text-slate-850 dark:text-white block">
+                  ${{ formatAmount(selectedReceiptPayment?.amount) }}
+                </span>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Fecha</span>
+                <span class="font-semibold text-slate-700 dark:text-slate-300 block">
+                  {{ formatDate(selectedReceiptPayment?.payment_date) }}
+                </span>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Estado Actual</span>
+                <span 
+                  :class="getStatusClass(selectedReceiptPayment?.status)"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold capitalize mt-0.5"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full" :class="getStatusDotClass(selectedReceiptPayment?.status)"></span>
+                  {{ selectedReceiptPayment?.status }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Notes if any -->
+            <div v-if="selectedReceiptPayment?.admin_notes" class="p-3 bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/30 rounded-xl text-xs text-amber-900 dark:text-amber-200">
+              <span class="font-bold">Observación:</span> {{ selectedReceiptPayment?.admin_notes }}
+            </div>
+
+            <!-- Full-view Receipt Container -->
+            <div class="relative bg-slate-900/90 dark:bg-black/80 rounded-2xl p-2 sm:p-4 min-h-[300px] flex items-center justify-center overflow-hidden border border-slate-800">
+              <template v-if="isImageUrl(selectedReceiptPayment?.receipt_image_url)">
+                <img 
+                  :src="selectedReceiptPayment?.receipt_image_url" 
+                  alt="Capture de Comprobante" 
+                  class="max-h-[50vh] w-auto max-w-full rounded-xl object-contain shadow-2xl transition-transform duration-200 hover:scale-105"
+                />
+              </template>
+              <div v-else class="text-center py-10 px-4 text-white">
+                <span class="text-5xl block mb-3">📑</span>
+                <p class="text-sm font-bold">Documento Adjunto (PDF o Archivo Externo)</p>
+                <a 
+                  :href="selectedReceiptPayment?.receipt_image_url" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold transition-all shadow-md"
+                >
+                  <span>Abrir Documento Completo</span>
+                  <span>↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sticky Footer Actions: Admin verification actions + Close -->
+          <div class="px-6 py-4 border-t border-slate-100 dark:border-white/10 bg-slate-50 dark:bg-slate-900/90 flex flex-wrap items-center justify-between gap-2 flex-shrink-0">
+            <!-- Left: Download or View Original -->
+            <a 
+              :href="selectedReceiptPayment?.receipt_image_url" 
+              target="_blank" 
+              download 
+              class="px-3 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5"
+            >
+              <span>📥</span>
+              <span>Descargar Comprobante</span>
+            </a>
+
+            <!-- Right: Admin Approval / Rejection Controls & Cancel Button -->
+            <div class="flex items-center gap-2">
+              <template v-if="isStaff && selectedReceiptPayment?.status === 'pendiente'">
+                <button
+                  @click="updateStatus(selectedReceiptPayment, 'rechazado'); closeReceiptViewer()"
+                  type="button"
+                  class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 transition-colors cursor-pointer"
+                >
+                  ✕ Rechazar Pago
+                </button>
+                <button
+                  @click="updateStatus(selectedReceiptPayment, 'verificado'); closeReceiptViewer()"
+                  type="button"
+                  class="px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors cursor-pointer flex items-center gap-1"
+                >
+                  <span>✓</span>
+                  <span>Verificar y Aprobar</span>
+                </button>
+              </template>
+
+              <button
+                @click="closeReceiptViewer"
+                type="button"
+                class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-800/60 shadow-xs flex items-center gap-1.5 transition-all cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cerrar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
   </div>
 </template>
 
@@ -676,9 +967,14 @@ import { useAuthStore } from '~/stores/auth'
 const nuxtApp = useNuxtApp()
 const authStore = useAuthStore()
 
+const userRole = computed(() => authStore.userRole || authStore.user?.role || 'parent')
+const isStaff = computed(() => {
+  const r = userRole.value
+  return r === 'admin' || r === 'control_estudio' || r === 'coordinator'
+})
+
 const canManage = computed(() => {
-  const role = authStore.userRole || authStore.user?.role
-  return role === 'admin' || role === 'control_estudio' || role === 'coordinator' || true
+  return isStaff.value
 })
 
 // State
@@ -690,6 +986,15 @@ const viewMode = ref('table') // 'table' | 'grid'
 const isLoading = ref(false)
 const isSubmitting = ref(false)
 const toastMessage = ref('')
+
+// Receipt file attachment state
+const receiptFileInputRef = ref(null)
+const isDragging = ref(false)
+const receiptFileName = ref('')
+
+// Receipt full inspection modal state
+const isReceiptModalOpen = ref(false)
+const selectedReceiptPayment = ref(null)
 
 // Modal state
 const isModalOpen = ref(false)
@@ -711,8 +1016,10 @@ const form = ref({
   reference_number: '',
   amount: 75.00,
   payment_date: new Date().toISOString().split('T')[0],
-  status: 'verificado',
-  admin_notes: ''
+  status: isStaff.value ? 'verificado' : 'pendiente',
+  receipt_image_url: '',
+  admin_notes: '',
+  caller_role: userRole.value
 })
 
 // KPIs
@@ -805,39 +1112,153 @@ const captureTriggerOrigin = (event) => {
   }
 }
 
+const isEditingPayment = ref(false)
+const editingPaymentId = ref(null)
+
 const openCreateModal = (event) => {
   captureTriggerOrigin(event)
+  isEditingPayment.value = false
+  editingPaymentId.value = null
+  receiptFileName.value = ''
+  
+  // Default values based on current logged in user
+  const u = authStore.user || {}
+  const defaultFirstName = u.first_name || (u.name ? u.name.split(' ')[0] : '')
+  const defaultLastName = u.last_name || (u.name ? u.name.split(' ').slice(1).join(' ') : '')
+
   form.value = {
-    payer_first_name: '',
-    payer_last_name: '',
-    payer_id_card: '',
-    payer_phone: '',
+    payer_first_name: defaultFirstName,
+    payer_last_name: defaultLastName,
+    payer_id_card: u.id_card || '',
+    payer_phone: u.phone || '',
     payment_type: 'pago movil',
     bank_name: 'Banesco',
     reference_number: `REF-${Date.now().toString().slice(-6)}`,
     amount: 75.00,
     payment_date: new Date().toISOString().split('T')[0],
-    status: 'verificado',
-    admin_notes: ''
+    status: isStaff.value ? 'verificado' : 'pendiente',
+    receipt_image_url: '',
+    admin_notes: '',
+    caller_role: userRole.value
+  }
+  isModalOpen.value = true
+}
+
+const openEditPaymentModal = (payment, event) => {
+  captureTriggerOrigin(event)
+  isEditingPayment.value = true
+  editingPaymentId.value = payment.id
+  receiptFileName.value = payment.receipt_image_url ? 'Comprobante_registrado' : ''
+  form.value = {
+    payer_first_name: payment.payer_first_name || '',
+    payer_last_name: payment.payer_last_name || '',
+    payer_id_card: payment.payer_id_card || '',
+    payer_phone: payment.payer_phone || '',
+    payment_type: payment.payment_type || 'pago movil',
+    bank_name: payment.bank_name || 'Banesco',
+    reference_number: payment.reference_number || '',
+    amount: Number(payment.amount) || 0,
+    payment_date: payment.payment_date ? payment.payment_date.split('T')[0] : new Date().toISOString().split('T')[0],
+    status: payment.status || 'verificado',
+    receipt_image_url: payment.receipt_image_url || '',
+    admin_notes: payment.admin_notes || '',
+    caller_role: userRole.value
   }
   isModalOpen.value = true
 }
 
 const closeModal = () => {
   isModalOpen.value = false
+  isEditingPayment.value = false
+  editingPaymentId.value = null
+  receiptFileName.value = ''
 }
 
-// Submit payment
+// Receipt File Upload & Drop Handlers
+const triggerFileInput = () => {
+  if (receiptFileInputRef.value) {
+    receiptFileInputRef.value.click()
+  }
+}
+
+const handleReceiptFileChange = (e) => {
+  const file = e.target.files?.[0]
+  if (file) {
+    processReceiptFile(file)
+  }
+}
+
+const handleReceiptDrop = (e) => {
+  isDragging.value = false
+  const file = e.dataTransfer.files?.[0]
+  if (file) {
+    processReceiptFile(file)
+  }
+}
+
+const processReceiptFile = (file) => {
+  // Validate size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('El archivo supera el límite de 5 MB')
+    return
+  }
+
+  receiptFileName.value = file.name
+
+  const reader = new FileReader()
+  reader.onload = (event) => {
+    form.value.receipt_image_url = event.target.result
+    showToast('Comprobante adjuntado con éxito')
+  }
+  reader.onerror = () => {
+    showToast('Error al leer el archivo')
+  }
+  reader.readAsDataURL(file)
+}
+
+const removeAttachedReceipt = () => {
+  form.value.receipt_image_url = ''
+  receiptFileName.value = ''
+  if (receiptFileInputRef.value) {
+    receiptFileInputRef.value.value = ''
+  }
+}
+
+const isImageUrl = (url) => {
+  if (!url) return false
+  if (url.startsWith('data:image/')) return true
+  if (url.match(/\.(jpeg|jpg|png|webp|gif)($|\?)/i)) return true
+  return !url.includes('.pdf') && !url.startsWith('data:application/pdf')
+}
+
+// Full Receipt Viewer Modal
+const openReceiptViewer = (payment, event) => {
+  captureTriggerOrigin(event)
+  selectedReceiptPayment.value = payment
+  isReceiptModalOpen.value = true
+}
+
+const closeReceiptViewer = () => {
+  isReceiptModalOpen.value = false
+  selectedReceiptPayment.value = null
+}
+
+// Submit payment (Create or Edit)
 const submitPayment = async () => {
   isSubmitting.value = true
   try {
-    await nuxtApp.$api.service('payments').create(form.value)
-    showToast('Pago registrado exitosamente')
+    if (isEditingPayment.value && editingPaymentId.value) {
+      await nuxtApp.$api.service('payments').patch(editingPaymentId.value, form.value)
+      showToast('Pago actualizado exitosamente')
+    } else {
+      await nuxtApp.$api.service('payments').create(form.value)
+      showToast('Pago registrado exitosamente')
+    }
     await fetchPayments()
     closeModal()
   } catch (error) {
-    console.error('Error creating payment:', error)
-    showToast(error.message || 'Error al registrar el pago')
+    console.error('Error submitting payment:', error)
+    showToast(error.message || 'Error al procesar el pago')
   } finally {
     isSubmitting.value = false
   }

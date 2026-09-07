@@ -127,10 +127,14 @@
             <option v-for="t in teachersList" :key="t" :value="t">{{ t }}</option>
           </select>
 
-          <!-- Level Select -->
+          <!-- Level Select / Student indicator -->
+          <div v-if="isStudent" class="px-3 py-2 rounded-xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-bold flex items-center gap-1.5">
+            <span>🎓 3er Año (Media General)</span>
+          </div>
           <select 
+            v-else
             v-model="filterLevel"
-            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
+            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-medium"
           >
             <option value="">Todos los niveles</option>
             <option value="media">Media / Bachillerato</option>
@@ -622,9 +626,12 @@
               <button 
                 type="button" 
                 @click="closeModal" 
-                class="px-4 py-2 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
+                class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
               >
-                ✕ Cancelar
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
               </button>
               <button 
                 type="submit" 
@@ -671,10 +678,13 @@
           <div class="flex items-center justify-center gap-3 mt-6">
             <button 
               type="button" 
-              @click="closeDeleteModal"
-              class="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all cursor-pointer"
+              @click="closeDeleteModal" 
+              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
             >
-              Cancelar
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
             </button>
             <button 
               type="button" 
@@ -693,7 +703,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useToast } from '~/composables/useToast'
 
@@ -702,9 +712,12 @@ const apiBase = config.public.apiBase || 'http://localhost:3031'
 const authStore = useAuthStore()
 const toast = useToast()
 
+const currentRole = computed(() => authStore.userRole || authStore.user?.role || 'admin')
+const isStudent = computed(() => currentRole.value === 'student')
+
 // Role-based authorization
 const canManage = computed(() => {
-  const role = authStore.userRole || authStore.user?.role || 'admin'
+  const role = currentRole.value
   return ['admin', 'control_estudio', 'coordinator'].includes(role)
 })
 
@@ -789,7 +802,14 @@ const filteredSubjects = computed(() => {
 
     const matchesDept = !filterDepartment.value || (s.category_name === filterDepartment.value)
     const matchesTeacher = !filterTeacher.value || (s.teacher_name === filterTeacher.value)
-    const matchesLevel = !filterLevel.value || (s.grade_level && s.grade_level.toLowerCase() === filterLevel.value.toLowerCase())
+
+    // For student: restrict strictly to media level
+    let matchesLevel = true
+    if (isStudent.value) {
+      matchesLevel = !s.grade_level || s.grade_level.toLowerCase() === 'media'
+    } else {
+      matchesLevel = !filterLevel.value || (s.grade_level && s.grade_level.toLowerCase() === filterLevel.value.toLowerCase())
+    }
 
     return matchesSearch && matchesDept && matchesTeacher && matchesLevel
   })
