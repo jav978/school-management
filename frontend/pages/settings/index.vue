@@ -144,7 +144,7 @@ const settings = ref({
   schoolName: 'U.E Santa Luisa',
   schoolEmail: 'contacto@santaluisa.edu.ve',
   schoolPhone: '+58 212 123 4567',
-  schoolAddress: 'Av. San Martín, Caracas, Venezuela',
+  schoolAddress: 'Calle Real del Prado de María, Caracas, Venezuela',
   emailNotifications: true,
   pushNotifications: true,
   twoFactor: false

@@ -213,7 +213,7 @@
             <div class="text-center pt-2 border-t border-slate-200">
               <div class="w-24 border-b border-slate-600 mx-auto mb-0.5"></div>
               <p class="text-[8px] font-bold uppercase">Sor Dolores Amaya • Directora</p>
-              <p class="text-[7px] text-slate-400">Av. San Martín, Caracas • (0212) 123-4567</p>
+              <p class="text-[7px] text-slate-400">Calle Real del Prado de María, Caracas • (0212) 123-4567</p>
             </div>
           </div>
 
@@ -400,7 +400,7 @@ const cardForm = ref({
   blood_type: 'O+',
   emergency_contact: 'Representante Legal',
   emergency_phone: '+58 414 123 4567',
-  address: 'Av. San Martín, Caracas',
+  address: 'Calle Real del Prado de María, Caracas',
   photo_url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=300'
 })
 
@@ -453,7 +453,7 @@ const openCreateModal = () => {
     blood_type: 'O+',
     emergency_contact: 'Representante Legal',
     emergency_phone: '+58 414 123 4567',
-    address: 'Av. San Martín, Caracas',
+    address: 'Calle Real del Prado de María, Caracas',
     photo_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300'
   }
   isModalOpen.value = true

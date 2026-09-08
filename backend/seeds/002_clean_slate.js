@@ -102,7 +102,7 @@ exports.seed = async function(knex) {
     tax_id: 'J-12345678-9',
     email: 'contacto@santaluisa.edu.ve',
     phone_primary: '+58 212 123 4567',
-    address_line1: 'Av. San Martín, Caracas, Venezuela',
+    address_line1: 'Calle Real del Prado de María, Caracas, Venezuela',
     city_id: cities[0].id,
     state_id: states[0].id,
     country_id: countryVe.id,

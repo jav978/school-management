@@ -289,7 +289,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
         <td class="header-text">
           <div style="font-size:8px; font-weight:bold; text-transform:uppercase;">República Bolivariana de Venezuela • Ministerio del Poder Popular para la Educación</div>
           <div style="font-size:14px; font-weight:900; margin:1px 0; font-family:serif;">U.E. COLEGIO "SANTA LUISA"</div>
-          <div style="font-size:7.5px; color:#333;">Comunidad Educativa Vicenciana • Av. San Martín, Caracas • R.I.F. J-12345678-9 • Código DEA: S0000D0101</div>
+          <div style="font-size:7.5px; color:#333;">Comunidad Educativa Vicenciana • Calle Real del Prado de María, Caracas • R.I.F. J-12345678-9 • Código DEA: S0000D0101</div>
           <div style="display:inline-block; margin-top:2px; padding:1px 8px; border:1px solid #000; border-radius:10px; font-weight:900; font-size:8.5px;">
             PLANILLA OFICIAL DE INSCRIPCIÓN Y REGISTRO ESCOLAR (PÁG. 1/2)
           </div>

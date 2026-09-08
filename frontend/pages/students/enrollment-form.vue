@@ -141,7 +141,7 @@
                 U.E. COLEGIO "SANTA LUISA"
               </h2>
               <p class="text-[9px] font-medium text-slate-600 print:text-black">
-                Comunidad Educativa Vicenciana • Av. San Martín, Caracas • R.I.F. J-12345678-9 • Código DEA: S0000D0101
+                Comunidad Educativa Vicenciana • Calle Real del Prado de María, Caracas • R.I.F. J-12345678-9 • Código DEA: S0000D0101
               </p>
               <div class="inline-block mt-1 px-3 py-0.5 rounded-full bg-slate-100 print:bg-transparent border border-slate-300 print:border-black">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-900 print:text-black">

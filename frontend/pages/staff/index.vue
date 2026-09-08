@@ -257,7 +257,7 @@
         @click.self="closeModal"
       >
         <div 
-          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
         >
           <!-- Institutional Header Banner -->
           <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
@@ -286,12 +286,12 @@
 
           <!-- Scrollable Modal Body -->
           <form @submit.prevent="savePerson" class="flex-1 flex flex-col min-h-0">
-            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-6">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 pb-8 space-y-6">
               
               <!-- Section 1: Identificación y Clasificación Laboral -->
               <div class="space-y-4">
-                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-600 dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
-                  <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
+                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-brand-primary dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-primary dark:bg-brand-gold"></span>
                   <span>1. Identificación y Clasificación Laboral</span>
                 </div>
 
@@ -398,8 +398,8 @@
 
               <!-- Section 2: Datos Personales y Cargo -->
               <div class="space-y-4">
-                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-600 dark:text-brand-secondary border-b border-slate-100 dark:border-white/10 pb-1.5">
-                  <span class="w-2 h-2 rounded-full bg-brand-secondary"></span>
+                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-brand-primary dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-primary dark:bg-brand-gold"></span>
                   <span>2. Datos del Empleado, Cargo y Fotografía</span>
                 </div>
 
@@ -486,12 +486,12 @@
 
               <!-- Section 3: Contacto, Salud y Emergencia -->
               <div class="space-y-4">
-                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-brand-purple dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
-                  <span class="w-2 h-2 rounded-full bg-brand-purple dark:bg-brand-gold"></span>
+                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-brand-primary dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-primary dark:bg-brand-gold"></span>
                   <span>3. Contacto, Salud y Emergencia</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <!-- Email -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -517,7 +517,9 @@
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
                     />
                   </div>
+                </div>
 
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <!-- Blood Type -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -537,9 +539,7 @@
                       <option value="AB-">AB Negativo (AB-)</option>
                     </select>
                   </div>
-                </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <!-- Emergency Contact -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -584,11 +584,11 @@
             </div>
 
             <!-- Sticky Fixed Modal Footer -->
-            <div class="flex-shrink-0 px-6 py-4 bg-slate-50 dark:bg-[#110926] border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3">
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/95 dark:bg-[#110926]/95 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3 shadow-xs">
               <button 
                 type="button" 
                 @click="closeModal" 
-                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />

@@ -9,7 +9,7 @@
           <h2 class="text-xs uppercase font-bold tracking-widest text-slate-700">República Bolivariana de Venezuela</h2>
           <h2 class="text-xs uppercase font-bold tracking-widest text-slate-700">Ministerio del Poder Popular para la Educación</h2>
           <h1 class="text-base font-black text-slate-900 font-display">Unidad Educativa Colegio "Santa Luisa"</h1>
-          <p class="text-[11px] font-semibold text-slate-600">Prado de María – Caracas | RIF: J-00123456-7</p>
+          <p class="text-[11px] font-semibold text-slate-600">Calle Real del Prado de María, Caracas | RIF: J-00123456-7</p>
         </div>
       </div>
       <div class="flex items-center justify-between text-xs font-bold text-slate-800 mt-2 px-2 border-t border-slate-300 pt-1.5">
