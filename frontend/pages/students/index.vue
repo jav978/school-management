@@ -237,6 +237,17 @@
 
             <!-- Action buttons -->
             <div class="flex items-center gap-1 flex-shrink-0">
+              <!-- Ficha Oficial de Inscripción Button -->
+              <button 
+                @click="navigateTo(`/students/enrollment-form?student_id=${student.id}`)" 
+                class="w-8 h-8 rounded-xl text-brand-purple hover:text-brand-primary hover:bg-brand-primary/10 dark:hover:bg-brand-purple/30 border border-transparent hover:border-brand-primary/20 flex items-center justify-center transition-all cursor-pointer"
+                title="Ficha Oficial de Inscripción (2026-2027)"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </button>
+
               <button 
                 @click="openEditModal(student)" 
                 class="w-8 h-8 rounded-xl text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 border border-transparent hover:border-amber-500/30 flex items-center justify-center transition-all cursor-pointer"
@@ -376,6 +387,15 @@
               </td>
               <td class="py-3.5 pr-5 text-right">
                 <div class="flex items-center justify-end gap-1.5">
+                  <button 
+                    @click="navigateTo(`/students/enrollment-form?student_id=${student.id}`)" 
+                    class="p-1.5 rounded-lg text-brand-purple dark:text-brand-secondary hover:text-brand-primary dark:hover:text-white hover:bg-brand-primary/10 dark:hover:bg-brand-purple/20" 
+                    title="Ficha Oficial de Inscripción (2026-2027)"
+                  >
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </button>
                   <button @click="openEditModal(student)" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-primary dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800" title="Editar">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />

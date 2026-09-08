@@ -54,10 +54,11 @@ require('./src/services/events')(app)
 require('./src/services/announcements')(app)
 require('./src/services/notifications')(app)
 
-// Settings & Uploads
+// Settings, Uploads & PDF Documents
 require('./src/services/settings')(app)
 require('./src/services/uploads')(app)
+require('./src/services/enrollment-pdf')(app)
 
 app.listen(PORT).then(() => {
-  console.log(`School Management API running on port ${PORT}`)
+  console.log(`Feathers application started on http://localhost:${PORT}`)
 })

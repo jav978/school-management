@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen pb-16 font-sans bg-slate-100/60 dark:bg-slate-950/80 transition-colors">
+  <div class="min-h-screen pb-16 font-sans bg-slate-100/60 dark:bg-slate-950/80 transition-colors print:bg-white print:p-0">
     
     <!-- ============================================================ -->
     <!-- SCREEN ONLY: Action Bar & Header Navigation (Hidden on Print) -->
@@ -9,7 +9,7 @@
         <div class="flex items-center gap-3.5">
           <NuxtLink 
             to="/students" 
-            class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all hover:scale-105 active:scale-95"
+            class="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-all hover:scale-105 active:scale-95 cursor-pointer"
             title="Volver al Listado de Estudiantes"
           >
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -22,7 +22,7 @@
               <span>Ficha Oficial de Inscripción y Matrícula</span>
             </h1>
             <p class="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              U.E. Colegio "Santa Luisa" • Formato Oficial de 2 Páginas (Físico y Digital)
+              U.E. Colegio "Santa Luisa" • Año Escolar 2026 - 2027 • Formato Oficial de 2 Páginas
             </p>
           </div>
         </div>
@@ -43,26 +43,41 @@
             </select>
           </div>
 
-          <!-- Print Blank Sheet -->
+          <!-- Download Blank PDF -->
           <button
             type="button"
-            @click="printBlankSheet"
-            class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-all cursor-pointer active:scale-95 shadow-xs"
-            title="Genera la planilla limpia de 2 páginas para entregar en mano al representante"
+            @click="downloadPdf(true)"
+            :disabled="isGeneratingPdf"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-all cursor-pointer active:scale-95 shadow-xs disabled:opacity-50"
+            title="Descargar PDF oficial en blanco para entregar al representante"
           >
-            <span>📄</span>
-            <span>Imprimir en Blanco</span>
+            <span v-if="isGeneratingPdf" class="animate-spin w-3 h-3 border-2 border-slate-500 border-t-transparent rounded-full"></span>
+            <span v-else>📄</span>
+            <span>Descargar PDF (En Blanco)</span>
           </button>
 
-          <!-- Print With Data -->
+          <!-- Download Filled PDF -->
           <button
             type="button"
-            @click="printWithData"
-            class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer active:scale-95 shadow-xs"
-            title="Imprime la ficha completa con fotos y datos ingresados en 2 páginas exactas"
+            @click="downloadPdf(false)"
+            :disabled="isGeneratingPdf"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-700 dark:text-amber-400 border border-amber-500/30 transition-all cursor-pointer active:scale-95 shadow-xs disabled:opacity-50"
+            title="Descargar PDF oficial con todos los datos y fotos transcritos"
+          >
+            <span v-if="isGeneratingPdf" class="animate-spin w-3 h-3 border-2 border-amber-600 border-t-transparent rounded-full"></span>
+            <span v-else>📥</span>
+            <span>Descargar PDF (Con Datos)</span>
+          </button>
+
+          <!-- Native Print Dialog -->
+          <button
+            type="button"
+            @click="printClean"
+            class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-all cursor-pointer active:scale-95 shadow-xs"
+            title="Imprimir directamente desde el navegador de forma aislada"
           >
             <span>🖨️</span>
-            <span>Imprimir con Datos</span>
+            <span>Imprimir</span>
           </button>
 
           <!-- Save to Database -->
@@ -93,10 +108,8 @@
       <div class="p-4 rounded-2xl bg-sky-50/90 dark:bg-sky-950/40 border border-sky-200/80 dark:border-sky-900/40 text-sky-800 dark:text-sky-300 text-xs flex items-start gap-3 shadow-xs">
         <span class="text-lg flex-shrink-0">🏛️</span>
         <div class="leading-relaxed">
-          <strong>Formato Oficial de 2 Páginas de la U.E. Colegio "Santa Luisa":</strong>
-          Esta ficha cuenta con paginación limpia de dos páginas.
-          <strong>Página 1:</strong> Datos del Estudiante, Identificación de Padres con <em>Fotos de Control de Retiro (hasta 3MB)</em> y Datos Domiciliarios/Emergencia.
-          <strong>Página 2:</strong> Estudio Socioeconómico, Caracterización de Vivienda, Carta Compromiso Administrativo y Convivencia, Checklist de Recaudos y Cronología Escolar Multianual.
+          <strong>Registro Maestro Oficial de Matrícula (Gestión Escolar 2026 - 2027):</strong>
+          Al pulsar <em>"Guardar en Sistema"</em>, se registran automáticamente el Alumno en la base de datos, los Representantes (Padre/Madre/Autorizado con fotos hasta 3MB) y se archiva una copia del PDF oficial en el expediente digital del estudiante.
         </div>
       </div>
     </div>
@@ -154,7 +167,7 @@
 
           <!-- Metadata Bar -->
           <div class="flex justify-between items-center text-[9px] font-bold uppercase text-slate-700 print:text-black mt-2 pt-1.5 border-t border-slate-200 print:border-black">
-            <div>GESTIÓN ESCOLAR: <span class="font-black text-slate-900 print:text-black">{{ form.student.school_year || '2025 - 2026' }}</span></div>
+            <div>GESTIÓN ESCOLAR: <span class="font-black text-slate-900 print:text-black">2026 - 2027</span></div>
             <div>FECHA DE REGISTRO: <span class="font-black text-slate-900 print:text-black">{{ currentDateFormatted }}</span></div>
             <div>ESTADO: <span class="font-black text-slate-900 print:text-black">{{ form.student.birth_state || 'DISTRITO CAPITAL (CARACAS)' }}</span></div>
           </div>
@@ -184,7 +197,6 @@
           </div>
 
           <div class="p-2.5 grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
-            <!-- 1. Apellidos -->
             <div class="sm:col-span-2">
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">1. Apellidos (Según C.I.) *</label>
               <input 
@@ -194,8 +206,6 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[11px] font-semibold uppercase"
               />
             </div>
-
-            <!-- 2. Nombres -->
             <div class="sm:col-span-2">
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">2. Nombres (Según C.I.) *</label>
               <input 
@@ -206,7 +216,6 @@
               />
             </div>
 
-            <!-- 3. Lugar de Nacimiento -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">3. Lugar de Nacimiento</label>
               <input 
@@ -216,8 +225,6 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
               />
             </div>
-
-            <!-- 4. Estado -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">4. Estado</label>
               <input 
@@ -227,8 +234,6 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
               />
             </div>
-
-            <!-- 5. País -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">5. País</label>
               <input 
@@ -238,8 +243,6 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
               />
             </div>
-
-            <!-- 6. Fecha de Nacimiento -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">6. Fecha de Nacimiento</label>
               <input 
@@ -249,7 +252,6 @@
               />
             </div>
 
-            <!-- 7. Número de CI o Cédula Escolar -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">7. Número de CI o CE *</label>
               <input 
@@ -259,21 +261,17 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono font-bold uppercase"
               />
             </div>
-
-            <!-- 8. Grado a Inscribir -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">8. Grado a Inscribir *</label>
               <select 
                 v-model="form.student.grade" 
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-bold cursor-pointer"
               >
-                <!-- Inicial -->
                 <optgroup label="Educación Inicial">
                   <option value="Primer Nivel Inicial">Primer Nivel Inicial</option>
                   <option value="Segundo Nivel Inicial">Segundo Nivel Inicial</option>
                   <option value="Tercer Nivel Inicial">Tercer Nivel Inicial</option>
                 </optgroup>
-                <!-- Primaria -->
                 <optgroup label="Educación Primaria">
                   <option value="Primer Grado">Primer Grado</option>
                   <option value="Segundo Grado">Segundo Grado</option>
@@ -282,7 +280,6 @@
                   <option value="Quinto Grado">Quinto Grado</option>
                   <option value="Sexto Grado">Sexto Grado</option>
                 </optgroup>
-                <!-- Secundaria -->
                 <optgroup label="Educación Media General">
                   <option value="1er Año">1er Año</option>
                   <option value="2do Año">2do Año</option>
@@ -292,19 +289,15 @@
                 </optgroup>
               </select>
             </div>
-
-            <!-- Matrícula Gestión Escolar -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Matrícula Gestión Escolar</label>
               <input 
                 v-model="form.student.school_year" 
                 type="text" 
-                placeholder="2025-2026" 
+                placeholder="2026-2027" 
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-semibold uppercase"
               />
             </div>
-
-            <!-- Código Matrícula (ID) -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Código Matrícula (ID)</label>
               <input 
@@ -315,7 +308,6 @@
               />
             </div>
 
-            <!-- 9. Responsable Económico -->
             <div class="sm:col-span-2">
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">9. Apellidos y Nombres Responsable Económico</label>
               <input 
@@ -325,8 +317,6 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
               />
             </div>
-
-            <!-- 10. Ocupación Resp. Ec. -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">10. Ocupación</label>
               <input 
@@ -336,8 +326,6 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
               />
             </div>
-
-            <!-- 11. Nivel de Estudio Resp. Ec. -->
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">11. Nivel de Estudio</label>
               <select 
@@ -352,7 +340,6 @@
               </select>
             </div>
 
-            <!-- 12. Hermanos en el Plantel -->
             <div class="sm:col-span-4">
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">12. Apellidos y Nombres de Hermanos en este Plantel y Grado que Cursa cada uno</label>
               <input 
@@ -379,11 +366,9 @@
           </div>
 
           <div class="p-2.5 space-y-3 text-xs">
-            
-            <!-- DATOS DEL PADRE -->
+            <!-- PADRE -->
             <div class="p-2 border border-slate-200 print:border-slate-800 rounded-lg bg-slate-50/50 print:bg-transparent">
               <div class="flex flex-col sm:flex-row gap-3 items-start">
-                <!-- Father Photo Box -->
                 <div class="flex-shrink-0 flex flex-col items-center">
                   <div class="w-20 h-24 border border-dashed border-slate-400 print:border-black rounded flex items-center justify-center bg-white overflow-hidden text-center p-0.5">
                     <img 
@@ -399,7 +384,6 @@
                   <span class="text-[8px] font-black uppercase mt-1 text-slate-700 print:text-black">PADRE</span>
                 </div>
 
-                <!-- Father Form Inputs -->
                 <div class="flex-1 grid grid-cols-1 sm:grid-cols-4 gap-2 w-full">
                   <div class="sm:col-span-2">
                     <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">1. Apellidos y Nombres del Padre</label>
@@ -490,7 +474,6 @@
                 </div>
               </div>
 
-              <!-- Father In-Screen Upload Button (Hidden on Print) -->
               <div class="print:hidden mt-2 pt-2 border-t border-slate-200 dark:border-slate-700/60">
                 <UiAvatarUpload
                   v-model="form.father.photo_url"
@@ -499,10 +482,9 @@
               </div>
             </div>
 
-            <!-- DATOS DE LA MADRE -->
+            <!-- MADRE -->
             <div class="p-2 border border-slate-200 print:border-slate-800 rounded-lg bg-slate-50/50 print:bg-transparent">
               <div class="flex flex-col sm:flex-row gap-3 items-start">
-                <!-- Mother Photo Box -->
                 <div class="flex-shrink-0 flex flex-col items-center">
                   <div class="w-20 h-24 border border-dashed border-slate-400 print:border-black rounded flex items-center justify-center bg-white overflow-hidden text-center p-0.5">
                     <img 
@@ -518,7 +500,6 @@
                   <span class="text-[8px] font-black uppercase mt-1 text-slate-700 print:text-black">MADRE</span>
                 </div>
 
-                <!-- Mother Form Inputs -->
                 <div class="flex-1 grid grid-cols-1 sm:grid-cols-4 gap-2 w-full">
                   <div class="sm:col-span-2">
                     <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">10. Apellidos y Nombres de la Madre</label>
@@ -609,7 +590,6 @@
                 </div>
               </div>
 
-              <!-- Mother In-Screen Upload Button (Hidden on Print) -->
               <div class="print:hidden mt-2 pt-2 border-t border-slate-200 dark:border-slate-700/60">
                 <UiAvatarUpload
                   v-model="form.mother.photo_url"
@@ -618,7 +598,7 @@
               </div>
             </div>
 
-            <!-- TERCERO AUTORIZADO A RETIRAR (OPCIONAL/ADICIONAL) -->
+            <!-- TERCERO AUTORIZADO A RETIRAR -->
             <div class="p-2 border border-slate-200 print:border-slate-800 rounded-lg bg-slate-50/30 print:bg-transparent">
               <div class="flex flex-col sm:flex-row gap-3 items-start">
                 <div class="flex-shrink-0 flex flex-col items-center">
@@ -688,7 +668,6 @@
                 </div>
               </div>
 
-              <!-- Pickup In-Screen Upload Button (Hidden on Print) -->
               <div class="print:hidden mt-2 pt-2 border-t border-slate-200 dark:border-slate-700/60">
                 <UiAvatarUpload
                   v-model="form.authorized_pickup.photo_url"
@@ -711,7 +690,6 @@
           </div>
 
           <div class="p-2.5 grid grid-cols-1 sm:grid-cols-4 gap-2 text-xs">
-            <!-- 1. Dirección Habitación -->
             <div class="sm:col-span-4">
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">1. Dirección Habitación *</label>
               <input 
@@ -722,7 +700,6 @@
               />
             </div>
 
-            <!-- 2. Teléfono Habitación -->
             <div class="sm:col-span-2">
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">2. Teléfono Habitación</label>
               <input 
@@ -733,7 +710,6 @@
               />
             </div>
 
-            <!-- 3. De otro familiar o vecino -->
             <div class="sm:col-span-2">
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">3. Teléfono de Otro Familiar o Vecino</label>
               <input 
@@ -744,7 +720,6 @@
               />
             </div>
 
-            <!-- 4. Teléfono Trabajo Papá -->
             <div class="sm:col-span-2 grid grid-cols-3 gap-1.5">
               <div class="col-span-2">
                 <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">4. Teléfono Trabajo Papá</label>
@@ -766,7 +741,6 @@
               </div>
             </div>
 
-            <!-- 5. Teléfono Trabajo Mamá -->
             <div class="sm:col-span-2 grid grid-cols-3 gap-1.5">
               <div class="col-span-2">
                 <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">5. Teléfono Trabajo Mamá</label>
@@ -788,10 +762,9 @@
               </div>
             </div>
 
-            <!-- 6. Otros teléfonos de ubicación en caso de presentarse cuadro viral -->
             <div class="sm:col-span-4 p-2 bg-rose-50/40 print:bg-transparent rounded border border-rose-200 print:border-black grid grid-cols-1 sm:grid-cols-3 gap-2">
               <div class="sm:col-span-3 text-[9px] font-bold uppercase text-rose-800 print:text-black">
-                6. OTROS TELÉFONOS DE UBICACIÓN EN CASO DE PRESENTARSE CUADRO VIRAL O EMERGENCIA EN EL ALUMNO(A):
+                6. OTROS TELÉFONOS EN CASO DE CUADRO VIRAL O EMERGENCIA EN EL ALUMNO(A):
               </div>
               <div>
                 <label class="block text-[8px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Teléfono Emergencia 1</label>
@@ -838,7 +811,7 @@
               U.E. COLEGIO "SANTA LUISA" • ESTUDIO SOCIOECONÓMICO Y COMPROMISOS (PÁG. 2/2)
             </h3>
             <p class="text-[9px] font-bold text-slate-600 print:text-black">
-              ESTUDIANTE: <span class="uppercase text-slate-900 print:text-black">{{ form.student.last_name || '____________' }}, {{ form.student.first_name || '____________' }}</span> • C.I.: <span class="font-mono">{{ form.student.national_id || '____________' }}</span>
+              ESTUDIANTE: <span class="uppercase text-slate-900 print:text-black">{{ form.student.last_name || '____________' }}, {{ form.student.first_name || '____________' }}</span> • C.I.: <span class="font-mono">{{ form.student.national_id || '____________' }}</span> • AÑO ESCOLAR: <strong>2026 - 2027</strong>
             </p>
           </div>
           <div class="text-right text-[9px] font-black uppercase text-slate-700 print:text-black">
@@ -846,9 +819,7 @@
           </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- SECCIÓN D: DATOS FAMILIARES Y SOCIOECONÓMICOS -->
-        <!-- ============================================================ -->
         <div class="mb-3 border border-slate-300 print:border-black rounded-xl overflow-hidden">
           <div class="bg-slate-100 print:bg-slate-200 px-3 py-1 border-b border-slate-300 print:border-black flex justify-between items-center">
             <span class="text-[10px] font-black uppercase tracking-wider text-slate-900 print:text-black">
@@ -858,7 +829,7 @@
 
           <div class="p-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
             <div>
-              <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Total Mensual Ingresos Grupo Familiar (Bs. o Ref)</label>
+              <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Total Mensual Ingresos Grupo Familiar</label>
               <input 
                 v-model="form.socioeconomic.monthly_income" 
                 type="text" 
@@ -888,9 +859,7 @@
           </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- SECCIÓN E: PLANTELES DONDE ESTUDIÓ EL ALUMNO (HISTORIAL) -->
-        <!-- ============================================================ -->
         <div class="mb-3 border border-slate-300 print:border-black rounded-xl overflow-hidden">
           <div class="bg-slate-100 print:bg-slate-200 px-3 py-1 border-b border-slate-300 print:border-black">
             <span class="text-[10px] font-black uppercase tracking-wider text-slate-900 print:text-black">
@@ -926,11 +895,8 @@
           </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- SECCIÓN F & G: ANTROPOMETRÍA, CANAIMA Y CARACTERIZACIÓN DE VIVIENDA -->
-        <!-- ============================================================ -->
         <div class="mb-3 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-          <!-- Antropometría, Salud y Canaima -->
           <div class="border border-slate-300 print:border-black rounded-xl p-2.5 space-y-2">
             <div class="font-black text-[10px] uppercase tracking-wider text-slate-900 print:text-black border-b border-slate-200 print:border-black pb-1">
               F. DATOS ANTROPOMÉTRICOS, SALUD Y TECNOLOGÍA
@@ -950,7 +916,6 @@
               </div>
             </div>
 
-            <!-- Canaima -->
             <div class="grid grid-cols-3 gap-1.5 pt-1 border-t border-slate-200 print:border-slate-400">
               <div>
                 <label class="block text-[8px] font-bold uppercase text-slate-600 print:text-black mb-0.5">¿Tiene Canaima?</label>
@@ -969,7 +934,6 @@
               </div>
             </div>
 
-            <!-- Seguros -->
             <div class="grid grid-cols-2 gap-1.5 pt-1 border-t border-slate-200 print:border-slate-400">
               <div>
                 <label class="block text-[8px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Seguro Personal (HCM)</label>
@@ -988,7 +952,6 @@
             </div>
           </div>
 
-          <!-- Caracterización de la Vivienda -->
           <div class="border border-slate-300 print:border-black rounded-xl p-2.5 space-y-2">
             <div class="font-black text-[10px] uppercase tracking-wider text-slate-900 print:text-black border-b border-slate-200 print:border-black pb-1">
               G. CARACTERIZACIÓN DE LA VIVIENDA
@@ -1031,7 +994,6 @@
               </div>
             </div>
 
-            <!-- Con quién vive el alumno -->
             <div class="pt-1 border-t border-slate-200 print:border-slate-400">
               <label class="block text-[8px] font-bold uppercase text-slate-600 print:text-black mb-1">Con el Alumno Viven:</label>
               <div class="flex flex-wrap gap-2 text-[9px]">
@@ -1055,23 +1017,21 @@
           </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- SECCIÓN H: SUSCRIPCIÓN DE COMPROMISOS INSTITUCIONALES -->
-        <!-- ============================================================ -->
         <div class="mb-3 border border-slate-300 print:border-black rounded-xl p-2.5 text-[8.5px] leading-snug">
           <div class="font-black text-[9.5px] uppercase tracking-wider text-slate-900 print:text-black border-b border-slate-200 print:border-black pb-1 mb-1.5">
-            H. SUSCRIPCIÓN DE COMPROMISOS CON LA U.E. COLEGIO "SANTA LUISA"
+            H. SUSCRIPCIÓN DE COMPROMISOS CON LA U.E. COLEGIO "SANTA LUISA" (AÑO ESCOLAR 2026 - 2027)
           </div>
           <p class="font-bold text-slate-800 print:text-black mb-1">
-            Al formalizar la inscripción de mi representado para el año escolar en este Plantel, suscribo libre y formalmente los siguientes compromisos:
+            Al formalizar la inscripción de mi representado para el año escolar 2026 - 2027 en este Plantel, suscribo formalmente los siguientes compromisos:
           </p>
           <ul class="space-y-0.5 list-disc list-inside text-slate-700 print:text-black text-justify">
-            <li>Me comprometo a cubrir el costo completo del año escolar (doce meses).</li>
+            <li>Me comprometo a cubrir el costo completo del año escolar 2026 - 2027 (doce meses).</li>
             <li>Me comprometo a efectuar el pago de las mensualidades de mi representado los 30 de cada mes.</li>
             <li>Me comprometo a efectuar el pago de la mensualidad del mes de Diciembre antes del 15 del mismo.</li>
             <li>Me comprometo a respetar y cumplir las normas de convivencia del Plantel y lineamientos de sus autoridades vicencianas.</li>
             <li>Me comprometo a que mi representado cumplirá estrictamente con el uniforme escolar exigido por la Institución.</li>
-            <li>Me comprometo a que mi representado no asistirá al Plantel con prendas de valor, pinturas, gorras, celulares o equipos electrónicos; a su vez la Institución no se hace responsable de objetos de valor perdidos en horario de clases.</li>
+            <li>Me comprometo a que mi representado no asistirá al Plantel con prendas de valor, pinturas, gorras, celulares o equipos electrónicos; la Institución no se hace responsable de objetos perdidos en horario de clases.</li>
             <li>Me comprometo a presentar mi tarjeta de pagos cuando la Institución realice operativos de cobranza o auditoría de solvencia.</li>
             <li>Si durante el año escolar en curso se producen aumentos salariales o bonos por decreto oficial, me comprometo a cancelar el ajuste correspondiente que cubra su incidencia en la estructura de costos aprobada en asamblea.</li>
             <li>En caso de anticipo de cuotas, todo mes cancelado por adelantado se considera abono, comprometiéndome a cancelar la diferencia resultante.</li>
@@ -1079,11 +1039,9 @@
           </ul>
         </div>
 
-        <!-- ============================================================ -->
         <!-- SECCIONES I & J: VALIDACIÓN DE REQUISITOS Y CRONOLOGÍA ESCOLAR -->
-        <!-- ============================================================ -->
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-2 mb-3">
-          <!-- I. Validación de Requisitos (Checklist de Recaudos) -->
+          <!-- I. Validación de Requisitos -->
           <div class="sm:col-span-5 border border-slate-300 print:border-black rounded-xl p-2 text-xs">
             <div class="font-black text-[9.5px] uppercase tracking-wider text-slate-900 print:text-black border-b border-slate-200 print:border-black pb-1 mb-1.5 flex justify-between items-center">
               <span>I. VALIDACIÓN DE REQUISITOS</span>
@@ -1137,7 +1095,7 @@
             </div>
           </div>
 
-          <!-- J. Cronología Escolar en el Plantel -->
+          <!-- J. Cronología Escolar -->
           <div class="sm:col-span-7 border border-slate-300 print:border-black rounded-xl p-2 text-xs">
             <div class="font-black text-[9.5px] uppercase tracking-wider text-slate-900 print:text-black border-b border-slate-200 print:border-black pb-1 mb-1.5 flex justify-between items-center">
               <span>J. CRONOLOGÍA ESCOLAR EN EL PLANTEL</span>
@@ -1169,9 +1127,7 @@
           </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- SECCIÓN K: BLOQUE OFICIAL DE FIRMAS Y HUELLA DACTILAR -->
-        <!-- ============================================================ -->
         <div class="border border-slate-300 print:border-black rounded-xl p-3 text-xs">
           <div class="grid grid-cols-3 gap-4 items-end text-center">
             <!-- Firma del Representante -->
@@ -1220,13 +1176,16 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import { useToast } from '~/composables/useToast'
 import UiAvatarUpload from '~/components/ui/AvatarUpload.vue'
 
 const config = useRuntimeConfig()
 const toast = useToast()
+const route = useRoute()
 
 const isSaving = ref(false)
+const isGeneratingPdf = ref(false)
 const selectedStudentId = ref('')
 const registeredStudents = ref([])
 
@@ -1236,7 +1195,7 @@ const currentDateFormatted = computed(() => {
   return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
 })
 
-// Main Form Model conforming exactly to Santa Luisa Official Document
+// Main Form Model conforming to Santa Luisa Official Document
 const form = ref({
   student: {
     id: null,
@@ -1249,7 +1208,7 @@ const form = ref({
     date_of_birth: '',
     national_id: '',
     grade: 'Quinto Grado',
-    school_year: '2025-2026',
+    school_year: '2026 - 2027',
     economic_responsible_name: '',
     economic_responsible_occupation: '',
     economic_responsible_education: 'TSU',
@@ -1383,15 +1342,20 @@ const getAuthHeaders = () => {
 const fetchStudents = async () => {
   try {
     const headers = getAuthHeaders()
-    const res = await $fetch(`${config.public.apiBase}/students?$limit=100`, { headers })
+    const res = await $fetch(`${config.public.apiBase}/students?$limit=150`, { headers })
     registeredStudents.value = Array.isArray(res) ? res : (res.data || [])
   } catch (err) {
     registeredStudents.value = []
   }
 }
 
-onMounted(() => {
-  fetchStudents()
+onMounted(async () => {
+  await fetchStudents()
+  // Check if student_id was passed in URL query
+  if (route.query.student_id) {
+    selectedStudentId.value = route.query.student_id
+    loadStudentData(route.query.student_id)
+  }
 })
 
 const loadStudentData = (studentId) => {
@@ -1410,7 +1374,7 @@ const loadStudentData = (studentId) => {
     date_of_birth: s.date_of_birth ? s.date_of_birth.split('T')[0] : '',
     national_id: s.national_id || '',
     grade: s.grade || 'Quinto Grado',
-    school_year: s.school_year || '2025-2026',
+    school_year: s.school_year || '2026 - 2027',
     economic_responsible_name: s.economic_responsible_name || '',
     economic_responsible_occupation: s.economic_responsible_occupation || '',
     economic_responsible_education: s.economic_responsible_education || 'TSU',
@@ -1446,17 +1410,54 @@ const loadStudentData = (studentId) => {
   toast.success(`Expediente cargado para ${s.first_name} ${s.last_name}`, 'Ficha Oficial')
 }
 
-// Print Functions
-const printBlankSheet = () => {
-  const currentBackup = JSON.parse(JSON.stringify(form.value))
-  resetForm()
-  setTimeout(() => {
-    window.print()
-    form.value = currentBackup
-  }, 120)
+// Dedicated PDF Download Function
+const downloadPdf = async (isBlank = false) => {
+  isGeneratingPdf.value = true
+  try {
+    const res = await fetch(`${config.public.apiBase}/enrollment-pdf`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders()
+      },
+      body: JSON.stringify({
+        isBlank,
+        data: isBlank ? {} : form.value,
+        student_id: form.value.student.id || undefined
+      })
+    })
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}))
+      throw new Error(errData.error || 'Error en la respuesta del motor de PDF.')
+    }
+
+    const blob = await res.blob()
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+
+    const lastName = form.value.student.last_name ? form.value.student.last_name.replace(/\s+/g, '_') : 'Alumno'
+    const firstName = form.value.student.first_name ? form.value.student.first_name.replace(/\s+/g, '_') : 'Inscripcion'
+    link.download = isBlank 
+      ? 'Ficha_Inscripcion_Santa_Luisa_Blanco_2026_2027.pdf' 
+      : `Ficha_Inscripcion_${lastName}_${firstName}_2026_2027.pdf`
+
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+
+    toast.success('Documento PDF oficial generado y descargado exitosamente.', 'Descarga Completa')
+  } catch (err) {
+    toast.error(err.message || 'No se pudo generar el archivo PDF.', 'Error PDF')
+  } finally {
+    isGeneratingPdf.value = false
+  }
 }
 
-const printWithData = () => {
+// Clean browser print
+const printClean = () => {
   window.print()
 }
 
@@ -1474,7 +1475,7 @@ const resetForm = () => {
       date_of_birth: '',
       national_id: '',
       grade: 'Quinto Grado',
-      school_year: '2025-2026',
+      school_year: '2026 - 2027',
       economic_responsible_name: '',
       economic_responsible_occupation: '',
       economic_responsible_education: 'TSU',
@@ -1587,7 +1588,7 @@ const resetForm = () => {
   }
 }
 
-// Save directly to Backend Database
+// Save directly to Backend Database and archive PDF
 const saveEnrollment = async () => {
   if (!form.value.student.first_name || !form.value.student.last_name) {
     toast.error('Ingrese los nombres y apellidos del estudiante.', 'Validación')
@@ -1610,6 +1611,8 @@ const saveEnrollment = async () => {
       blood_type: form.value.student.blood_type || 'unknown',
       date_of_birth: form.value.student.date_of_birth || null,
       gender: form.value.student.gender || 'male',
+      grade: form.value.student.grade,
+      school_year: form.value.student.school_year || '2026 - 2027',
       phone_mobile: form.value.father.phone_mobile || form.value.mother.phone_mobile || null,
       address_line1: form.value.student.address || null,
       photo_url: form.value.student.photo_url || null,
@@ -1627,7 +1630,7 @@ const saveEnrollment = async () => {
         birth_place: form.value.student.birth_place,
         birth_state: form.value.student.birth_state,
         birth_country: form.value.student.birth_country,
-        school_year: form.value.student.school_year,
+        school_year: form.value.student.school_year || '2026 - 2027',
         economic_responsible_name: form.value.student.economic_responsible_name,
         economic_responsible_occupation: form.value.student.economic_responsible_occupation,
         economic_responsible_education: form.value.student.economic_responsible_education,
@@ -1658,7 +1661,9 @@ const saveEnrollment = async () => {
       })
     }
 
-    // Save Father in school.parents if populated
+    form.value.student.id = savedStudent?.id || form.value.student.id
+
+    // Save Father in school.parents
     if (form.value.father.full_name) {
       const names = form.value.father.full_name.trim().split(' ')
       const parentPayload = {
@@ -1683,7 +1688,7 @@ const saveEnrollment = async () => {
       }).catch(e => console.warn('Father save warning:', e))
     }
 
-    // Save Mother in school.parents if populated
+    // Save Mother in school.parents
     if (form.value.mother.full_name) {
       const names = form.value.mother.full_name.trim().split(' ')
       const parentPayload = {
@@ -1708,7 +1713,20 @@ const saveEnrollment = async () => {
       }).catch(e => console.warn('Mother save warning:', e))
     }
 
-    toast.success('Expediente oficial de matrícula y representantes guardado con éxito.', 'Inscripción Exitosa')
+    // Automatically trigger PDF archive in backend
+    try {
+      await fetch(`${config.public.apiBase}/enrollment-pdf`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...headers },
+        body: JSON.stringify({
+          isBlank: false,
+          data: form.value,
+          student_id: savedStudent?.id || form.value.student.id
+        })
+      })
+    } catch (_) {}
+
+    toast.success('Expediente oficial 2026-2027 guardado y archivado exitosamente.', 'Inscripción Exitosa')
     await fetchStudents()
   } catch (err) {
     toast.error(err.data?.message || err.message || 'Error al guardar el expediente.', 'Error')

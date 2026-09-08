@@ -11,9 +11,14 @@
           </span>
           <span class="text-slate-500 dark:text-slate-400 text-xs font-mono">v2.4.0 — U.E Santa Luisa</span>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-black font-display tracking-tight text-slate-900 dark:text-white">
-          Arquitectura, Entidades y Normativas
-        </h1>
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 flex items-center justify-center text-brand-primary dark:text-brand-gold border border-brand-primary/20 dark:border-brand-purple/40 text-xl shadow-xs">
+            📖
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-black font-display tracking-tight text-slate-900 dark:text-white">
+            Documentación del Sistema
+          </h1>
+        </div>
         <p class="text-slate-600 dark:text-slate-300 text-sm mt-1 max-w-2xl leading-relaxed">
           Documentación técnica y operativa completa del sistema de gestión escolar adaptado a las regulaciones del Ministerio del Poder Popular para la Educación (MPPE) de Venezuela.
         </p>

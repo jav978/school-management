@@ -41,9 +41,14 @@
             👁 Consulta (Solo Lectura)
           </span>
         </div>
-        <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight">
-          Horarios Escolares
-        </h1>
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 flex items-center justify-center text-brand-primary dark:text-brand-gold border border-brand-primary/20 dark:border-brand-purple/40 text-xl shadow-xs">
+            🗓️
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight">
+            Horarios Escolares
+          </h1>
+        </div>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
           U.E Santa Luisa • Jornada pedagógica de 7:00 am a 3:00 pm en bloques de 45 minutos
         </p>
