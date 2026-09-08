@@ -289,105 +289,170 @@
       </div>
     </div>
 
-    <!-- Issue / Edit Certificate Modal -->
-    <div 
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm"
-    >
-      <div class="bg-white dark:bg-[#170f33] rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100">
-        <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-white/10">
-          <h2 class="text-xl font-black font-display text-slate-900 dark:text-white">
-            {{ isEditingCert ? 'Editar Diploma de Honor' : 'Emitir Diploma de Honor' }}
-          </h2>
-          <button @click="isModalOpen = false" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
+    <!-- Issue / Edit Certificate Modal (Standardized Institutional Header) -->
+    <Teleport to="body">
+      <div 
+        v-if="isModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        @click.self="isModalOpen = false"
+      >
+        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-scale-up">
+          <!-- Institutional Header Banner -->
+          <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/10 border border-brand-gold/50 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+                🎖️
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold font-display text-white tracking-tight">
+                  {{ isEditingCert ? 'Editar Diploma de Honor' : 'Emitir Diploma de Honor' }}
+                </h2>
+                <p class="text-[11px] font-semibold text-brand-gold/90 uppercase tracking-wider">
+                  U.E SANTA LUISA • PROTOCOLO DE DIPLOMAS Y RECONOCIMIENTOS
+                </p>
+              </div>
+            </div>
+            <button 
+              @click="isModalOpen = false" 
+              type="button" 
+              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Scrollable Modal Body -->
+          <form @submit.prevent="saveCertificate" class="flex-1 flex flex-col min-h-0">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre Completo del Destinatario *</label>
+                <input 
+                  v-model="certForm.recipient_name" 
+                  required 
+                  placeholder="Ej: Pedro Pérez Gómez"
+                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tipo de Destinatario</label>
+                  <select 
+                    v-model="certForm.recipient_type"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+                  >
+                    <option value="estudiante">Estudiante</option>
+                    <option value="profesor">Profesor / Docente</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tipo de Certificado</label>
+                  <select 
+                    v-model="certForm.certificate_type"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold text-amber-600 dark:text-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+                  >
+                    <option value="excelencia_academica">Certificado de Excelencia Académica</option>
+                    <option value="mejor_promedio">Diploma al Mejor Promedio</option>
+                    <option value="conducta_excelente">Reconocimiento a la Conducta Intachable</option>
+                    <option value="participacion_destacada">Mención de Participación Destacada</option>
+                    <option value="reconocimiento_docente">Reconocimiento a la Labor Docente</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Año Escolar</label>
+                  <input 
+                    v-model="certForm.academic_year" 
+                    placeholder="2025-2026"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Promedio Obtenido (1-20)</label>
+                  <input 
+                    v-model.number="certForm.average_grade" 
+                    type="number" 
+                    step="0.01" 
+                    placeholder="19.8"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Grado / Nivel</label>
+                <input 
+                  v-model="certForm.grade_level" 
+                  placeholder="1er Año de Educación Media General"
+                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Texto Conmemorativo / Motivo</label>
+                <textarea 
+                  v-model="certForm.description" 
+                  rows="3"
+                  placeholder="Por haber demostrado excelencia académica, constancia y disciplina..."
+                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 resize-none"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Elevated Standard Footer -->
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/95 dark:bg-[#110926]/95 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3 shadow-xs">
+              <button 
+                type="button" 
+                @click="isModalOpen = false"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
+              </button>
+              <button 
+                type="submit" 
+                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] border border-brand-primary/30 cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ isEditingCert ? 'Guardar Cambios' : 'Emitir y Guardar Diploma' }}</span>
+              </button>
+            </div>
+          </form>
         </div>
+      </div>
+    </Teleport>
 
-        <form @submit.prevent="saveCertificate" class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Nombre Completo del Destinatario *</label>
-            <input 
-              v-model="certForm.recipient_name" 
-              required 
-              placeholder="Ej: Pedro Pérez Gómez"
-              class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold" 
-            />
+    <!-- Anular / Eliminar Certificate Confirmation Modal -->
+    <Teleport to="body">
+      <div 
+        v-if="isDeleteModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
+        @click.self="isDeleteModalOpen = false"
+      >
+        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-white/10 animate-scale-up text-center">
+          <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/60 dark:border-rose-800/40 shadow-inner">
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
           </div>
+          <h3 class="text-lg font-black text-slate-900 dark:text-white">¿Anular este Diploma?</h3>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+            Está a punto de anular el diploma otorgado a 
+            <strong class="text-slate-800 dark:text-slate-100">{{ certToDelete?.recipient_name }}</strong>.
+            El certificado será retirado de la lista activa y su código de verificación quedará invalidado.
+          </p>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Destinatario</label>
-              <select 
-                v-model="certForm.recipient_type"
-                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10"
-              >
-                <option value="estudiante">Estudiante</option>
-                <option value="profesor">Profesor / Docente</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Certificado</label>
-              <select 
-                v-model="certForm.certificate_type"
-                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold text-amber-700 dark:text-brand-gold"
-              >
-                <option value="excelencia_academica">Certificado de Excelencia Académica</option>
-                <option value="mejor_promedio">Diploma al Mejor Promedio</option>
-                <option value="conducta_excelente">Reconocimiento a la Conducta Intachable</option>
-                <option value="participacion_destacada">Mención de Participación Destacada</option>
-                <option value="reconocimiento_docente">Reconocimiento a la Labor Docente</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Año Escolar</label>
-              <input 
-                v-model="certForm.academic_year" 
-                placeholder="2025-2026"
-                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10" 
-              />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Promedio Obtenido (1-20)</label>
-              <input 
-                v-model.number="certForm.average_grade" 
-                type="number" 
-                step="0.01" 
-                placeholder="19.8"
-                class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold" 
-              />
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Grado / Nivel</label>
-            <input 
-              v-model="certForm.grade_level" 
-              placeholder="1er Año de Educación Media General"
-              class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10" 
-            />
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Texto Conmemorativo / Motivo</label>
-            <textarea 
-              v-model="certForm.description" 
-              rows="3"
-              placeholder="Por haber demostrado excelencia académica, constancia y disciplina..."
-              class="w-full px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10"
-            ></textarea>
-          </div>
-
-          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-white/10">
+          <div class="flex items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-white/10">
             <button 
               type="button" 
-              @click="isModalOpen = false"
-              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+              @click="isDeleteModalOpen = false"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -395,61 +460,16 @@
               <span>Cancelar</span>
             </button>
             <button 
-              type="submit" 
-              class="px-5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-xs font-bold shadow-md shadow-amber-500/20 cursor-pointer"
+              type="button" 
+              @click="confirmDeleteCert"
+              class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
             >
-              {{ isEditingCert ? 'Guardar Cambios' : 'Emitir y Guardar Diploma' }}
+              Confirmar Anulación
             </button>
           </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Anular / Eliminar Certificate Confirmation Modal -->
-    <div 
-      v-if="isDeleteModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in"
-    >
-      <div class="bg-white dark:bg-[#170f33] rounded-3xl p-6 max-w-md w-full shadow-2xl border border-rose-150 dark:border-rose-900/40 text-slate-800 dark:text-slate-100">
-        <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
-          <div class="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/50 flex items-center justify-center border border-rose-200/60 dark:border-rose-800/40">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white">¿Anular este Diploma?</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Esta acción deshabilitará la verificación oficial</p>
-          </div>
-        </div>
-
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-          Está a punto de anular el diploma otorgado a 
-          <strong class="text-slate-900 dark:text-white font-bold">{{ certToDelete?.recipient_name }}</strong>.
-          El certificado será retirado de la lista activa y su código de verificación quedará invalidado.
-        </p>
-
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-white/10">
-          <button 
-            type="button" 
-            @click="isDeleteModalOpen = false"
-            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
-          >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            <span>Cancelar</span>
-          </button>
-          <button 
-            type="button" 
-            @click="confirmDeleteCert"
-            class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 cursor-pointer flex items-center gap-1.5"
-          >
-            <span>Confirmar Anulación</span>
-          </button>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 

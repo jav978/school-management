@@ -393,144 +393,144 @@
     <Teleport to="body">
       <div 
         v-if="isModalOpen" 
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-200"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
         @click.self="closeModal"
       >
         <div 
-          class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] transition-all transform duration-300 animate-in fade-in zoom-in-95"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
           :style="modalSpatialStyle"
         >
-          <!-- Modal Header -->
-          <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between flex-shrink-0 bg-slate-50/50 dark:bg-slate-800/20">
+          <!-- Institutional Header Banner -->
+          <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950/50 border border-orange-100 dark:border-orange-900/50 flex items-center justify-center text-orange-500">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
+              <div class="w-10 h-10 rounded-xl bg-white/10 border border-brand-gold/50 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+                📊
               </div>
               <div>
-                <h3 class="text-base sm:text-lg font-bold font-display text-slate-850 dark:text-white">
+                <h2 class="text-base sm:text-lg font-bold font-display text-white tracking-tight">
                   {{ isEditing ? 'Editar Calificación' : 'Registrar Calificación' }}
-                </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">
-                  {{ isEditing ? 'Modifique la nota o comentarios del estudiante' : 'Complete los datos de la evaluación' }}
+                </h2>
+                <p class="text-[11px] font-semibold text-brand-gold/90 uppercase tracking-wider">
+                  U.E SANTA LUISA • REGISTRO DE CALIFICACIONES Y EVALUACIONES
                 </p>
               </div>
             </div>
             <button 
               @click="closeModal" 
-              type="button"
-              class="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              type="button" 
+              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              ✕
             </button>
           </div>
 
           <!-- Modal Scrollable Content -->
-          <form @submit.prevent="submitGrade" class="p-6 space-y-4 overflow-y-auto flex-1">
-            <!-- Exam Selector -->
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                Evaluación / Examen *
-              </label>
-              <select
-                v-model="form.exam_id"
-                :disabled="isEditing"
-                required
-                class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-60"
-              >
-                <option v-for="exam in examsList" :key="exam.id" :value="exam.id">
-                  {{ exam.title }} ({{ exam.subject_name || 'Materia' }})
-                </option>
-              </select>
-            </div>
-
-            <!-- Student Selector -->
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                Estudiante *
-              </label>
-              <select
-                v-model="form.student_id"
-                :disabled="isEditing"
-                required
-                class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-60"
-              >
-                <option v-for="student in studentsList" :key="student.id" :value="student.id">
-                  {{ student.last_name }}, {{ student.first_name }} ({{ student.student_id || 'ALU' }})
-                </option>
-              </select>
-            </div>
-
-            <!-- Marks Obtained & Total Marks -->
-            <div class="grid grid-cols-2 gap-4">
+          <form @submit.prevent="submitGrade" class="flex-1 flex flex-col min-h-0">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-4">
+              <!-- Exam Selector -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                  Nota Obtenida *
+                  Evaluación / Examen *
                 </label>
-                <input
-                  v-model.number="form.marks_obtained"
-                  type="number"
-                  step="0.5"
-                  min="0"
-                  max="100"
+                <select
+                  v-model="form.exam_id"
+                  :disabled="isEditing"
                   required
-                  placeholder="Ej. 18.5"
-                  class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-                />
+                  class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 disabled:opacity-60 cursor-pointer"
+                >
+                  <option v-for="exam in examsList" :key="exam.id" :value="exam.id">
+                    {{ exam.title }} ({{ exam.subject_name || 'Materia' }})
+                  </option>
+                </select>
               </div>
+
+              <!-- Student Selector -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                  Escala Máxima
+                  Estudiante *
                 </label>
-                <input
-                  v-model.number="form.total_marks"
-                  type="number"
-                  min="1"
-                  max="100"
+                <select
+                  v-model="form.student_id"
+                  :disabled="isEditing"
                   required
-                  class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-                />
+                  class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 disabled:opacity-60 cursor-pointer"
+                >
+                  <option v-for="student in studentsList" :key="student.id" :value="student.id">
+                    {{ student.last_name }}, {{ student.first_name }} ({{ student.student_id || 'ALU' }})
+                  </option>
+                </select>
+              </div>
+
+              <!-- Marks Obtained & Total Marks -->
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Nota Obtenida *
+                  </label>
+                  <input
+                    v-model.number="form.marks_obtained"
+                    type="number"
+                    step="0.5"
+                    min="0"
+                    max="100"
+                    required
+                    placeholder="Ej. 18.5"
+                    class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Escala Máxima
+                  </label>
+                  <input
+                    v-model.number="form.total_marks"
+                    type="number"
+                    min="1"
+                    max="100"
+                    required
+                    class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+                  />
+                </div>
+              </div>
+
+              <!-- Remarks / Qualitative Notes -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                  Observaciones Pedagógicas
+                </label>
+                <textarea
+                  v-model="form.remarks"
+                  rows="3"
+                  placeholder="Comentarios sobre fortalezas o aspectos por reforzar..."
+                  class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl p-3 text-xs sm:text-sm text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 resize-none"
+                ></textarea>
               </div>
             </div>
 
-            <!-- Remarks / Qualitative Notes -->
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                Observaciones Pedagógicas
-              </label>
-              <textarea
-                v-model="form.remarks"
-                rows="3"
-                placeholder="Comentarios sobre fortalezas o aspectos por reforzar..."
-                class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 text-xs sm:text-sm text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-              ></textarea>
+            <!-- Elevated Standard Footer -->
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/95 dark:bg-[#110926]/95 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3 shadow-xs">
+              <button
+                @click="closeModal"
+                type="button"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                :disabled="isSubmitting"
+                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ isSubmitting ? 'Guardando...' : (isEditing ? 'Actualizar Calificación' : 'Guardar Calificación') }}</span>
+              </button>
             </div>
           </form>
-
-          <!-- Permanent Sticky Footer -->
-          <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 flex items-center justify-end gap-3 flex-shrink-0">
-            <button
-              @click="closeModal"
-              type="button"
-              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
-            >
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span>Cancelar</span>
-            </button>
-            <button
-              @click="submitGrade"
-              :disabled="isSubmitting"
-              type="button"
-              class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-sm shadow-orange-500/20 active:scale-[0.98] transition-all disabled:opacity-50"
-            >
-              {{ isSubmitting ? 'Guardando...' : (isEditing ? 'Actualizar Calificación' : 'Guardar Calificación') }}
-            </button>
-          </div>
         </div>
       </div>
     </Teleport>
@@ -539,16 +539,16 @@
     <Teleport to="body">
       <div 
         v-if="isDeleteModalOpen" 
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-200"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs transition-opacity duration-200"
         @click.self="isDeleteModalOpen = false"
       >
         <div 
-          class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] transition-all animate-in fade-in zoom-in-95"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] transition-all animate-scale-up"
           :style="modalSpatialStyle"
         >
-          <div class="p-6">
-            <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/40 flex items-center justify-center text-rose-500 mb-4">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="p-6 text-center">
+            <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-800/40 flex items-center justify-center text-rose-600 dark:text-rose-400 mx-auto mb-4 shadow-inner">
+              <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
@@ -557,18 +557,18 @@
             </h3>
             <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
               Esta acción eliminará el registro de evaluación del estudiante 
-              <strong class="text-slate-700 dark:text-slate-200">{{ gradeToDelete?.student_last_name }}, {{ gradeToDelete?.student_first_name }}</strong>.
+              <strong class="text-slate-800 dark:text-slate-100">{{ gradeToDelete?.student_last_name }}, {{ gradeToDelete?.student_first_name }}</strong>.
             </p>
           </div>
 
           <!-- Permanent Sticky Footer -->
-          <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 flex items-center justify-end gap-3 flex-shrink-0">
+          <div class="px-6 py-4 border-t border-slate-100 dark:border-white/10 bg-slate-50/95 dark:bg-[#110926]/95 flex items-center justify-center gap-3 flex-shrink-0">
             <button
               @click="isDeleteModalOpen = false"
               type="button"
-              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span>Cancelar</span>
@@ -576,7 +576,7 @@
             <button
               @click="confirmDeleteGrade"
               type="button"
-              class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-rose-500 hover:bg-rose-600 text-white shadow-sm shadow-rose-500/20 active:scale-[0.98] transition-all"
+              class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-[0.98] transition-all cursor-pointer"
             >
               Eliminar
             </button>

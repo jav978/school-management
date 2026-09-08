@@ -221,94 +221,166 @@
       </div>
     </div>
 
-    <!-- Create / Edit Modal -->
-    <div 
-      v-if="isModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs"
-    >
-      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-xl w-full shadow-2xl border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
-        <h2 class="text-xl font-bold text-slate-850 dark:text-white mb-4">
-          {{ isEditingCard ? 'Editar Carnet Escolar' : 'Emitir Nuevo Carnet' }}
-        </h2>
-
-        <form @submit.prevent="saveCard" class="space-y-4">
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Nombre Completo *</label>
-              <input 
-                v-model="cardForm.recipient_name" 
-                required 
-                placeholder="Ej: Sofía Morales"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
-              />
+    <!-- Create / Edit Modal (Standardized Institutional Header) -->
+    <Teleport to="body">
+      <div 
+        v-if="isModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        @click.self="isModalOpen = false"
+      >
+        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up">
+          <!-- Institutional Header Banner -->
+          <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/10 border border-brand-gold/50 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+                🪪
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold font-display text-white tracking-tight">
+                  {{ isEditingCard ? 'Editar Carnet Escolar' : 'Emitir Nuevo Carnet' }}
+                </h2>
+                <p class="text-[11px] font-semibold text-brand-gold/90 uppercase tracking-wider">
+                  U.E SANTA LUISA • IDENTIFICACIÓN ESCOLAR Y CONTROL QR
+                </p>
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Cédula de Identidad *</label>
-              <input 
-                v-model="cardForm.recipient_id_card" 
-                required 
-                placeholder="V-32456789"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
-              />
-            </div>
+            <button 
+              @click="isModalOpen = false" 
+              type="button" 
+              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+            >
+              ✕
+            </button>
           </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Personal / Rol</label>
-              <select 
-                v-model="cardForm.recipient_type"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700"
+          <!-- Scrollable Modal Body -->
+          <form @submit.prevent="saveCard" class="flex-1 flex flex-col min-h-0">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre Completo *</label>
+                  <input 
+                    v-model="cardForm.recipient_name" 
+                    required 
+                    placeholder="Ej: Sofía Morales"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cédula de Identidad *</label>
+                  <input 
+                    v-model="cardForm.recipient_id_card" 
+                    required 
+                    placeholder="V-32456789"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tipo de Personal / Rol</label>
+                  <select 
+                    v-model="cardForm.recipient_type"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+                  >
+                    <option value="estudiante">Estudiante</option>
+                    <option value="profesor">Profesor / Docente</option>
+                    <option value="administrativo">Administrativo</option>
+                    <option value="obrero">Obrero / Servicios</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cargo o Grado</label>
+                  <input 
+                    v-model="cardForm.position" 
+                    placeholder="1er Año Sección A / Docente"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tipo de Sangre</label>
+                  <input 
+                    v-model="cardForm.blood_type" 
+                    placeholder="O+, A+, B+..."
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tel. de Emergencia</label>
+                  <input 
+                    v-model="cardForm.emergency_phone" 
+                    placeholder="+58 414 123 4567"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">URL Foto Carnet</label>
+                <input 
+                  v-model="cardForm.photo_url" 
+                  placeholder="https://..."
+                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                />
+              </div>
+            </div>
+
+            <!-- Elevated Standard Footer -->
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/95 dark:bg-[#110926]/95 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3 shadow-xs">
+              <button 
+                type="button" 
+                @click="isModalOpen = false"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
               >
-                <option value="estudiante">Estudiante</option>
-                <option value="profesor">Profesor / Docente</option>
-                <option value="administrativo">Administrativo</option>
-                <option value="obrero">Obrero / Servicios</option>
-              </select>
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
+              </button>
+              <button 
+                type="submit" 
+                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] border border-brand-primary/30 cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ isEditingCard ? 'Guardar Cambios' : 'Emitir Carnet' }}</span>
+              </button>
             </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Cargo o Grado</label>
-              <input 
-                v-model="cardForm.position" 
-                placeholder="1er Año Sección A / Docente"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
-              />
-            </div>
-          </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
 
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tipo de Sangre</label>
-              <input 
-                v-model="cardForm.blood_type" 
-                placeholder="O+, A+, B+..."
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
-              />
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Tel. de Emergencia</label>
-              <input 
-                v-model="cardForm.emergency_phone" 
-                placeholder="+58 414 123 4567"
-                class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
-              />
-            </div>
+    <!-- Revocar / Eliminar Carnet Confirmation Modal -->
+    <Teleport to="body">
+      <div 
+        v-if="isDeleteModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
+        @click.self="isDeleteModalOpen = false"
+      >
+        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-white/10 animate-scale-up text-center">
+          <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/60 dark:border-rose-800/40 shadow-inner">
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
           </div>
+          <h3 class="text-lg font-black text-slate-900 dark:text-white">¿Revocar este Carnet?</h3>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+            Está a punto de revocar el carnet escolar de 
+            <strong class="text-slate-800 dark:text-slate-100">{{ cardToDelete?.recipient_name }}</strong> 
+            (Cód: <span class="font-mono text-brand-purple dark:text-brand-gold font-bold">{{ cardToDelete?.card_code }}</span>). El carnet quedará inactivo e invalidado para acceso.
+          </p>
 
-          <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">URL Foto Carnet</label>
-            <input 
-              v-model="cardForm.photo_url" 
-              placeholder="https://..."
-              class="w-full px-3 py-2 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700" 
-            />
-          </div>
-
-          <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+          <div class="flex items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-white/10">
             <button 
               type="button" 
-              @click="isModalOpen = false"
-              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+              @click="isDeleteModalOpen = false"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -316,61 +388,16 @@
               <span>Cancelar</span>
             </button>
             <button 
-              type="submit" 
-              class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 cursor-pointer"
+              type="button" 
+              @click="confirmDeleteCard"
+              class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
             >
-              {{ isEditingCard ? 'Guardar Cambios' : 'Emitir Carnet' }}
+              Confirmar Revocación
             </button>
           </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Revocar / Eliminar Carnet Confirmation Modal -->
-    <div 
-      v-if="isDeleteModalOpen"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-fade-in"
-    >
-      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-rose-150 dark:border-rose-900/40 text-slate-850 dark:text-slate-100">
-        <div class="flex items-center gap-3 text-rose-600 dark:text-rose-400 mb-3">
-          <div class="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/50 flex items-center justify-center border border-rose-200/60 dark:border-rose-800/40">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-base font-bold text-slate-900 dark:text-white">¿Revocar este Carnet?</h3>
-            <p class="text-xs text-slate-500 dark:text-slate-400">El carnet quedará inactivo e invalidado para acceso</p>
-          </div>
-        </div>
-
-        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-          Está a punto de revocar el carnet escolar de 
-          <strong class="text-slate-900 dark:text-white font-bold">{{ cardToDelete?.recipient_name }}</strong> 
-          (Cód: <span class="font-mono text-blue-600 dark:text-blue-400 font-bold">{{ cardToDelete?.card_code }}</span>).
-        </p>
-
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-          <button 
-            type="button" 
-            @click="isDeleteModalOpen = false"
-            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/90 text-rose-700 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
-          >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-            <span>Cancelar</span>
-          </button>
-          <button 
-            type="button" 
-            @click="confirmDeleteCard"
-            class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 cursor-pointer"
-          >
-            Confirmar Revocación
-          </button>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 

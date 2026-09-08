@@ -244,124 +244,124 @@
     <Teleport to="body">
       <div 
         v-if="isModalOpen" 
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-200"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
         @click.self="closeModal"
       >
         <div 
-          class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] transition-all transform duration-300 animate-in fade-in zoom-in-95"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
           :style="modalSpatialStyle"
         >
-          <!-- Modal Header -->
-          <div class="px-6 py-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between flex-shrink-0 bg-slate-50/50 dark:bg-slate-800/20">
+          <!-- Institutional Header Banner -->
+          <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950/50 border border-orange-100 dark:border-orange-900/50 flex items-center justify-center text-orange-500">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
+              <div class="w-10 h-10 rounded-xl bg-white/10 border border-brand-gold/50 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+                📢
               </div>
               <div>
-                <h3 class="text-base sm:text-lg font-bold font-display text-slate-850 dark:text-white">
+                <h2 class="text-base sm:text-lg font-bold font-display text-white tracking-tight">
                   {{ isEditing ? 'Editar Comunicado' : 'Publicar Nuevo Comunicado' }}
-                </h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">
-                  Difusión a la comunidad educativa y cartelera digital
+                </h2>
+                <p class="text-[11px] font-semibold text-brand-gold/90 uppercase tracking-wider">
+                  U.E SANTA LUISA • COMUNICACIÓN Y CARTELERA DIGITAL
                 </p>
               </div>
             </div>
             <button 
               @click="closeModal" 
-              type="button"
-              class="w-8 h-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              type="button" 
+              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
             >
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
+              ✕
             </button>
           </div>
 
           <!-- Modal Scrollable Content -->
-          <form @submit.prevent="submitAnnouncement" class="p-6 space-y-4 overflow-y-auto flex-1">
-            <!-- Title -->
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                Título del Comunicado *
-              </label>
-              <input
-                v-model="form.title"
-                type="text"
-                required
-                placeholder="Ej. Convocatoria a Asamblea General"
-                class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-              />
-            </div>
-
-            <!-- Priority & Pinned -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <form @submit.prevent="submitAnnouncement" class="flex-1 flex flex-col min-h-0">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-4">
+              <!-- Title -->
               <div>
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                  Nivel de Prioridad *
+                  Título del Comunicado *
                 </label>
-                <select
-                  v-model="form.priority"
+                <input
+                  v-model="form.title"
+                  type="text"
                   required
-                  class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
-                >
-                  <option value="normal">Normal</option>
-                  <option value="high">Alta</option>
-                  <option value="urgent">Urgente</option>
-                </select>
+                  placeholder="Ej. Convocatoria a Asamblea General"
+                  class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+                />
               </div>
 
-              <div class="flex items-center pt-6">
-                <label class="flex items-center gap-2 cursor-pointer">
-                  <input
-                    v-model="form.is_pinned"
-                    type="checkbox"
-                    class="w-4 h-4 rounded text-orange-500 focus:ring-orange-500/20"
-                  />
-                  <span class="text-xs font-semibold text-slate-750 dark:text-slate-200">
-                    Fijar al inicio de la cartelera
-                  </span>
+              <!-- Priority & Pinned -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Nivel de Prioridad *
+                  </label>
+                  <select
+                    v-model="form.priority"
+                    required
+                    class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+                  >
+                    <option value="normal">Normal</option>
+                    <option value="high">Alta</option>
+                    <option value="urgent">Urgente</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center pt-6">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                      v-model="form.is_pinned"
+                      type="checkbox"
+                      class="w-4 h-4 rounded text-brand-purple focus:ring-brand-purple/20 cursor-pointer"
+                    />
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">
+                      Fijar al inicio de la cartelera
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                  Contenido del Comunicado *
                 </label>
+                <textarea
+                  v-model="form.body"
+                  required
+                  rows="5"
+                  placeholder="Escriba el texto completo del comunicado o aviso..."
+                  class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 leading-relaxed resize-none"
+                ></textarea>
               </div>
             </div>
 
-            <!-- Body -->
-            <div>
-              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-                Contenido del Comunicado *
-              </label>
-              <textarea
-                v-model="form.body"
-                required
-                rows="5"
-                placeholder="Escriba el texto completo del comunicado o aviso..."
-                class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 text-xs sm:text-sm text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 leading-relaxed"
-              ></textarea>
+            <!-- Elevated Standard Footer -->
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/95 dark:bg-[#110926]/95 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3 shadow-xs">
+              <button
+                @click="closeModal"
+                type="button"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                :disabled="isSubmitting"
+                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ isSubmitting ? 'Publicando...' : (isEditing ? 'Actualizar Comunicado' : 'Publicar Comunicado') }}</span>
+              </button>
             </div>
           </form>
-
-          <!-- Permanent Sticky Footer -->
-          <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 flex items-center justify-end gap-3 flex-shrink-0">
-            <button
-              @click="closeModal"
-              type="button"
-              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
-            >
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              <span>Cancelar</span>
-            </button>
-            <button
-              @click="submitAnnouncement"
-              :disabled="isSubmitting"
-              type="button"
-              class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-sm shadow-orange-500/20 active:scale-[0.98] transition-all disabled:opacity-50"
-            >
-              {{ isSubmitting ? 'Publicando...' : (isEditing ? 'Actualizar Comunicado' : 'Publicar Comunicado') }}
-            </button>
-          </div>
         </div>
       </div>
     </Teleport>
@@ -370,16 +370,16 @@
     <Teleport to="body">
       <div 
         v-if="isDeleteModalOpen" 
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-200"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs transition-opacity duration-200"
         @click.self="isDeleteModalOpen = false"
       >
         <div 
-          class="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-100 dark:border-slate-800 w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] transition-all animate-in fade-in zoom-in-95"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] transition-all animate-scale-up text-center"
           :style="modalSpatialStyle"
         >
           <div class="p-6">
-            <div class="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-100 dark:border-rose-900/40 flex items-center justify-center text-rose-500 mb-4">
-              <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-800/40 flex items-center justify-center text-rose-600 dark:text-rose-400 mx-auto mb-4 shadow-inner">
+              <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
               </svg>
             </div>
@@ -387,18 +387,18 @@
               ¿Eliminar este comunicado?
             </h3>
             <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
-              Se retirará de la cartelera digital el aviso <strong class="text-slate-700 dark:text-slate-200">{{ announcementToDelete?.title }}</strong>.
+              Se retirará de la cartelera digital el aviso <strong class="text-slate-800 dark:text-slate-100">{{ announcementToDelete?.title }}</strong>.
             </p>
           </div>
 
           <!-- Permanent Sticky Footer -->
-          <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/90 flex items-center justify-end gap-3 flex-shrink-0">
+          <div class="px-6 py-4 border-t border-slate-100 dark:border-white/10 bg-slate-50/95 dark:bg-[#110926]/95 flex items-center justify-center gap-3 flex-shrink-0">
             <button
               @click="isDeleteModalOpen = false"
               type="button"
-              class="px-5 py-2.5 text-xs sm:text-sm font-bold bg-rose-100/80 hover:bg-rose-200/80 dark:bg-rose-950/40 dark:hover:bg-rose-900/60 text-rose-700 dark:text-rose-300 border border-rose-300/80 dark:border-rose-900/60 rounded-xl transition-all cursor-pointer inline-flex items-center gap-2"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
             >
-              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
               </svg>
               <span>Cancelar</span>
@@ -406,7 +406,7 @@
             <button
               @click="confirmDeleteAnnouncement"
               type="button"
-              class="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-rose-500 hover:bg-rose-600 text-white shadow-sm shadow-rose-500/20 active:scale-[0.98] transition-all"
+              class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-[0.98] transition-all cursor-pointer"
             >
               Eliminar
             </button>
