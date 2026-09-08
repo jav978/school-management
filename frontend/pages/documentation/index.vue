@@ -1,20 +1,20 @@
 <template>
   <div class="space-y-6">
     <!-- Header -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
-      <div class="absolute right-0 top-0 translate-x-10 -translate-y-10 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-white via-slate-50 to-indigo-50/40 dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 p-8 rounded-3xl text-slate-900 dark:text-white border border-slate-200/90 dark:border-white/10 shadow-sm dark:shadow-xl relative overflow-hidden transition-colors">
+      <div class="absolute right-0 top-0 translate-x-10 -translate-y-10 w-96 h-96 bg-orange-500/5 dark:bg-orange-500/10 rounded-full blur-3xl pointer-events-none"></div>
       
       <div class="relative z-10">
         <div class="flex items-center gap-3 mb-2">
-          <span class="px-3 py-1 bg-orange-500/20 text-orange-400 text-xs font-black uppercase tracking-widest rounded-full border border-orange-500/30">
+          <span class="px-3 py-1 bg-orange-500/10 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs font-black uppercase tracking-widest rounded-full border border-orange-500/30">
             Manual del Sistema EduFlow
           </span>
-          <span class="text-slate-400 text-xs font-mono">v2.4.0 — U.E Santa Luisa</span>
+          <span class="text-slate-500 dark:text-slate-400 text-xs font-mono">v2.4.0 — U.E Santa Luisa</span>
         </div>
-        <h1 class="text-3xl font-black font-display tracking-tight text-white">
+        <h1 class="text-2xl sm:text-3xl font-black font-display tracking-tight text-slate-900 dark:text-white">
           Arquitectura, Entidades y Normativas
         </h1>
-        <p class="text-slate-300 text-sm mt-1 max-w-2xl">
+        <p class="text-slate-600 dark:text-slate-300 text-sm mt-1 max-w-2xl leading-relaxed">
           Documentación técnica y operativa completa del sistema de gestión escolar adaptado a las regulaciones del Ministerio del Poder Popular para la Educación (MPPE) de Venezuela.
         </p>
       </div>
@@ -23,9 +23,9 @@
         <a 
           href="/EduFlow _ Base44.pdf" 
           target="_blank"
-          class="px-5 py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold text-sm transition-all flex items-center gap-2 backdrop-blur-xs"
+          class="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200/80 dark:bg-white/10 dark:hover:bg-white/20 border border-slate-300 dark:border-white/20 text-slate-800 dark:text-white font-bold text-sm transition-all flex items-center gap-2 shadow-xs dark:shadow-none"
         >
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="w-4 h-4 text-slate-700 dark:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           Descargar PDF Base

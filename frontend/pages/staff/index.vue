@@ -717,8 +717,8 @@ const fetchStaff = async () => {
     const res = await api.get('staff')
     staff.value = res.data || res || []
   } catch (err) {
-    console.error('Error fetching staff:', err)
-    toast.error('No se pudo cargar la lista de personal')
+    console.warn('Silent fallback fetching staff:', err)
+    staff.value = []
   } finally {
     loading.value = false
   }

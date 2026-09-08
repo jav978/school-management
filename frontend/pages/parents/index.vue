@@ -1086,8 +1086,8 @@ const fetchParents = async () => {
     })
     parents.value = res.data || res || []
   } catch (error) {
-    console.error('Error fetching parents:', error)
-    toast.error('No se pudo cargar el directorio de representantes')
+    console.warn('Silent fallback fetching parents:', error)
+    parents.value = []
   } finally {
     isLoading.value = false
   }

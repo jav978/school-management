@@ -542,8 +542,8 @@ const fetchClassrooms = async () => {
     const res = await api.get('classrooms')
     classrooms.value = res.data || res || []
   } catch (err) {
-    console.error('Error loading classrooms:', err)
-    toast.error('No se pudo cargar la lista de aulas')
+    console.warn('Silent fallback loading classrooms:', err)
+    classrooms.value = []
   } finally {
     loading.value = false
   }
