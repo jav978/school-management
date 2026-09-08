@@ -1,6 +1,6 @@
 ---
-name: ACERO School Management
-description: Modern Academy Terminal with dark-first slate surfaces, luminous emerald actions, and warm ember brand accents.
+name: U.E Colegio "Santa Luisa" Management System
+description: Institutional Academic Management Terminal with dark-first slate surfaces, luminous emerald actions, warm ember brand accents, and print-ready MPPE documentation.
 colors:
   primary: "#10b981"
   primary-gradient-end: "#0d9488"
@@ -208,6 +208,19 @@ The form language balances modern approachable curvature with geometric alignmen
 - **Danger/Overdue:** `bg-red-500/10 text-red-400 border-red-500/30`.
 - **Neutral/Draft:** `bg-slate-500/10 text-slate-400 border-slate-500/30`.
 
+### Avatar & Photo Dual-Upload Component
+- **Geometry:** Square rounded-2xl container (`w-24 h-24` / `96px`), with 2px dashed structural border (`border-dashed border-slate-300 dark:border-slate-700`).
+- **Modes:** Dual selector tabs ("📁 Subir Archivo" / "🌐 Pegar URL").
+- **Constraints:** Max file size 2MB, formats `JPEG`, `PNG`, `WEBP`. Live circular thumbnail preview with active remove button.
+- **Stage Badging:** Contextual pill badge for academic stage ("Preescolar/Primaria", "1°-3° Año", "4°-5° Año").
+
+### Print-Ready Physical Documentation (@media print)
+- **Paper Geometry:** Standard Carta / A4 (216mm x 279mm), 12mm page margin constraint, target 2-page pagination.
+- **Color Discipline:** High-contrast monochrome black & slate-800 (`#000000` text on pure white paper `#ffffff`). All interactive app bars, buttons, and navigation drawers must hide via `print:hidden`.
+- **Institutional Header:** Official Venezuelan MPPE coat of arms, school name `U.E Colegio "Santa Luisa"`, RIF `J-12345678-9`, and DEA code.
+- **Tactile Photo Box:** Physical photo placeholder with exact 30mm x 40mm dimensions (3x4 cm) and dashed border for affixing student identification photos.
+- **Audit & Legal Trapping:** Legal declaration box, formal lines for Representative Signature, Fingerprint box (Huella dactilar), and official School Stamp box.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -216,6 +229,7 @@ The form language balances modern approachable curvature with geometric alignmen
 - **Do** wrap tabular data with clean `1px` subtle borders (`border-slate-800/80` in dark mode) to maintain structural order.
 - **Do** apply `active:scale-[0.98]` micro-interactions on interactive buttons and action icons for tactile responsiveness.
 - **Do** keep dark mode backgrounds grounded in deep Slate (`#020617` / `#0f172a`), never pure `#000000` pitch black.
+- **Do** ensure all printable sheets use high-density borders (`border-black` or `border-slate-400`) and clean print margins.
 
 ### Don't:
 - **Don't** use generic blue/gray corporate ERP styles or unstyled browser tables that degrade the executive feel.
@@ -223,3 +237,4 @@ The form language balances modern approachable curvature with geometric alignmen
 - **Don't** add heavy multi-stop drop shadows (`shadow-2xl`) to standard cards; stick to subtle tonal borders and ambient glows.
 - **Don't** use sharp rectangular 0px border-radii; maintain ACERO's distinctive `12px` to `24px` smooth corner radii.
 - **Don't** use pure saturated red or green text without subtle background chip backing for status indicators.
+- **Don't** print colored backgrounds or heavy dark gradients on physical paper documents.

@@ -57,9 +57,11 @@ app.use('/authentication', authLimiter)
 app.use('/two-factor', authLimiter)
 app.use(apiLimiter)
 
-// Controlled Payload parsing
-app.use(express.json({ limit: '2mb' }))
-app.use(express.urlencoded({ extended: true, limit: '2mb' }))
+// Controlled Payload parsing (supporting base64 image uploads up to 2MB binary)
+const path = require('path')
+app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')))
+app.use(express.json({ limit: '10mb' }))
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 app.configure(express.rest())
 app.configure(socketio())
 

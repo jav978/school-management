@@ -400,8 +400,14 @@
               <div class="space-y-4">
                 <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-600 dark:text-brand-secondary border-b border-slate-100 dark:border-white/10 pb-1.5">
                   <span class="w-2 h-2 rounded-full bg-brand-secondary"></span>
-                  <span>2. Datos del Empleado y Cargo</span>
+                  <span>2. Datos del Empleado, Cargo y Fotografía</span>
                 </div>
+
+                <!-- Avatar Upload Component -->
+                <UiAvatarUpload 
+                  v-model="form.photo_url" 
+                  label="Fotografía del Personal (Carnet / Perfil)" 
+                />
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <!-- First Name -->
@@ -561,15 +567,15 @@
                   </div>
                 </div>
 
-                <!-- Photo URL -->
+                <!-- Dirección de Habitación -->
                 <div>
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                    URL de Foto de Perfil (Opcional)
+                    Dirección de Habitación / Domicilio
                   </label>
                   <input 
-                    v-model="form.photo_url" 
-                    type="url" 
-                    placeholder="https://..."
+                    v-model="form.address_line1" 
+                    type="text" 
+                    placeholder="Ej. Av. San Martín, Calle Los Andes, Casa N° 12, Caracas"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
                   />
                 </div>
@@ -683,6 +689,7 @@ const form = ref({
   department: '',
   phone: '',
   email: '',
+  address_line1: '',
   photo_url: '',
   blood_type: 'O+',
   emergency_contact: '',
@@ -722,20 +729,19 @@ const stats = computed(() => {
   const administrativos = staff.value.filter(s => s.staff_type === 'administrativo').length
   const profesionales = staff.value.filter(s => s.staff_type === 'profesional').length
   const obreros = staff.value.filter(s => s.staff_type === 'obrero').length
-  return { total, administrativos, profesionales, obreros }
+  const activos = staff.value.filter(s => s.status === 'activo').length
+  return { total, administrativos, profesionales, obreros, activos }
 })
 
 const filteredStaff = computed(() => {
   return staff.value.filter(s => {
-    const term = searchQuery.value.toLowerCase().trim()
-    const matchesSearch = !term ||
-      (s.first_name?.toLowerCase().includes(term) ||
-       s.last_name?.toLowerCase().includes(term) ||
-       s.staff_id?.toLowerCase().includes(term) ||
-       s.id_card?.toLowerCase().includes(term) ||
-       s.position?.toLowerCase().includes(term) ||
-       s.department?.toLowerCase().includes(term))
-    
+    const q = searchQuery.value.toLowerCase()
+    const matchesSearch = !q || 
+      `${s.first_name} ${s.last_name}`.toLowerCase().includes(q) ||
+      (s.id_card && s.id_card.toLowerCase().includes(q)) ||
+      (s.staff_id && s.staff_id.toLowerCase().includes(q)) ||
+      (s.position && s.position.toLowerCase().includes(q))
+
     const matchesType = !selectedType.value || s.staff_type === selectedType.value
     const matchesStatus = !selectedStatus.value || s.status === selectedStatus.value
 
@@ -770,6 +776,7 @@ const openModal = () => {
     department: '',
     phone: '',
     email: '',
+    address_line1: '',
     photo_url: '',
     blood_type: 'O+',
     emergency_contact: '',

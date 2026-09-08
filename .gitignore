@@ -43,4 +43,6 @@ yarn-error.log*
 # Cache
 .cache
 .nitro
-.data
+# Uploads
+backend/public/uploads/avatars/*
+!backend/public/uploads/avatars/.gitkeep

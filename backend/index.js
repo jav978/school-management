@@ -54,8 +54,9 @@ require('./src/services/events')(app)
 require('./src/services/announcements')(app)
 require('./src/services/notifications')(app)
 
-// Settings
+// Settings & Uploads
 require('./src/services/settings')(app)
+require('./src/services/uploads')(app)
 
 app.listen(PORT).then(() => {
   console.log(`School Management API running on port ${PORT}`)

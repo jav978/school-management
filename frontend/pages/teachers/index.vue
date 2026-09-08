@@ -509,10 +509,16 @@
               <div class="space-y-4">
                 <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-sky-600 dark:text-brand-secondary border-b border-slate-100 dark:border-white/10 pb-1.5">
                   <span class="w-2 h-2 rounded-full bg-brand-secondary"></span>
-                  <span>2. Datos Personales del Docente</span>
+                  <span>2. Datos Personales y Fotografía del Docente</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Avatar Upload Component -->
+                <UiAvatarUpload 
+                  v-model="form.photo_url" 
+                  label="Fotografía del Docente (Carnet / Perfil)" 
+                />
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <!-- First Name -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -550,9 +556,43 @@
                       {{ formErrors.last_name }}
                     </p>
                   </div>
+
+                  <!-- National ID / Cédula -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Cédula / Doc. Identidad
+                    </label>
+                    <input 
+                      v-model="form.national_id" 
+                      type="text" 
+                      placeholder="Ej. V-12.345.678"
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+                    />
+                  </div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <!-- Blood Type -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Grupo Sanguíneo (Tipo de Sangre)
+                    </label>
+                    <select
+                      v-model="form.blood_type"
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+                    >
+                      <option value="unknown">Desconocido / No indicado</option>
+                      <option value="O+">O Positivo (O+)</option>
+                      <option value="O-">O Negativo (O-)</option>
+                      <option value="A+">A Positivo (A+)</option>
+                      <option value="A-">A Negativo (A-)</option>
+                      <option value="B+">B Positivo (B+)</option>
+                      <option value="B-">B Negativo (B-)</option>
+                      <option value="AB+">AB Positivo (AB+)</option>
+                      <option value="AB-">AB Negativo (AB-)</option>
+                    </select>
+                  </div>
+
                   <!-- Position / Title -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -584,20 +624,19 @@
                       {{ formErrors.specialization }}
                     </p>
                   </div>
+                </div>
 
-                  <!-- Years of experience -->
-                  <div>
-                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Años de Exp.
-                    </label>
-                    <input 
-                      v-model.number="form.years_experience" 
-                      type="number" 
-                      min="0" 
-                      max="60"
-                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
-                    />
-                  </div>
+                <!-- Dirección de Habitación -->
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                    Dirección de Habitación / Domicilio
+                  </label>
+                  <input 
+                    v-model="form.address_line1" 
+                    type="text" 
+                    placeholder="Ej. Av. San Martín, Edif. La Paz, Apto 4-B, Caracas"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+                  />
                 </div>
               </div>
 
@@ -649,7 +688,7 @@
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <!-- Phone -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -663,15 +702,28 @@
                     />
                   </div>
 
-                  <!-- Photo URL -->
+                  <!-- Emergency Contact Name -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      URL de Foto de Perfil (Opcional)
+                      Contacto de Emergencia
                     </label>
                     <input 
-                      v-model="form.photo_url" 
-                      type="url" 
-                      placeholder="https://..."
+                      v-model="form.emergency_contact_name" 
+                      type="text" 
+                      placeholder="Ej. Familiar directo"
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+                    />
+                  </div>
+
+                  <!-- Emergency Contact Phone -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Teléfono de Emergencia
+                    </label>
+                    <input 
+                      v-model="form.emergency_contact_phone" 
+                      type="text" 
+                      placeholder="+58 414 000 0000"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
                     />
                   </div>
@@ -793,12 +845,17 @@ const form = ref({
   id: null,
   first_name: '',
   last_name: '',
+  national_id: '',
+  blood_type: 'unknown',
+  address_line1: '',
   employee_id: '',
   department: 'Ciencias Exactas',
   position_title: 'Profesor Titular',
   specialization: '',
   email_personal: '',
   phone_mobile: '',
+  emergency_contact_name: '',
+  emergency_contact_phone: '',
   contract_type: 'full-time',
   years_experience: 5,
   photo_url: '',
@@ -897,12 +954,17 @@ const openCreateModal = (event) => {
     id: null,
     first_name: '',
     last_name: '',
+    national_id: '',
+    blood_type: 'unknown',
+    address_line1: '',
     employee_id: `PROF-00${teachers.value.length + 1}`,
     department: 'Ciencias Exactas',
     position_title: 'Profesor Titular',
     specialization: '',
     email_personal: '',
     phone_mobile: '',
+    emergency_contact_name: '',
+    emergency_contact_phone: '',
     contract_type: 'full-time',
     years_experience: 5,
     photo_url: '',

@@ -25,11 +25,21 @@
           ⚡ Cargar Alumnos Demo
         </button>
 
+        <!-- Printable Enrollment Sheet Button -->
+        <button 
+          @click="navigateTo('/students/enrollment-form')" 
+          type="button"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm shadow-xs border border-slate-200 dark:border-slate-700 active:scale-[0.98] transition-all cursor-pointer"
+        >
+          <span>📄</span>
+          <span>Planilla de Matrícula (Imprimible)</span>
+        </button>
+
         <!-- New Student Button - Unified Institutional Palette -->
         <button 
           @click="openCreateModal" 
           type="button"
-          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
@@ -551,8 +561,18 @@
                 <div class="flex items-center gap-2 pb-2 mb-3 border-b border-slate-100 dark:border-slate-800/80">
                   <span class="w-2 h-2 rounded-full bg-brand-secondary"></span>
                   <h4 class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider font-display">
-                    2. Datos Personales
+                    2. Datos Personales y Fotografía Escolar
                   </h4>
+                </div>
+
+                <!-- Avatar Upload Component with Stage Selector -->
+                <div class="mb-4">
+                  <UiAvatarUpload 
+                    v-model="form.photo_url" 
+                    v-model:stage="form.photo_stage" 
+                    :show-stage-selector="true" 
+                    label="Fotografía del Estudiante (Carnet / Historial)" 
+                  />
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -588,6 +608,40 @@
                       ]"
                     />
                     <p v-if="errors.last_name" class="text-[10px] text-rose-500 font-bold mt-1">El apellido es requerido</p>
+                  </div>
+
+                  <!-- National ID / Cédula -->
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Cédula de Identidad / Cédula Escolar
+                    </label>
+                    <input 
+                      v-model="form.national_id" 
+                      type="text" 
+                      placeholder="Ej: V-32.123.456" 
+                      class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                    />
+                  </div>
+
+                  <!-- Blood Type -->
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                      Grupo Sanguíneo (Tipo de Sangre)
+                    </label>
+                    <select 
+                      v-model="form.blood_type" 
+                      class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                    >
+                      <option value="unknown">Desconocido / No indicado</option>
+                      <option value="O+">O Positivo (O+)</option>
+                      <option value="O-">O Negativo (O-)</option>
+                      <option value="A+">A Positivo (A+)</option>
+                      <option value="A-">A Negativo (A-)</option>
+                      <option value="B+">B Positivo (B+)</option>
+                      <option value="B-">B Negativo (B-)</option>
+                      <option value="AB+">AB Positivo (AB+)</option>
+                      <option value="AB-">AB Negativo (AB-)</option>
+                    </select>
                   </div>
 
                   <!-- Date of Birth -->
@@ -925,6 +979,10 @@ const openCreateModal = () => {
     admission_date: new Date().toISOString().split('T')[0],
     first_name: '',
     last_name: '',
+    national_id: '',
+    blood_type: 'unknown',
+    photo_url: '',
+    photo_stage: 'preescolar_primaria',
     date_of_birth: '2013-05-14',
     gender: 'male',
     grade: availableGrades[0],
@@ -1021,14 +1079,22 @@ const saveStudent = async () => {
     students.value.unshift(newRecord)
 
     // Try save to backend
-    await $fetch(`${apiBase}/students`, {
+    const createRes = await $fetch(`${apiBase}/students`, {
       method: 'POST',
       headers,
       body: form.value
-    }).catch(() => null)
+    }).catch(e => {
+      console.warn('Backend student create error:', e)
+      return null
+    })
+
+    if (createRes?.id) {
+      newRecord.id = createRes.id
+      if (createRes.student_id) newRecord.student_id = createRes.student_id
+    }
 
     toast.success(
-      `El estudiante ${form.value.first_name} ${form.value.last_name} (${form.value.student_id}) fue registrado en la matrícula.`,
+      `El estudiante ${form.value.first_name} ${form.value.last_name} (${newRecord.student_id || form.value.student_id}) fue registrado en la matrícula.`,
       'Estudiante Registrado'
     )
   }
