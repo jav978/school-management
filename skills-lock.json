@@ -103,6 +103,18 @@
       "skillPath": "skills/nuxt4-patterns/SKILL.md",
       "computedHash": "730b5727c2386da7a08c95b8ec022deb9168d34d36c7ad3d34375c48219cc578"
     },
+    "pdf": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/pdf/SKILL.md",
+      "computedHash": "cfbc539377088ca7e44a813b30c306327385bbd973cd7a721e1743f60837dd62"
+    },
+    "pdf-creator": {
+      "source": "daymade/claude-code-skills",
+      "sourceType": "github",
+      "skillPath": "daymade-docs/pdf-creator/SKILL.md",
+      "computedHash": "7a1ffb70f599eadd1cd8a023dbbc03c69d1f22fb4ef753d8edd864ae231b5478"
+    },
     "redesign-existing-projects": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
