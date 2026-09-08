@@ -134,16 +134,17 @@
 
             <!-- Header Text -->
             <div class="flex-1 text-center leading-tight">
-              <p class="text-[10px] font-bold uppercase tracking-wider text-slate-700 print:text-black">
-                República Bolivariana de Venezuela • Ministerio del Poder Popular para la Educación
+              <p class="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-slate-700 print:text-black leading-snug">
+                REPÚBLICA BOLIVARIANA DE VENEZUELA<br>
+                MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN
               </p>
               <h2 class="text-base sm:text-lg font-black font-display text-slate-900 print:text-black mt-0.5 tracking-wide">
                 U.E. COLEGIO "SANTA LUISA"
               </h2>
-              <p class="text-[9px] font-medium text-slate-600 print:text-black">
-                Comunidad Educativa Vicenciana • Calle Real del Prado de María, Caracas • R.I.F. J-12345678-9 • Código DEA: S0000D0101
+              <p class="text-[9px] font-semibold text-slate-700 print:text-black mb-1">
+                R.I.F. J-12345678-9 • Código DEA: S0000D0101
               </p>
-              <div class="inline-block mt-1 px-3 py-0.5 rounded-full bg-slate-100 print:bg-transparent border border-slate-300 print:border-black">
+              <div class="inline-block mt-0.5 px-3 py-0.5 rounded-full bg-slate-100 print:bg-transparent border border-slate-300 print:border-black">
                 <span class="text-[10px] font-black uppercase tracking-widest text-slate-900 print:text-black">
                   PLANILLA OFICIAL DE INSCRIPCIÓN Y REGISTRO ESCOLAR (PÁG. 1/2)
                 </span>
@@ -797,6 +798,54 @@
           </div>
         </div>
 
+        <!-- ============================================================ -->
+        <!-- SECCIÓN D: PLANTELES DONDE ESTUDIÓ EL ALUMNO (HISTORIAL) -->
+        <!-- ============================================================ -->
+        <div class="mt-3.5 border border-slate-300 print:border-black rounded-xl overflow-hidden">
+          <div class="bg-slate-100 print:bg-slate-200 px-3 py-1 border-b border-slate-300 print:border-black">
+            <span class="text-[10px] font-black uppercase tracking-wider text-slate-900 print:text-black">
+              D. PLANTELES DONDE ESTUDIÓ EL ALUMNO (HISTORIAL ESCOLAR)
+            </span>
+          </div>
+
+          <div class="p-2 overflow-x-auto">
+            <table class="w-full text-left text-[9px] border-collapse">
+              <thead>
+                <tr class="border-b border-slate-300 print:border-black font-black uppercase text-slate-700 print:text-black bg-slate-50 print:bg-transparent">
+                  <th class="py-1 px-1.5 w-24">GRADO</th>
+                  <th class="py-1 px-1.5 w-24">AÑO ESCOLAR</th>
+                  <th class="py-1 px-1.5">NOMBRE DEL PLANTEL</th>
+                  <th class="py-1 px-1.5 w-28">CIUDAD</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(row, idx) in form.previous_schools" :key="idx" class="border-b border-slate-200 print:border-slate-400">
+                  <td class="py-0.5 px-1.5 font-bold uppercase">{{ row.grade }}</td>
+                  <td class="py-0.5 px-1.5">
+                    <input v-model="row.school_year" type="text" placeholder="2020-2021" class="w-full px-1 py-0.5 border-b border-slate-200 print:border-none text-[9px]" />
+                  </td>
+                  <td class="py-0.5 px-1.5">
+                    <input v-model="row.school_name" type="text" placeholder="Unidad Educativa..." class="w-full px-1 py-0.5 border-b border-slate-200 print:border-none text-[9px] uppercase" />
+                  </td>
+                  <td class="py-0.5 px-1.5">
+                    <input v-model="row.city" type="text" placeholder="CARACAS" class="w-full px-1 py-0.5 border-b border-slate-200 print:border-none text-[9px] uppercase" />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PIE DE PÁGINA: PÁGINA 1 -->
+        <div class="mt-4 pt-2 border-t border-slate-300 print:border-black flex justify-between items-center text-[9px] font-bold text-slate-600 print:text-black">
+          <div>
+            Comunidad Educativa Vicenciana • Calle Real del Prado de María, Caracas
+          </div>
+          <div class="font-black text-slate-900 print:text-black uppercase tracking-wider">
+            PÁGINA 1 DE 2
+          </div>
+        </div>
+
       </div>
 
       <!-- ############################################################ -->
@@ -819,11 +868,11 @@
           </div>
         </div>
 
-        <!-- SECCIÓN D: DATOS FAMILIARES Y SOCIOECONÓMICOS -->
+        <!-- SECCIÓN E: DATOS FAMILIARES Y SOCIOECONÓMICOS -->
         <div class="mb-3 border border-slate-300 print:border-black rounded-xl overflow-hidden">
           <div class="bg-slate-100 print:bg-slate-200 px-3 py-1 border-b border-slate-300 print:border-black flex justify-between items-center">
             <span class="text-[10px] font-black uppercase tracking-wider text-slate-900 print:text-black">
-              D. DATOS FAMILIARES, INGRESOS Y NÚCLEO SOCIOECONÓMICO
+              E. DATOS FAMILIARES, INGRESOS Y NÚCLEO SOCIOECONÓMICO
             </span>
           </div>
 
@@ -856,42 +905,6 @@
                 class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
               />
             </div>
-          </div>
-        </div>
-
-        <!-- SECCIÓN E: PLANTELES DONDE ESTUDIÓ EL ALUMNO (HISTORIAL) -->
-        <div class="mb-3 border border-slate-300 print:border-black rounded-xl overflow-hidden">
-          <div class="bg-slate-100 print:bg-slate-200 px-3 py-1 border-b border-slate-300 print:border-black">
-            <span class="text-[10px] font-black uppercase tracking-wider text-slate-900 print:text-black">
-              E. PLANTELES DONDE ESTUDIÓ EL ALUMNO (HISTORIAL ESCOLAR)
-            </span>
-          </div>
-
-          <div class="p-2 overflow-x-auto">
-            <table class="w-full text-left text-[9px] border-collapse">
-              <thead>
-                <tr class="border-b border-slate-300 print:border-black font-black uppercase text-slate-700 print:text-black bg-slate-50 print:bg-transparent">
-                  <th class="py-1 px-1.5 w-24">GRADO</th>
-                  <th class="py-1 px-1.5 w-24">AÑO ESCOLAR</th>
-                  <th class="py-1 px-1.5">NOMBRE DEL PLANTEL</th>
-                  <th class="py-1 px-1.5 w-28">CIUDAD</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(row, idx) in form.previous_schools" :key="idx" class="border-b border-slate-200 print:border-slate-400">
-                  <td class="py-0.5 px-1.5 font-bold uppercase">{{ row.grade }}</td>
-                  <td class="py-0.5 px-1.5">
-                    <input v-model="row.school_year" type="text" placeholder="2020-2021" class="w-full px-1 py-0.5 border-b border-slate-200 print:border-none text-[9px]" />
-                  </td>
-                  <td class="py-0.5 px-1.5">
-                    <input v-model="row.school_name" type="text" placeholder="Unidad Educativa..." class="w-full px-1 py-0.5 border-b border-slate-200 print:border-none text-[9px] uppercase" />
-                  </td>
-                  <td class="py-0.5 px-1.5">
-                    <input v-model="row.city" type="text" placeholder="CARACAS" class="w-full px-1 py-0.5 border-b border-slate-200 print:border-none text-[9px] uppercase" />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
 
@@ -1165,6 +1178,16 @@
                 <p class="text-[8px] text-slate-500 print:text-black">Sello Húmedo del Plantel</p>
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- PIE DE PÁGINA: PÁGINA 2 -->
+        <div class="mt-4 pt-2 border-t border-slate-300 print:border-black flex justify-between items-center text-[9px] font-bold text-slate-600 print:text-black">
+          <div>
+            Comunidad Educativa Vicenciana • Calle Real del Prado de María, Caracas
+          </div>
+          <div class="font-black text-slate-900 print:text-black uppercase tracking-wider">
+            PÁGINA 2 DE 2
           </div>
         </div>
 
