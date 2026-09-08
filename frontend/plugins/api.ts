@@ -9,9 +9,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 
     if (import.meta.client) {
       const token =
-        localStorage.getItem('token') ||
-        localStorage.getItem('feathers-jwt') ||
-        localStorage.getItem('school_jwt')
+        sessionStorage.getItem('token') ||
+        sessionStorage.getItem('feathers-jwt') ||
+        sessionStorage.getItem('school_jwt')
       if (token) {
         headers['Authorization'] = `Bearer ${token}`
       }

@@ -37,11 +37,11 @@ module.exports = function (app) {
         })
       }
 
-      // Validar tamaño máximo permitido: 2MB (2 * 1024 * 1024 bytes)
-      const MAX_SIZE = 2 * 1024 * 1024
+      // Validar tamaño máximo permitido: 3MB (3 * 1024 * 1024 bytes)
+      const MAX_SIZE = 3 * 1024 * 1024
       if (buffer.length > MAX_SIZE) {
         return res.status(400).json({
-          error: `El archivo supera el límite máximo permitido de 2MB (tamaño recibido: ${(buffer.length / (1024 * 1024)).toFixed(2)}MB).`
+          error: `El archivo supera el límite máximo permitido de 3MB (tamaño recibido: ${(buffer.length / (1024 * 1024)).toFixed(2)}MB).`
         })
       }
 

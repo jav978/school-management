@@ -5,7 +5,7 @@
         {{ label || 'Fotografía de Perfil / Carnet' }}
       </label>
       <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500">
-        Máx. 2MB (JPG, PNG, WEBP)
+        Máx. 3MB (JPG, PNG, WEBP)
       </span>
     </div>
 
@@ -217,11 +217,11 @@ const processFile = (file) => {
     return
   }
 
-  // Validate size <= 2MB
-  const MAX_SIZE = 2 * 1024 * 1024
+  // Validate size <= 3MB
+  const MAX_SIZE = 3 * 1024 * 1024
   if (file.size > MAX_SIZE) {
     const sizeMb = (file.size / (1024 * 1024)).toFixed(2)
-    errorMessage.value = `La imagen pesa ${sizeMb}MB. El límite máximo permitido es de 2.00MB.`
+    errorMessage.value = `La imagen pesa ${sizeMb}MB. El límite máximo permitido es de 3.00MB.`
     return
   }
 

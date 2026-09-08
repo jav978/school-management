@@ -51,10 +51,14 @@ export const useAuthStore = defineStore('auth', {
         this.tempUser = null
 
         if (import.meta.client) {
-          localStorage.setItem('token', response.accessToken)
-          localStorage.setItem('user', JSON.stringify(response.user))
+          sessionStorage.setItem('token', response.accessToken)
+          sessionStorage.setItem('user', JSON.stringify(response.user))
           sessionStorage.removeItem('temp_2fa_token')
           sessionStorage.removeItem('temp_2fa_user')
+          // Limpiar residuo histórico de localStorage para evitar bypass
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          localStorage.removeItem('simulated_role')
         }
 
         return response
@@ -88,10 +92,13 @@ export const useAuthStore = defineStore('auth', {
         this.tempUser = null
 
         if (import.meta.client) {
-          localStorage.setItem('token', response.accessToken)
-          localStorage.setItem('user', JSON.stringify(response.user))
+          sessionStorage.setItem('token', response.accessToken)
+          sessionStorage.setItem('user', JSON.stringify(response.user))
           sessionStorage.removeItem('temp_2fa_token')
           sessionStorage.removeItem('temp_2fa_user')
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          localStorage.removeItem('simulated_role')
         }
 
         return response
@@ -119,11 +126,16 @@ export const useAuthStore = defineStore('auth', {
       this.tempUser = null
 
       if (import.meta.client) {
+        sessionStorage.removeItem('token')
+        sessionStorage.removeItem('user')
+        sessionStorage.removeItem('simulated_role')
+        sessionStorage.removeItem('temp_2fa_token')
+        sessionStorage.removeItem('temp_2fa_user')
         localStorage.removeItem('token')
         localStorage.removeItem('user')
         localStorage.removeItem('simulated_role')
-        sessionStorage.removeItem('temp_2fa_token')
-        sessionStorage.removeItem('temp_2fa_user')
+        localStorage.removeItem('feathers-jwt')
+        localStorage.removeItem('school_jwt')
       }
     },
 
@@ -135,25 +147,39 @@ export const useAuthStore = defineStore('auth', {
         this.user.user_type = role
       }
       if (import.meta.client) {
-        localStorage.setItem('user', JSON.stringify(this.user))
-        localStorage.setItem('simulated_role', role)
+        sessionStorage.setItem('user', JSON.stringify(this.user))
+        sessionStorage.setItem('simulated_role', role)
       }
     },
 
     async checkAuth() {
       if (import.meta.client) {
-        const token = localStorage.getItem('token')
-        const user = localStorage.getItem('user')
+        // Defensive cleanup of legacy persistent localStorage tokens
+        if (localStorage.getItem('token') || localStorage.getItem('user')) {
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          localStorage.removeItem('simulated_role')
+          localStorage.removeItem('feathers-jwt')
+          localStorage.removeItem('school_jwt')
+        }
+
+        // Enforce strict session: read exclusively from sessionStorage
+        const token = sessionStorage.getItem('token')
+        const user = sessionStorage.getItem('user')
 
         if (token && user) {
           this.token = token
           this.user = JSON.parse(user)
-          const simRole = localStorage.getItem('simulated_role')
+          const simRole = sessionStorage.getItem('simulated_role')
           if (simRole && this.user) {
             this.user.role = simRole
             this.user.user_type = simRole
           }
           this.isAuthenticated = true
+        } else {
+          this.token = null
+          this.user = null
+          this.isAuthenticated = false
         }
 
         // Restore pending 2FA state if page was refreshed during 2FA challenge
