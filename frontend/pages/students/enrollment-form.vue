@@ -254,13 +254,25 @@
             </div>
 
             <div>
-              <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">7. Número de CI o CE *</label>
-              <input 
-                v-model="form.student.national_id" 
-                type="text" 
-                placeholder="V-33157830 o CE" 
-                class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono font-bold uppercase"
-              />
+              <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">7. Doc. Identidad (V / E / P) *</label>
+              <div class="flex items-center gap-1">
+                <div class="flex gap-0.5 print:hidden">
+                  <button type="button" @click="form.student.doc_type = 'V'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.student.doc_type === 'V' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Venezolano">V</button>
+                  <button type="button" @click="form.student.doc_type = 'E'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.student.doc_type === 'E' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Extranjero">E</button>
+                  <button type="button" @click="form.student.doc_type = 'P'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.student.doc_type === 'P' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Pasaporte">P</button>
+                </div>
+                <div class="hidden print:flex items-center gap-0.5 text-[8px] font-black mr-1">
+                  <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.student.doc_type === 'V' ? 'bg-black text-white' : '']">V</span>
+                  <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.student.doc_type === 'E' ? 'bg-black text-white' : '']">E</span>
+                  <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.student.doc_type === 'P' ? 'bg-black text-white' : '']">P</span>
+                </div>
+                <input 
+                  v-model="form.student.national_id" 
+                  type="text" 
+                  placeholder="33157830 o CE" 
+                  class="flex-1 px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono font-bold uppercase"
+                />
+              </div>
             </div>
             <div>
               <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">8. Grado a Inscribir *</label>
@@ -396,13 +408,25 @@
                     />
                   </div>
                   <div>
-                    <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">2. Cédula Identidad</label>
-                    <input 
-                      v-model="form.father.national_id" 
-                      type="text" 
-                      placeholder="V-14645240" 
-                      class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono font-bold uppercase"
-                    />
+                    <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">2. Doc. Identidad (V / E / P)</label>
+                    <div class="flex items-center gap-1">
+                      <div class="flex gap-0.5 print:hidden">
+                        <button type="button" @click="form.father.doc_type = 'V'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.father.doc_type === 'V' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Venezolano">V</button>
+                        <button type="button" @click="form.father.doc_type = 'E'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.father.doc_type === 'E' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Extranjero">E</button>
+                        <button type="button" @click="form.father.doc_type = 'P'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.father.doc_type === 'P' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Pasaporte">P</button>
+                      </div>
+                      <div class="hidden print:flex items-center gap-0.5 text-[8px] font-black mr-1">
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.father.doc_type === 'V' ? 'bg-black text-white' : '']">V</span>
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.father.doc_type === 'E' ? 'bg-black text-white' : '']">E</span>
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.father.doc_type === 'P' ? 'bg-black text-white' : '']">P</span>
+                      </div>
+                      <input 
+                        v-model="form.father.national_id" 
+                        type="text" 
+                        placeholder="14645240" 
+                        class="flex-1 px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono font-bold uppercase"
+                      />
+                    </div>
                   </div>
                   <div class="grid grid-cols-2 gap-1.5">
                     <div>
@@ -416,12 +440,22 @@
                     </div>
                     <div>
                       <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">4. Nacionalidad</label>
-                      <input 
-                        v-model="form.father.nationality" 
-                        type="text" 
-                        placeholder="VENEZOLANO" 
-                        class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
-                      />
+                      <div class="flex items-center gap-1">
+                        <div class="flex gap-0.5 print:hidden">
+                          <button type="button" @click="form.father.nationality = 'V'" :class="['px-1.5 h-5 rounded text-[8.5px] font-bold border transition-all cursor-pointer', form.father.nationality === 'V' || form.father.nationality === 'VENEZOLANO' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Venezolano">V</button>
+                          <button type="button" @click="form.father.nationality = (form.father.nationality === 'V' || form.father.nationality === 'VENEZOLANO') ? 'E' : (form.father.nationality || 'E')" :class="['px-1.5 h-5 rounded text-[8.5px] font-bold border transition-all cursor-pointer', form.father.nationality && form.father.nationality !== 'V' && form.father.nationality !== 'VENEZOLANO' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Extranjero">E</button>
+                        </div>
+                        <div class="hidden print:flex items-center gap-1 text-[8px] font-bold">
+                          <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.father.nationality === 'V' || form.father.nationality === 'VENEZOLANO' ? 'bg-black text-white' : '']">V</span> Ven.
+                          <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.father.nationality && form.father.nationality !== 'V' && form.father.nationality !== 'VENEZOLANO' ? 'bg-black text-white' : '']">E</span> Ext.
+                        </div>
+                        <input 
+                          v-model="form.father.nationality" 
+                          type="text" 
+                          placeholder="V / País" 
+                          class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -512,13 +546,25 @@
                     />
                   </div>
                   <div>
-                    <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">11. Cédula Identidad</label>
-                    <input 
-                      v-model="form.mother.national_id" 
-                      type="text" 
-                      placeholder="V-14163778" 
-                      class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono font-bold uppercase"
-                    />
+                    <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">11. Doc. Identidad (V / E / P)</label>
+                    <div class="flex items-center gap-1">
+                      <div class="flex gap-0.5 print:hidden">
+                        <button type="button" @click="form.mother.doc_type = 'V'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.mother.doc_type === 'V' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Venezolana">V</button>
+                        <button type="button" @click="form.mother.doc_type = 'E'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.mother.doc_type === 'E' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Extranjera">E</button>
+                        <button type="button" @click="form.mother.doc_type = 'P'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.mother.doc_type === 'P' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Pasaporte">P</button>
+                      </div>
+                      <div class="hidden print:flex items-center gap-0.5 text-[8px] font-black mr-1">
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.mother.doc_type === 'V' ? 'bg-black text-white' : '']">V</span>
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.mother.doc_type === 'E' ? 'bg-black text-white' : '']">E</span>
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.mother.doc_type === 'P' ? 'bg-black text-white' : '']">P</span>
+                      </div>
+                      <input 
+                        v-model="form.mother.national_id" 
+                        type="text" 
+                        placeholder="14163778" 
+                        class="flex-1 px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono font-bold uppercase"
+                      />
+                    </div>
                   </div>
                   <div class="grid grid-cols-2 gap-1.5">
                     <div>
@@ -532,12 +578,22 @@
                     </div>
                     <div>
                       <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">13. Nacionalidad</label>
-                      <input 
-                        v-model="form.mother.nationality" 
-                        type="text" 
-                        placeholder="VENEZOLANA" 
-                        class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
-                      />
+                      <div class="flex items-center gap-1">
+                        <div class="flex gap-0.5 print:hidden">
+                          <button type="button" @click="form.mother.nationality = 'V'" :class="['px-1.5 h-5 rounded text-[8.5px] font-bold border transition-all cursor-pointer', form.mother.nationality === 'V' || form.mother.nationality === 'VENEZOLANA' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Venezolana">V</button>
+                          <button type="button" @click="form.mother.nationality = (form.mother.nationality === 'V' || form.mother.nationality === 'VENEZOLANA') ? 'E' : (form.mother.nationality || 'E')" :class="['px-1.5 h-5 rounded text-[8.5px] font-bold border transition-all cursor-pointer', form.mother.nationality && form.mother.nationality !== 'V' && form.mother.nationality !== 'VENEZOLANA' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Extranjera">E</button>
+                        </div>
+                        <div class="hidden print:flex items-center gap-1 text-[8px] font-bold">
+                          <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.mother.nationality === 'V' || form.mother.nationality === 'VENEZOLANA' ? 'bg-black text-white' : '']">V</span> Ven.
+                          <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.mother.nationality && form.mother.nationality !== 'V' && form.mother.nationality !== 'VENEZOLANA' ? 'bg-black text-white' : '']">E</span> Ext.
+                        </div>
+                        <input 
+                          v-model="form.mother.nationality" 
+                          type="text" 
+                          placeholder="V / País" 
+                          class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] uppercase"
+                        />
+                      </div>
                     </div>
                   </div>
 
@@ -628,13 +684,25 @@
                     />
                   </div>
                   <div>
-                    <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Cédula de Identidad</label>
-                    <input 
-                      v-model="form.authorized_pickup.national_id" 
-                      type="text" 
-                      placeholder="V-0000000" 
-                      class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono uppercase"
-                    />
+                    <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Doc. Identidad (V / E / P)</label>
+                    <div class="flex items-center gap-1">
+                      <div class="flex gap-0.5 print:hidden">
+                        <button type="button" @click="form.authorized_pickup.doc_type = 'V'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.authorized_pickup.doc_type === 'V' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Venezolano">V</button>
+                        <button type="button" @click="form.authorized_pickup.doc_type = 'E'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.authorized_pickup.doc_type === 'E' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Extranjero">E</button>
+                        <button type="button" @click="form.authorized_pickup.doc_type = 'P'" :class="['w-5 h-5 rounded-full text-[9px] font-black border transition-all cursor-pointer', form.authorized_pickup.doc_type === 'P' ? 'bg-black text-white border-black' : 'bg-white text-black border-slate-400 hover:border-black']" title="Pasaporte">P</button>
+                      </div>
+                      <div class="hidden print:flex items-center gap-0.5 text-[8px] font-black mr-1">
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.authorized_pickup.doc_type === 'V' ? 'bg-black text-white' : '']">V</span>
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.authorized_pickup.doc_type === 'E' ? 'bg-black text-white' : '']">E</span>
+                        <span :class="['w-3.5 h-3.5 rounded-full border border-black inline-flex items-center justify-center text-[7px]', form.authorized_pickup.doc_type === 'P' ? 'bg-black text-white' : '']">P</span>
+                      </div>
+                      <input 
+                        v-model="form.authorized_pickup.national_id" 
+                        type="text" 
+                        placeholder="Nº Documento" 
+                        class="w-full px-2 py-1 border border-slate-300 print:border-black rounded text-[10px] font-mono uppercase"
+                      />
+                    </div>
                   </div>
                   <div>
                     <label class="block text-[9px] font-bold uppercase text-slate-600 print:text-black mb-0.5">Parentesco</label>
@@ -1225,16 +1293,17 @@ const form = ref({
     student_id: '',
     first_name: '',
     last_name: '',
-    birth_place: 'CARACAS',
-    birth_state: 'DISTRITO CAPITAL',
-    birth_country: 'VENEZUELA',
+    birth_place: '',
+    birth_state: '',
+    birth_country: '',
     date_of_birth: '',
+    doc_type: '',
     national_id: '',
-    grade: 'Quinto Grado',
+    grade: '',
     school_year: '2026 - 2027',
     economic_responsible_name: '',
     economic_responsible_occupation: '',
-    economic_responsible_education: 'TSU',
+    economic_responsible_education: '',
     siblings_in_school: '',
     blood_type: 'unknown',
     gender: 'male',
@@ -1253,11 +1322,12 @@ const form = ref({
   },
   father: {
     full_name: '',
+    doc_type: '',
     national_id: '',
     age: '',
-    nationality: 'VENEZOLANO',
+    nationality: '',
     occupation: '',
-    education_level: 'TSU',
+    education_level: '',
     phone_mobile: '',
     email: '',
     employer: '',
@@ -1265,11 +1335,12 @@ const form = ref({
   },
   mother: {
     full_name: '',
+    doc_type: '',
     national_id: '',
     age: '',
-    nationality: 'VENEZOLANA',
+    nationality: '',
     occupation: '',
-    education_level: 'TSU',
+    education_level: '',
     phone_mobile: '',
     email: '',
     employer: '',
@@ -1277,6 +1348,7 @@ const form = ref({
   },
   authorized_pickup: {
     full_name: '',
+    doc_type: '',
     national_id: '',
     relationship: 'abuela',
     phone_mobile: '',
@@ -1386,21 +1458,33 @@ const loadStudentData = (studentId) => {
   const s = registeredStudents.value.find(st => st.id === parseInt(studentId) || st.id === studentId)
   if (!s) return
 
+  const parseDoc = (val) => {
+    if (!val) return { type: '', num: '' }
+    const str = String(val).trim()
+    if (/^[Vv][- ]?/.test(str)) return { type: 'V', num: str.replace(/^[Vv][- ]?/, '') }
+    if (/^[Ee][- ]?/.test(str)) return { type: 'E', num: str.replace(/^[Ee][- ]?/, '') }
+    if (/^[Pp][- ]?/.test(str)) return { type: 'P', num: str.replace(/^[Pp][- ]?/, '') }
+    return { type: '', num: str }
+  }
+
+  const sDoc = parseDoc(s.national_id)
+
   form.value.student = {
     id: s.id,
     student_id: s.student_id || '',
     first_name: s.first_name || '',
     last_name: s.last_name || '',
-    birth_place: s.birth_place || 'CARACAS',
-    birth_state: s.birth_state || 'DISTRITO CAPITAL',
-    birth_country: s.birth_country || 'VENEZUELA',
+    birth_place: s.birth_place || '',
+    birth_state: s.birth_state || '',
+    birth_country: s.birth_country || '',
     date_of_birth: s.date_of_birth ? s.date_of_birth.split('T')[0] : '',
+    doc_type: s.doc_type || sDoc.type || 'V',
     national_id: s.national_id || '',
-    grade: s.grade || 'Quinto Grado',
+    grade: s.grade || '',
     school_year: s.school_year || '2026 - 2027',
     economic_responsible_name: s.economic_responsible_name || '',
     economic_responsible_occupation: s.economic_responsible_occupation || '',
-    economic_responsible_education: s.economic_responsible_education || 'TSU',
+    economic_responsible_education: s.economic_responsible_education || '',
     siblings_in_school: s.siblings_in_school || '',
     blood_type: s.blood_type || 'unknown',
     gender: s.gender || 'male',
@@ -1420,14 +1504,33 @@ const loadStudentData = (studentId) => {
 
   if (s.socioeconomic_data) {
     form.value.socioeconomic = { ...form.value.socioeconomic, ...s.socioeconomic_data }
-    if (s.socioeconomic_data.father) form.value.father = { ...form.value.father, ...s.socioeconomic_data.father }
-    if (s.socioeconomic_data.mother) form.value.mother = { ...form.value.mother, ...s.socioeconomic_data.mother }
+    if (s.socioeconomic_data.father) {
+      const fDoc = parseDoc(s.socioeconomic_data.father.national_id)
+      form.value.father = {
+        ...form.value.father,
+        ...s.socioeconomic_data.father,
+        doc_type: s.socioeconomic_data.father.doc_type || fDoc.type || ''
+      }
+    }
+    if (s.socioeconomic_data.mother) {
+      const mDoc = parseDoc(s.socioeconomic_data.mother.national_id)
+      form.value.mother = {
+        ...form.value.mother,
+        ...s.socioeconomic_data.mother,
+        doc_type: s.socioeconomic_data.mother.doc_type || mDoc.type || ''
+      }
+    }
     if (s.socioeconomic_data.previous_schools) form.value.previous_schools = s.socioeconomic_data.previous_schools
     if (s.socioeconomic_data.requirements) form.value.requirements = s.socioeconomic_data.requirements
     if (s.socioeconomic_data.chronology) form.value.chronology = s.socioeconomic_data.chronology
   }
   if (s.authorized_pickup) {
-    form.value.authorized_pickup = { ...form.value.authorized_pickup, ...s.authorized_pickup }
+    const aDoc = parseDoc(s.authorized_pickup.national_id)
+    form.value.authorized_pickup = {
+      ...form.value.authorized_pickup,
+      ...s.authorized_pickup,
+      doc_type: s.authorized_pickup.doc_type || aDoc.type || ''
+    }
   }
 
   toast.success(`Expediente cargado para ${s.first_name} ${s.last_name}`, 'Ficha Oficial')
@@ -1446,7 +1549,7 @@ const downloadPdf = async (isBlank = false) => {
       body: JSON.stringify({
         isBlank,
         data: isBlank ? {} : form.value,
-        student_id: form.value.student.id || undefined
+        student_id: isBlank ? undefined : (form.value.student.id || undefined)
       })
     })
 
@@ -1496,12 +1599,13 @@ const resetForm = () => {
       birth_state: '',
       birth_country: '',
       date_of_birth: '',
+      doc_type: '',
       national_id: '',
-      grade: 'Quinto Grado',
+      grade: '',
       school_year: '2026 - 2027',
       economic_responsible_name: '',
       economic_responsible_occupation: '',
-      economic_responsible_education: 'TSU',
+      economic_responsible_education: '',
       siblings_in_school: '',
       blood_type: 'unknown',
       gender: 'male',
@@ -1520,11 +1624,12 @@ const resetForm = () => {
     },
     father: {
       full_name: '',
+      doc_type: '',
       national_id: '',
       age: '',
-      nationality: 'VENEZOLANO',
+      nationality: '',
       occupation: '',
-      education_level: 'TSU',
+      education_level: '',
       phone_mobile: '',
       email: '',
       employer: '',
@@ -1532,11 +1637,12 @@ const resetForm = () => {
     },
     mother: {
       full_name: '',
+      doc_type: '',
       national_id: '',
       age: '',
-      nationality: 'VENEZOLANA',
+      nationality: '',
       occupation: '',
-      education_level: 'TSU',
+      education_level: '',
       phone_mobile: '',
       email: '',
       employer: '',
@@ -1544,8 +1650,9 @@ const resetForm = () => {
     },
     authorized_pickup: {
       full_name: '',
+      doc_type: '',
       national_id: '',
-      relationship: 'abuela',
+      relationship: '',
       phone_mobile: '',
       occupation: '',
       authorized: true,

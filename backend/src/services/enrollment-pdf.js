@@ -82,6 +82,82 @@ function buildEnrollmentHtml(data, isBlank = false) {
   const v = (val) => (val !== undefined && val !== null && String(val).trim() !== '' ? String(val).trim() : '')
   const chk = (val) => (val ? '☑' : '☐')
 
+  const renderDocBubbles = (docType, nationalId) => {
+    let type = (docType || '').toUpperCase().trim()
+    let num = (nationalId || '').trim()
+
+    // Infer docType from prefix if not explicitly set
+    if (!type && num) {
+      if (/^[Vv][- ]?/.test(num)) {
+        type = 'V'
+        num = num.replace(/^[Vv][- ]?/, '')
+      } else if (/^[Ee][- ]?/.test(num)) {
+        type = 'E'
+        num = num.replace(/^[Ee][- ]?/, '')
+      } else if (/^[Pp][- ]?/.test(num)) {
+        type = 'P'
+        num = num.replace(/^[Pp][- ]?/, '')
+      }
+    } else if (type && num) {
+      const prefixRegex = new RegExp(`^${type}[- ]?`, 'i')
+      num = num.replace(prefixRegex, '')
+    }
+
+    if (isBlank) {
+      return `
+        <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
+          <span class="doc-bubble">V</span>
+          <span class="doc-bubble">E</span>
+          <span class="doc-bubble">P</span>
+          <span style="font-size:7px; color:#555; margin-left:4px;">Nº: __________________</span>
+        </div>
+      `
+    }
+
+    const isV = type === 'V'
+    const isE = type === 'E'
+    const isP = type === 'P'
+
+    return `
+      <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
+        <span class="doc-bubble ${isV ? 'filled' : ''}">V</span>
+        <span class="doc-bubble ${isE ? 'filled' : ''}">E</span>
+        <span class="doc-bubble ${isP ? 'filled' : ''}">P</span>
+        <span style="font-weight:900; font-size:8px; margin-left:3px;">${num ? (type ? `${type}-${num}` : num) : ''}</span>
+      </div>
+    `
+  }
+
+  const renderNationalityBubbles = (nationality, docType) => {
+    if (isBlank) {
+      return `
+        <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
+          <span class="doc-bubble">V</span><span style="font-size:6.5px; margin-right:4px;">Ven.</span>
+          <span class="doc-bubble">E</span><span style="font-size:6.5px;">Ext.</span>
+        </div>
+      `
+    }
+
+    const natStr = (nationality || '').toUpperCase().trim()
+    const dt = (docType || '').toUpperCase().trim()
+
+    const isV = natStr === 'V' || natStr === 'VENEZOLANO' || natStr === 'VENEZOLANA' || dt === 'V'
+    const isE = natStr === 'E' || natStr === 'EXTRANJERO' || natStr === 'EXTRANJERA' || dt === 'E' || dt === 'P' || (natStr !== '' && !isV)
+
+    let extraCountry = ''
+    if (isE && natStr && !['E', 'EXTRANJERO', 'EXTRANJERA'].includes(natStr)) {
+      extraCountry = ` <span style="font-size:6.5px; font-weight:bold;">(${nationality})</span>`
+    }
+
+    return `
+      <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
+        <span class="doc-bubble ${isV ? 'filled' : ''}">V</span><span style="font-size:6.5px; margin-right:3px;">Ven.</span>
+        <span class="doc-bubble ${isE ? 'filled' : ''}">E</span><span style="font-size:6.5px;">Ext.</span>
+        ${extraCountry}
+      </div>
+    `
+  }
+
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -103,6 +179,28 @@ function buildEnrollmentHtml(data, isBlank = false) {
       background: #ffffff;
       font-size: 8.5px;
       line-height: 1.25;
+    }
+    .doc-bubble {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 11px;
+      height: 11px;
+      border: 1px solid #000;
+      border-radius: 50%;
+      font-size: 6.5px;
+      font-weight: 900;
+      color: #000;
+      background: #fff;
+      text-align: center;
+      line-height: 1;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .doc-bubble.filled {
+      background-color: #000;
+      color: #ffffff;
+      border-color: #000;
     }
     .page-container {
       width: 100%;
@@ -327,7 +425,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
             <div style="margin-top:2.5px; font-size:7.5px; font-weight:bold; display:flex; justify-content:space-around;">
               <span>AÑO ESCOLAR: <strong>2026 - 2027</strong></span>
               <span>FECHA: <strong>${new Date().toLocaleDateString('es-VE')}</strong></span>
-              <span>ESTADO: <strong>${v(s.birth_state) || 'DISTRITO CAPITAL (CARACAS)'}</strong></span>
+              <span>ESTADO: <strong>${v(s.birth_state)}</strong></span>
             </div>
           </td>
           <td class="header-photo">
@@ -365,7 +463,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
             </td>
             <td style="width: 25%;">
               <span class="field-label">5. País</span>
-              <div class="field-value">${v(s.birth_country) || 'VENEZUELA'}</div>
+              <div class="field-value">${v(s.birth_country)}</div>
             </td>
             <td style="width: 25%;">
               <span class="field-label">6. Fecha de Nacimiento</span>
@@ -375,15 +473,15 @@ function buildEnrollmentHtml(data, isBlank = false) {
         </table>
         <table class="grid-table">
           <tr>
-            <td style="width: 25%;">
+            <td style="width: 32%;">
               <span class="field-label">7. Número de C.I. o Cédula Escolar</span>
-              <div class="field-value" style="font-weight:900;">${v(s.national_id)}</div>
+              <div class="field-value" style="font-weight:900;">${renderDocBubbles(s.doc_type, s.national_id)}</div>
             </td>
-            <td style="width: 35%;">
+            <td style="width: 30%;">
               <span class="field-label">8. Grado / Año para el que se Inscribe</span>
-              <div class="field-value" style="font-weight:900;">${v(s.grade) || 'Quinto Grado'}</div>
+              <div class="field-value" style="font-weight:900;">${v(s.grade)}</div>
             </td>
-            <td style="width: 20%;">
+            <td style="width: 18%;">
               <span class="field-label">Gestión Escolar</span>
               <div class="field-value"><strong>2026 - 2027</strong></div>
             </td>
@@ -411,7 +509,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
           <tr>
             <td colspan="3">
               <span class="field-label">12. Hermanos en este Plantel y Grado que Cursa Cada Uno</span>
-              <div class="field-value">${v(s.siblings_in_school) || 'Ninguno'}</div>
+              <div class="field-value">${v(s.siblings_in_school)}</div>
             </td>
           </tr>
         </table>
@@ -434,10 +532,10 @@ function buildEnrollmentHtml(data, isBlank = false) {
               <td style="padding-left: 5px; vertical-align:top;">
                 <table style="width:100%; border-collapse:collapse;">
                   <tr>
-                    <td style="width:48%;"><span class="field-label">1. Apellidos y Nombres del Padre</span><div class="field-value">${v(f.full_name)}</div></td>
-                    <td style="width:26%;"><span class="field-label">2. Cédula Identidad</span><div class="field-value"><strong>${v(f.national_id)}</strong></div></td>
-                    <td style="width:12%;"><span class="field-label">3. Edad</span><div class="field-value">${v(f.age)}</div></td>
-                    <td style="width:14%;"><span class="field-label">4. Nacionalidad</span><div class="field-value">${v(f.nationality) || 'VENEZOLANO'}</div></td>
+                    <td style="width:42%;"><span class="field-label">1. Apellidos y Nombres del Padre</span><div class="field-value">${v(f.full_name)}</div></td>
+                    <td style="width:30%;"><span class="field-label">2. Doc. Identidad (V / E / P)</span><div class="field-value">${renderDocBubbles(f.doc_type, f.national_id)}</div></td>
+                    <td style="width:10%;"><span class="field-label">3. Edad</span><div class="field-value">${v(f.age)}</div></td>
+                    <td style="width:18%;"><span class="field-label">4. Nacionalidad</span><div class="field-value">${renderNationalityBubbles(f.nationality, f.doc_type)}</div></td>
                   </tr>
                   <tr>
                     <td><span class="field-label">5. Ocupación / Profesión</span><div class="field-value">${v(f.occupation)}</div></td>
@@ -465,10 +563,10 @@ function buildEnrollmentHtml(data, isBlank = false) {
               <td style="padding-left: 5px; vertical-align:top;">
                 <table style="width:100%; border-collapse:collapse;">
                   <tr>
-                    <td style="width:48%;"><span class="field-label">10. Apellidos y Nombres de la Madre</span><div class="field-value">${v(m.full_name)}</div></td>
-                    <td style="width:26%;"><span class="field-label">11. Cédula Identidad</span><div class="field-value"><strong>${v(m.national_id)}</strong></div></td>
-                    <td style="width:12%;"><span class="field-label">12. Edad</span><div class="field-value">${v(m.age)}</div></td>
-                    <td style="width:14%;"><span class="field-label">13. Nacionalidad</span><div class="field-value">${v(m.nationality) || 'VENEZOLANA'}</div></td>
+                    <td style="width:42%;"><span class="field-label">10. Apellidos y Nombres de la Madre</span><div class="field-value">${v(m.full_name)}</div></td>
+                    <td style="width:30%;"><span class="field-label">11. Doc. Identidad (V / E / P)</span><div class="field-value">${renderDocBubbles(m.doc_type, m.national_id)}</div></td>
+                    <td style="width:10%;"><span class="field-label">12. Edad</span><div class="field-value">${v(m.age)}</div></td>
+                    <td style="width:18%;"><span class="field-label">13. Nacionalidad</span><div class="field-value">${renderNationalityBubbles(m.nationality, m.doc_type)}</div></td>
                   </tr>
                   <tr>
                     <td><span class="field-label">14. Ocupación / Profesión</span><div class="field-value">${v(m.occupation)}</div></td>
@@ -496,10 +594,10 @@ function buildEnrollmentHtml(data, isBlank = false) {
               <td style="padding-left: 5px; vertical-align:top;">
                 <table style="width:100%; border-collapse:collapse;">
                   <tr>
-                    <td style="width:45%;"><span class="field-label">Tercero Autorizado Expreso para Retirar (Nombres y Apellidos)</span><div class="field-value">${v(a.full_name)}</div></td>
-                    <td style="width:25%;"><span class="field-label">Cédula Identidad</span><div class="field-value"><strong>${v(a.national_id)}</strong></div></td>
-                    <td style="width:15%;"><span class="field-label">Parentesco</span><div class="field-value">${v(a.relationship)}</div></td>
-                    <td style="width:15%;"><span class="field-label">Celular</span><div class="field-value">${v(a.phone_mobile)}</div></td>
+                    <td style="width:42%;"><span class="field-label">Tercero Autorizado Expreso para Retirar (Nombres y Apellidos)</span><div class="field-value">${v(a.full_name)}</div></td>
+                    <td style="width:30%;"><span class="field-label">Doc. Identidad (V / E / P)</span><div class="field-value">${renderDocBubbles(a.doc_type, a.national_id)}</div></td>
+                    <td style="width:14%;"><span class="field-label">Parentesco</span><div class="field-value">${v(a.relationship)}</div></td>
+                    <td style="width:14%;"><span class="field-label">Celular</span><div class="field-value">${v(a.phone_mobile)}</div></td>
                   </tr>
                   <tr>
                     <td colspan="4" style="font-size:7px; padding-top:2px;">
@@ -557,7 +655,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
                 <td><strong>${v(r.grade)}</strong></td>
                 <td>${v(r.school_year)}</td>
                 <td>${v(r.school_name)}</td>
-                <td>${v(r.city) || 'CARACAS'}</td>
+                <td>${v(r.city)}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -591,7 +689,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
           </td>
           <td style="text-align:right; vertical-align:middle;">
             <div style="font-size:8px; font-weight:bold;">ALUMNO: <u>${v(s.last_name)}, ${v(s.first_name)}</u></div>
-            <div style="font-size:7.5px;">C.I. / C.E.: <strong>${v(s.national_id) || 'S/N'}</strong> • GRADO: <strong>${v(s.grade) || 'Quinto Grado'}</strong></div>
+            <div style="font-size:7.5px;">C.I. / C.E.: <strong>${v(s.national_id)}</strong> • GRADO: <strong>${v(s.grade)}</strong></div>
           </td>
         </tr>
       </table>
@@ -627,7 +725,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
                   <td><span class="field-label">Estado</span><div class="field-value">${v(sc.canaima_condition)}</div></td>
                 </tr>
                 <tr>
-                  <td colspan="2"><span class="field-label">Seguro Personal (HCM)</span><div class="field-value">${v(sc.hcm_insurance_name) || 'No posee'}</div></td>
+                  <td colspan="2"><span class="field-label">Seguro Personal (HCM)</span><div class="field-value">${v(sc.hcm_insurance_name)}</div></td>
                   <td><span class="field-label">Seguro Escolar</span><div class="field-value">${chk(sc.has_school_insurance)} SÍ</div></td>
                 </tr>
               </table>
@@ -645,13 +743,13 @@ function buildEnrollmentHtml(data, isBlank = false) {
                 </tr>
                 <tr>
                   <td><span class="field-label">N° Habitaciones</span><div class="field-value">${v(sc.rooms_count)}</div></td>
-                  <td><span class="field-label">Pago Mensual</span><div class="field-value">${v(sc.housing_monthly_payment) || '0'}</div></td>
+                  <td><span class="field-label">Pago Mensual</span><div class="field-value">${v(sc.housing_monthly_payment)}</div></td>
                 </tr>
                 <tr>
                   <td colspan="2">
                     <span class="field-label">Con el Alumno Viven:</span>
                     <div class="field-value">
-                      ${chk(sc.lives_with_mother)} Mamá &nbsp; ${chk(sc.lives_with_father)} Papá &nbsp; Hermanos: ${v(sc.lives_with_siblings_count) || '0'} &nbsp; Otros: ${v(sc.lives_with_others)}
+                      ${chk(sc.lives_with_mother)} Mamá &nbsp; ${chk(sc.lives_with_father)} Papá &nbsp; Hermanos: ${v(sc.lives_with_siblings_count)} &nbsp; Otros: ${v(sc.lives_with_others)}
                     </div>
                   </td>
                 </tr>
@@ -693,7 +791,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
                 <tr><td>${chk(req.ci_alumno)} C.I. del Alumno</td><td>${chk(req.ci_padre)} C.I. Padre</td></tr>
                 <tr><td>${chk(req.boleta_original)} Boleta Original</td><td>${chk(req.fotos_carnet)} Fotos Carnet (Alumno y Reps.)</td></tr>
                 <tr><td>${chk(req.boleta_promocion)} Boleta Promoción</td><td>${chk(req.notas_certificadas)} Notas Certificadas</td></tr>
-                <tr><td colspan="2">Otros Recaudos: ${v(req.otros) || 'Ninguno'}</td></tr>
+                <tr><td colspan="2">Otros Recaudos: ${v(req.otros)}</td></tr>
               </table>
             </div>
           </td>
@@ -810,8 +908,8 @@ module.exports = function (app) {
 
       const pdfBuffer = await fs.promises.readFile(tempPdfPath)
 
-      // Optionally save to permanent documents archive if student_id is provided
-      if (student_id) {
+      // Optionally save to permanent documents archive only if not blank and student_id is provided
+      if (!isBlank && student_id) {
         try {
           const archiveFilename = `ficha_inscripcion_${student_id}_2026_2027.pdf`
           const archivePath = path.join(DOCUMENTS_DIR, archiveFilename)
