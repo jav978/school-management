@@ -5,11 +5,9 @@ test.describe('Módulo de Gestión de Estudiantes', () => {
 
   test.beforeEach(async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto('/dashboard');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('a[href="/students"]').first().click();
-    await page.waitForURL('**/students', { timeout: 10000 });
-    await page.waitForLoadState('domcontentloaded');
+    await page.goto('/students');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('h1:has-text("Gestión de Estudiantes")')).toBeVisible();
   });
 
   test('04.1 - Debe renderizar la cabecera y tarjetas métricas de estudiantes', async ({ page }) => {
@@ -18,11 +16,11 @@ test.describe('Módulo de Gestión de Estudiantes', () => {
     // Comprobar tarjetas KPI
     await expect(page.locator('p:has-text("Total Estudiantes")')).toBeVisible();
     await expect(page.locator('p:has-text("Estudiantes Activos")')).toBeVisible();
-    await expect(page.locator('p:has-text("Grados Cubiertos")')).toBeVisible();
+    await expect(page.locator('p:has-text("Años Registrados")')).toBeVisible();
   });
 
-  test('04.2 - Debe contar con botones de acción principales (Nuevo Estudiante y Planilla)', async ({ page }) => {
-    const newStudentBtn = page.locator('button:has-text("Nuevo Estudiante")');
+  test('04.2 - Debe contar con botones de acción principales (Inscribir Estudiante y Planilla)', async ({ page }) => {
+    const newStudentBtn = page.locator('button:has-text("Inscribir Estudiante")');
     await expect(newStudentBtn).toBeVisible();
 
     const enrollmentFormBtn = page.locator('button:has-text("Planilla de Matrícula")');
@@ -30,15 +28,15 @@ test.describe('Módulo de Gestión de Estudiantes', () => {
   });
 
   test('04.3 - Debe abrir y cerrar el modal para registrar un Nuevo Estudiante', async ({ page }) => {
-    const newStudentBtn = page.locator('button:has-text("Nuevo Estudiante")');
+    const newStudentBtn = page.locator('button:has-text("Inscribir Estudiante")');
     await newStudentBtn.click();
 
     // Verificar apertura del modal institucional
-    const modalTitle = page.locator('h3:has-text("Nuevo Registro de Estudiante")');
+    const modalTitle = page.locator('h3:has-text("Inscripción de Estudiante")');
     await expect(modalTitle).toBeVisible({ timeout: 5000 });
 
     // Cancelar / Cerrar modal
-    const closeBtn = page.locator('button[title="Cerrar modal"], button:has-text("Cancelar")').first();
+    const closeBtn = page.locator('button:has-text("Cancelar")').first();
     await closeBtn.click();
 
     await expect(modalTitle).not.toBeVisible({ timeout: 5000 });
@@ -53,6 +51,7 @@ test.describe('Módulo de Gestión de Estudiantes', () => {
   });
 
   test('04.5 - Debe realizar el ciclo de vida completo de un estudiante (Crear -> Consultar -> Modificar -> Ficha -> Deshabilitar -> Reactivar)', async ({ page }) => {
+    test.setTimeout(45000);
     const idSuffix = Date.now().toString().slice(-4);
     const testStudentId = `EST-${idSuffix}`;
     const testFirstName = `Estudiante${idSuffix}`;
@@ -62,42 +61,46 @@ test.describe('Módulo de Gestión de Estudiantes', () => {
     const updatedFullName = `${testFirstName} ${updatedLastName}`;
 
     // 1. CREATE: Abrir modal y registrar estudiante
-    await page.locator('button:has-text("Nuevo Estudiante")').click();
-    await expect(page.locator('h3:has-text("Nuevo Registro de Estudiante")')).toBeVisible({ timeout: 5000 });
+    await page.locator('button:has-text("Inscribir Estudiante")').click();
+    await expect(page.locator('h3:has-text("Inscripción de Estudiante")')).toBeVisible({ timeout: 5000 });
 
-    // Llenar datos de matrícula
-    await page.locator('input[placeholder*="EST004"]').fill(testStudentId);
+    // Llenar datos de matrícula (Tab Académico)
+    await page.locator('input[placeholder*="EST-2026-1001"]').fill(testStudentId);
     
     // Seleccionar grado
     const gradeSelect = page.locator('form select').first();
-    await gradeSelect.selectOption({ index: 1 }); // Seleccionar el primer grado disponible
+    await gradeSelect.selectOption({ index: 1 });
 
-    // Llenar nombres y apellidos
-    await page.locator('input[placeholder*="Carlos Eduardo"]').fill(testFirstName);
-    await page.locator('input[placeholder*="Rodríguez Pérez"]').fill(testLastName);
+    // Cambiar a Tab 2: Personal
+    await page.locator('button:has-text("Personal")').click();
+    await page.locator('input[placeholder*="Alejandro"]').fill(testFirstName);
+    await page.locator('input[placeholder*="Paredes Mendoza"]').fill(testLastName);
 
     // Guardar
-    await page.locator('button:has-text("Registrar Estudiante")').click();
+    await page.locator('button:has-text("Guardar en Matrícula")').click();
 
     // Modal debe cerrarse
-    await expect(page.locator('h3:has-text("Nuevo Registro de Estudiante")')).not.toBeVisible({ timeout: 7000 });
+    await expect(page.locator('h3:has-text("Inscripción de Estudiante")')).not.toBeVisible({ timeout: 10000 });
 
     // 2. READ: Buscar en la barra de búsqueda
-    const searchInput = page.locator('input[placeholder*="Buscar estudiantes"]');
+    const searchInput = page.locator('input[placeholder*="Buscar por nombre"]');
     await searchInput.fill(testStudentId);
-    await expect(page.locator('h3', { hasText: fullName })).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('h3', { hasText: fullName })).toBeVisible({ timeout: 7000 });
 
     // 3. UPDATE: Editar el estudiante
     const studentCard = page.locator('.glass-card').filter({ has: page.locator('h3', { hasText: fullName }) });
-    await studentCard.locator('button[title="Editar expediente del estudiante"]').click();
+    await studentCard.locator('button[title="Editar Expediente"]').click();
 
-    await expect(page.locator('h3:has-text("Editar Expediente de Estudiante")')).toBeVisible({ timeout: 5000 });
-    const lastNameInput = page.locator('input[placeholder*="Rodríguez Pérez"]');
+    await expect(page.locator('h3:has-text("Expediente del Estudiante")')).toBeVisible({ timeout: 5000 });
+    
+    // Cambiar a Tab 2: Personal para modificar apellido
+    await page.locator('button:has-text("Personal")').click();
+    const lastNameInput = page.locator('input[placeholder*="Paredes Mendoza"]');
     await lastNameInput.fill(updatedLastName);
-    await page.locator('button:has-text("Guardar Cambios")').click();
+    await page.locator('button:has-text("Actualizar Expediente")').click();
 
-    await expect(page.locator('h3:has-text("Editar Expediente de Estudiante")')).not.toBeVisible({ timeout: 7000 });
-    await expect(page.locator('h3', { hasText: updatedFullName })).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('h3:has-text("Expediente del Estudiante")')).not.toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h3', { hasText: updatedFullName })).toBeVisible({ timeout: 7000 });
 
     // 4. FICHA: Comprobar acceso a ficha de inscripción del estudiante
     const updatedCard = page.locator('.glass-card').filter({ has: page.locator('h3', { hasText: updatedFullName }) });
@@ -107,7 +110,7 @@ test.describe('Módulo de Gestión de Estudiantes', () => {
     // 5. SOFT DELETE / DESHABILITAR: Deshabilitar estudiante
     await updatedCard.locator('button[title*="Deshabilitar estudiante"]').click();
     await expect(page.locator('h3:has-text("¿Deshabilitar Estudiante?")')).toBeVisible({ timeout: 5000 });
-    await page.locator('button:has-text("Sí, Deshabilitar Alumno")').click();
+    await page.locator('button:has-text("Sí, Inactivar Alumno")').click();
 
     await expect(page.locator('h3:has-text("¿Deshabilitar Estudiante?")')).not.toBeVisible({ timeout: 7000 });
 

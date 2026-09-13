@@ -105,11 +105,11 @@ function buildEnrollmentHtml(data, isBlank = false) {
 
     if (isBlank) {
       return `
-        <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
+        <div style="display:flex; align-items:center; gap:2.5px; min-height:14px;">
           <span class="doc-bubble">V</span>
           <span class="doc-bubble">E</span>
           <span class="doc-bubble">P</span>
-          <span style="font-size:7px; color:#555; margin-left:4px;">Nº: __________________</span>
+          <span style="font-size:8.5pt; color:#444; margin-left:4px;">Nº: __________________</span>
         </div>
       `
     }
@@ -119,11 +119,11 @@ function buildEnrollmentHtml(data, isBlank = false) {
     const isP = type === 'P'
 
     return `
-      <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
+      <div style="display:flex; align-items:center; gap:2.5px; min-height:14px;">
         <span class="doc-bubble ${isV ? 'filled' : ''}">V</span>
         <span class="doc-bubble ${isE ? 'filled' : ''}">E</span>
         <span class="doc-bubble ${isP ? 'filled' : ''}">P</span>
-        <span style="font-weight:900; font-size:8px; margin-left:3px;">${num ? (type ? `${type}-${num}` : num) : ''}</span>
+        <span style="font-weight:900; font-size:11pt; margin-left:4px;">${num ? (type ? `${type}-${num}` : num) : ''}</span>
       </div>
     `
   }
@@ -131,9 +131,9 @@ function buildEnrollmentHtml(data, isBlank = false) {
   const renderNationalityBubbles = (nationality, docType) => {
     if (isBlank) {
       return `
-        <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
-          <span class="doc-bubble">V</span><span style="font-size:6.5px; margin-right:4px;">Ven.</span>
-          <span class="doc-bubble">E</span><span style="font-size:6.5px;">Ext.</span>
+        <div style="display:flex; align-items:center; gap:2.5px; min-height:14px;">
+          <span class="doc-bubble">V</span><span style="font-size:8pt; margin-right:4px;">Ven.</span>
+          <span class="doc-bubble">E</span><span style="font-size:8pt;">Ext.</span>
         </div>
       `
     }
@@ -146,13 +146,13 @@ function buildEnrollmentHtml(data, isBlank = false) {
 
     let extraCountry = ''
     if (isE && natStr && !['E', 'EXTRANJERO', 'EXTRANJERA'].includes(natStr)) {
-      extraCountry = ` <span style="font-size:6.5px; font-weight:bold;">(${nationality})</span>`
+      extraCountry = ` <span style="font-size:8pt; font-weight:bold;">(${nationality})</span>`
     }
 
     return `
-      <div style="display:flex; align-items:center; gap:2px; min-height:12px;">
-        <span class="doc-bubble ${isV ? 'filled' : ''}">V</span><span style="font-size:6.5px; margin-right:3px;">Ven.</span>
-        <span class="doc-bubble ${isE ? 'filled' : ''}">E</span><span style="font-size:6.5px;">Ext.</span>
+      <div style="display:flex; align-items:center; gap:2.5px; min-height:14px;">
+        <span class="doc-bubble ${isV ? 'filled' : ''}">V</span><span style="font-size:8pt; margin-right:3px;">Ven.</span>
+        <span class="doc-bubble ${isE ? 'filled' : ''}">E</span><span style="font-size:8pt;">Ext.</span>
         ${extraCountry}
       </div>
     `
@@ -166,7 +166,7 @@ function buildEnrollmentHtml(data, isBlank = false) {
   <style>
     @page {
       size: letter portrait;
-      margin: 6mm 9mm 5mm 9mm;
+      margin: 4.5mm 6.5mm 4mm 6.5mm;
     }
     * {
       box-sizing: border-box;
@@ -177,18 +177,18 @@ function buildEnrollmentHtml(data, isBlank = false) {
       padding: 0;
       color: #000000;
       background: #ffffff;
-      font-size: 8.5px;
-      line-height: 1.25;
+      font-size: 11pt;
+      line-height: 1.18;
     }
     .doc-bubble {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 11px;
-      height: 11px;
-      border: 1px solid #000;
+      width: 13px;
+      height: 13px;
+      border: 1.2px solid #000;
       border-radius: 50%;
-      font-size: 6.5px;
+      font-size: 8pt;
       font-weight: 900;
       color: #000;
       background: #fff;
@@ -224,33 +224,33 @@ function buildEnrollmentHtml(data, isBlank = false) {
       width: 100%;
       border-collapse: collapse;
       border-bottom: 2px solid #000;
-      padding-bottom: 3px;
-      margin-bottom: 4px;
+      padding-bottom: 2px;
+      margin-bottom: 2.5px;
     }
     .header-logo {
-      width: 75px;
+      width: 58px;
       vertical-align: middle;
       text-align: center;
     }
     .header-logo img {
-      width: 70px;
-      height: 70px;
+      width: 52px;
+      height: 52px;
       object-fit: contain;
     }
     .header-text {
       text-align: center;
       vertical-align: middle;
-      padding: 0 6px;
+      padding: 0 4px;
     }
     .header-photo {
-      width: 80px;
+      width: 68px;
       vertical-align: middle;
       text-align: center;
     }
     .photo-box {
-      width: 75px;
-      height: 98px;
-      border: 1px dashed #000;
+      width: 62px;
+      height: 78px;
+      border: 1.2px dashed #000;
       display: inline-block;
       text-align: center;
       vertical-align: middle;
@@ -264,53 +264,53 @@ function buildEnrollmentHtml(data, isBlank = false) {
     }
     .section-box {
       border: 1px solid #000;
-      margin-bottom: 4px;
-      border-radius: 4px;
+      margin-bottom: 2.5px;
+      border-radius: 3px;
       overflow: hidden;
     }
     .section-title {
       background: #e8e8e8;
       font-weight: 900;
-      font-size: 8px;
+      font-size: 11pt;
       text-transform: uppercase;
-      padding: 2px 5px;
+      padding: 1px 4px;
       border-bottom: 1px solid #000;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
     }
     .grid-table {
       width: 100%;
       border-collapse: collapse;
     }
     .grid-table td, .grid-table th {
-      padding: 2px 3.5px;
+      padding: 1px 3px;
       vertical-align: top;
       border-bottom: 1px solid #e0e0e0;
     }
     .field-label {
-      font-size: 7px;
+      font-size: 8.5pt;
       font-weight: 800;
       text-transform: uppercase;
-      color: #333;
+      color: #222;
       display: block;
-      margin-bottom: 1px;
+      margin-bottom: 0.5px;
     }
     .field-value {
-      font-size: 8px;
+      font-size: 11pt;
       font-weight: 600;
       color: #000;
-      min-height: 12px;
+      min-height: 14px;
       border-bottom: 1px dotted #888;
-      padding-bottom: 1px;
+      padding-bottom: 0.5px;
     }
     .parent-card {
       border: 1px solid #bbb;
-      margin-bottom: 3px;
-      padding: 3px;
-      border-radius: 3px;
+      margin-bottom: 1.5px;
+      padding: 1.5px;
+      border-radius: 2.5px;
     }
     .rep-photo {
-      width: 58px;
-      height: 72px;
+      width: 48px;
+      height: 58px;
       border: 1px dashed #666;
       text-align: center;
       vertical-align: middle;
@@ -325,38 +325,38 @@ function buildEnrollmentHtml(data, isBlank = false) {
     .data-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 7.5px;
+      font-size: 9.5pt;
     }
     .data-table th {
       background: #f2f2f2;
       border: 1px solid #000;
-      padding: 1.5px 3.5px;
+      padding: 1px 3px;
       font-weight: 900;
       text-align: left;
     }
     .data-table td {
       border: 1px solid #000;
-      padding: 1.5px 3.5px;
+      padding: 1px 3px;
     }
     .commitments-list {
-      font-size: 7.5px;
-      line-height: 1.25;
-      margin: 2px 0 0 0;
-      padding-left: 14px;
+      font-size: 9.2pt;
+      line-height: 1.18;
+      margin: 1px 0 0 0;
+      padding-left: 12px;
     }
     .commitments-list li {
-      margin-bottom: 1.5px;
+      margin-bottom: 1px;
       text-align: justify;
     }
     .signatures-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 4px;
+      margin-top: 2.5px;
       border: 1px solid #000;
     }
     .signatures-table td {
       width: 33.33%;
-      padding: 3px 5px;
+      padding: 1.5px 3px;
       vertical-align: bottom;
       text-align: center;
       border-right: 1px solid #000;
@@ -367,17 +367,17 @@ function buildEnrollmentHtml(data, isBlank = false) {
     .sig-line {
       width: 85%;
       border-bottom: 1.5px solid #000;
-      margin: 24px auto 3px auto;
+      margin: 14px auto 1.5px auto;
     }
     .thumb-box {
-      width: 44px;
-      height: 52px;
-      border: 1.5px dashed #444;
+      width: 34px;
+      height: 42px;
+      border: 1.2px dashed #444;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 6px;
+      font-size: 6.5pt;
       font-weight: bold;
       color: #666;
       text-align: center;
@@ -386,12 +386,12 @@ function buildEnrollmentHtml(data, isBlank = false) {
       width: 100%;
       border-collapse: collapse;
       border-top: 1.5px solid #000;
-      margin-top: 3px;
-      padding-top: 2px;
-      font-size: 7px;
+      margin-top: 1.5px;
+      padding-top: 1.5px;
+      font-size: 8.5pt;
     }
     .page-footer-table td {
-      padding: 2px 0;
+      padding: 1px 0;
       vertical-align: middle;
     }
   </style>

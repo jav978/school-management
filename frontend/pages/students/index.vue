@@ -436,20 +436,17 @@
       </div>
     </div>
 
-    <!-- SLIDE-OVER DRAWER: Create / Edit Student (High-End Agency Tier) -->
+    <!-- STANDARDIZED CENTERED MODAL: Create / Edit Student -->
     <Teleport to="body">
-      <div v-if="showDrawer" class="fixed inset-0 z-[100] flex justify-end">
-        <!-- Backdrop with subtle blur -->
-        <div 
-          @click="closeDrawer" 
-          class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity duration-300" 
-          aria-hidden="true"
-        ></div>
-
-        <!-- Slide-over Drawer Panel -->
-        <div class="relative w-full max-w-xl bg-white dark:bg-[#130b2e] border-l border-slate-200/90 dark:border-white/10 shadow-2xl flex flex-col h-full z-10 animate-slide-left overflow-hidden">
+      <div 
+        v-if="showDrawer" 
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        @click.self="closeDrawer"
+      >
+        <!-- Modal Container: Centered with bounded max-height -->
+        <div class="relative w-full max-w-2xl bg-white dark:bg-[#130b2e] border border-slate-200/90 dark:border-white/15 shadow-2xl rounded-3xl flex flex-col max-h-[90vh] my-auto z-10 animate-scale-up overflow-hidden">
           
-          <!-- Drawer Header Banner -->
+          <!-- Modal Header Banner -->
           <div class="bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary px-6 py-4.5 flex items-center justify-between text-white flex-shrink-0 border-b border-brand-gold/30 shadow-md">
             <div class="flex items-center gap-3">
               <div class="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-xl flex-shrink-0 shadow-inner">

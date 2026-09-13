@@ -4,7 +4,7 @@
     <!-- ============================================================ -->
     <!-- SCREEN ONLY: Action Bar & Header Navigation (Hidden on Print) -->
     <!-- ============================================================ -->
-    <div class="print:hidden max-w-[1020px] mx-auto px-4 pt-6 space-y-4 mb-6">
+    <div class="print:hidden max-w-[1080px] mx-auto px-4 pt-6 space-y-4 mb-6">
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-5 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-800/80 rounded-3xl shadow-sm">
         <div class="flex items-center gap-3.5">
           <NuxtLink 
@@ -117,7 +117,7 @@
     <!-- ============================================================ -->
     <!-- MASTER PRINTABLE CONTAINER (Pages 1 and 2) -->
     <!-- ============================================================ -->
-    <div id="printable-enrollment-document" class="max-w-[1020px] mx-auto px-4 print:p-0 print:m-0 print:max-w-none">
+    <div id="printable-enrollment-document" class="max-w-[1080px] mx-auto px-4 print:p-0 print:m-0 print:max-w-none">
       
       <!-- ############################################################ -->
       <!-- PÁGINA 1: FILIACIÓN DEL ALUMNO, PADRES Y DOMICILIO -->
@@ -1867,6 +1867,30 @@ const saveEnrollment = async () => {
 </script>
 
 <style scoped>
+/* Screen input field enhancements: extra lateral space and comfortable padding */
+.page-sheet input[type="text"],
+.page-sheet input[type="date"],
+.page-sheet input[type="tel"],
+.page-sheet input[type="email"],
+.page-sheet select,
+.page-sheet textarea {
+  padding-left: 10px !important;
+  padding-right: 10px !important;
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+  min-height: 28px;
+  font-size: 11px !important;
+  transition: all 0.15s ease-in-out;
+}
+
+.page-sheet input:focus,
+.page-sheet select:focus,
+.page-sheet textarea:focus {
+  outline: none !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.18) !important;
+}
+
 @media print {
   body, html {
     background-color: #ffffff !important;
@@ -1898,6 +1922,11 @@ const saveEnrollment = async () => {
     color: #000000 !important;
     background: transparent !important;
     box-shadow: none !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    min-height: auto !important;
   }
 }
 </style>
