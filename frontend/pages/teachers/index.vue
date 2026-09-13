@@ -21,6 +21,7 @@
           v-if="canManage"
           @click="openCreateModal($event)" 
           type="button"
+          data-testid="create-teacher-btn"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -270,6 +271,7 @@
             <div class="flex items-center gap-1.5" v-if="canManage">
               <button 
                 @click="openEditModal(teacher, $event)"
+                data-testid="edit-teacher-btn"
                 class="p-2 rounded-xl text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 border border-transparent hover:border-amber-500/30 transition-all cursor-pointer"
                 title="Editar registro de profesor"
               >
@@ -279,10 +281,10 @@
               </button>
 
               <button 
-                v-if="teacher.status === 'active'"
                 @click="promptDeleteTeacher(teacher, $event)"
+                data-testid="delete-teacher-btn"
                 class="p-2 rounded-xl text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 border border-transparent hover:border-rose-500/30 transition-all cursor-pointer"
-                title="Inhabilitar profesor"
+                title="Eliminar profesor"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -363,6 +365,7 @@
                   </button>
                   <button 
                     @click="openEditModal(teacher, $event)" 
+                    data-testid="edit-teacher-btn"
                     class="p-1.5 rounded-lg text-slate-400 hover:text-brand-primary dark:hover:text-brand-gold hover:bg-slate-100 dark:hover:bg-white/10 transition-all"
                     title="Editar"
                   >
@@ -371,10 +374,10 @@
                     </svg>
                   </button>
                   <button 
-                    v-if="teacher.status === 'active'"
                     @click="promptDeleteTeacher(teacher, $event)" 
+                    data-testid="delete-teacher-btn"
                     class="p-1.5 rounded-lg text-rose-500 hover:text-rose-700 hover:bg-rose-100 dark:hover:bg-rose-950/40 transition-all"
-                    title="Inhabilitar"
+                    title="Eliminar"
                   >
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -746,6 +749,7 @@
               </button>
               <button 
                 type="submit" 
+                data-testid="submit-teacher-btn"
                 :disabled="isSubmitting"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30"
               >
@@ -795,9 +799,10 @@
             </button>
             <button 
               @click="confirmDeleteTeacher" 
-              class="px-5 py-2.5 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md shadow-amber-600/20 active:scale-95 transition-all"
+              data-testid="confirm-delete-teacher-btn"
+              class="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 active:scale-95 transition-all"
             >
-              Sí, inhabilitar docente
+              Sí, eliminar docente
             </button>
           </div>
         </div>
@@ -811,9 +816,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useToast } from '~/composables/useToast'
+import { useApi } from '~/composables/useApi'
 
 const authStore = useAuthStore()
 const toast = useToast()
+const api = useApi()
 
 const canManage = computed(() => {
   const role = authStore.userRole || authStore.user?.role
@@ -871,18 +878,10 @@ const getInitials = (teacher) => {
 // Fetch Teachers from API
 const fetchTeachers = async () => {
   try {
-    const nuxtApp = useNuxtApp()
-    if (nuxtApp.$api) {
-      const res = await nuxtApp.$api.service('teachers').find({
-        query: {
-          $sort: { employee_id: 1 },
-          $limit: 100
-        }
-      })
-      teachers.value = Array.isArray(res) ? res : (res.data || [])
-    }
+    const res = await api.get('teachers?$limit=100')
+    teachers.value = Array.isArray(res) ? res : (res.data || [])
   } catch (error) {
-    console.warn('Fallback: Error al cargar profesores de la API', error)
+    console.warn('Error al cargar profesores de la API', error)
   }
 }
 
@@ -1016,12 +1015,11 @@ const submitTeacher = async () => {
 
   isSubmitting.value = true
   try {
-    const nuxtApp = useNuxtApp()
     if (isEditing.value) {
-      await nuxtApp.$api.service('teachers').patch(form.value.id, form.value)
+      await api.patch(`teachers/${form.value.id}`, form.value)
       toast.success('Docente actualizado exitosamente')
     } else {
-      await nuxtApp.$api.service('teachers').create(form.value)
+      await api.post('teachers', form.value)
       toast.success('Nuevo docente registrado en la plantilla escolar')
     }
     await fetchTeachers()
@@ -1044,12 +1042,11 @@ const promptDeleteTeacher = (teacher, event) => {
 const confirmDeleteTeacher = async () => {
   if (!teacherToDelete.value) return
   try {
-    const nuxtApp = useNuxtApp()
-    await nuxtApp.$api.service('teachers').patch(teacherToDelete.value.id, { status: 'inactive' })
-    toast.warning(`Docente ${teacherToDelete.value.first_name} ${teacherToDelete.value.last_name} inhabilitado`)
+    await api.remove(`teachers/${teacherToDelete.value.id}`)
+    toast.warning(`Docente ${teacherToDelete.value.first_name} ${teacherToDelete.value.last_name} eliminado`)
     await fetchTeachers()
   } catch (error) {
-    toast.error(error.message || 'Error al inhabilitar el docente')
+    toast.error(error.message || 'Error al eliminar el docente')
   } finally {
     isDeleteModalOpen.value = false
     teacherToDelete.value = null
@@ -1059,8 +1056,7 @@ const confirmDeleteTeacher = async () => {
 // Reactivate Teacher
 const reactivateTeacher = async (teacher) => {
   try {
-    const nuxtApp = useNuxtApp()
-    await nuxtApp.$api.service('teachers').patch(teacher.id, { status: 'active' })
+    await api.patch(`teachers/${teacher.id}`, { status: 'active' })
     toast.success(`Docente ${teacher.first_name} ${teacher.last_name} reactivado exitosamente`)
     await fetchTeachers()
   } catch (error) {

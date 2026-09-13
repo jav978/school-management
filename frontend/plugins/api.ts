@@ -7,14 +7,16 @@ export default defineNuxtPlugin((nuxtApp) => {
       ...customHeaders
     }
 
-    if (import.meta.client) {
-      const token =
+    const sessionCookie = useCookie('session_token')
+    let token = sessionCookie.value || null
+    if (!token && import.meta.client) {
+      token =
         sessionStorage.getItem('token') ||
         sessionStorage.getItem('feathers-jwt') ||
         sessionStorage.getItem('school_jwt')
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-      }
+    }
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
     }
 
     return headers

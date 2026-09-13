@@ -2,101 +2,148 @@ const { KnexService } = require('@feathersjs/knex')
 const { BadRequest } = require('@feathersjs/errors')
 const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 
+const ALLOWED_SUBJECT_COLUMNS = new Set([
+  'institution_id', 'category_id', 'code', 'name', 'short_name',
+  'description', 'color_hex', 'icon_url', 'credits', 'hours_per_week',
+  'is_elective', 'is_active', 'syllabus_url', 'grade_level',
+  'is_deleted', 'deleted_at', 'updated_at'
+])
+
+function _enrichSubject(sub) {
+  if (!sub) return sub
+  let dept = 'Ciencias Naturales y Exactas'
+  const nameLower = (sub.name || '').toLowerCase()
+  if (nameLower.includes('matemática') || nameLower.includes('calculo') || nameLower.includes('álgebra')) {
+    dept = 'Matemática y Lógica'
+  } else if (nameLower.includes('lengua') || nameLower.includes('literatura') || nameLower.includes('castellano') || nameLower.includes('inglés') || nameLower.includes('historia')) {
+    dept = 'Lengua, Humanidades y Arte'
+  } else if (nameLower.includes('educación física') || nameLower.includes('valores') || nameLower.includes('religión') || nameLower.includes('fe')) {
+    dept = 'Formación Integral y Valores'
+  }
+
+  return {
+    ...sub,
+    category_name: sub.category_name || dept,
+    department: sub.category_name || dept,
+    teacher_name: sub.teacher_name || 'Profesor Asignado'
+  }
+}
+
 class SubjectsService extends KnexService {
   async find(params) {
-    // If not specified, exclude soft-deleted items if column exists
-    return super.find(params)
+    const db = this.getModel(params)
+    const query = { ...params?.query }
+
+    let knexQuery = db('school.subjects').where('is_deleted', false)
+
+    if (query.grade_level) {
+      knexQuery = knexQuery.where('grade_level', query.grade_level)
+    }
+    if (query.is_active !== undefined) {
+      const activeBool = query.is_active === 'true' || query.is_active === true
+      knexQuery = knexQuery.where('is_active', activeBool)
+    }
+    if (query.code) {
+      knexQuery = knexQuery.where('code', String(query.code).toUpperCase().trim())
+    }
+
+    const items = await knexQuery.orderBy('name', 'asc')
+    const enriched = items.map(_enrichSubject)
+
+    return {
+      total: enriched.length,
+      limit: 100,
+      skip: 0,
+      data: enriched
+    }
   }
 
   async get(id, params) {
-    return super.get(id, params)
+    const db = this.getModel(params)
+    const sub = await db('school.subjects').where({ id, is_deleted: false }).first()
+    if (!sub) {
+      throw new BadRequest(`Materia con id ${id} no encontrada`)
+    }
+    return _enrichSubject(sub)
+  }
+
+  _sanitizeSubjectData(data, isCreate = false) {
+    const raw = { ...data }
+    const clean = {}
+
+    if (isCreate) {
+      delete raw.id
+      clean.institution_id = raw.institution_id || 1
+      if (!raw.name?.trim()) {
+        throw new BadRequest('El nombre de la materia es requerido')
+      }
+      if (!raw.code?.trim()) {
+        throw new BadRequest('El código de la materia es requerido')
+      }
+      clean.code = String(raw.code).trim().toUpperCase()
+      clean.name = String(raw.name).trim()
+    } else {
+      if (raw.code !== undefined) {
+        clean.code = String(raw.code).trim().toUpperCase()
+        if (!clean.code) throw new BadRequest('El código no puede estar vacío')
+      }
+      if (raw.name !== undefined) {
+        clean.name = String(raw.name).trim()
+        if (!clean.name) throw new BadRequest('El nombre no puede estar vacío')
+      }
+    }
+
+    if (raw.short_name !== undefined) clean.short_name = raw.short_name ? String(raw.short_name).trim() : null
+    if (raw.description !== undefined) clean.description = raw.description ? String(raw.description).trim() : null
+    if (raw.grade_level !== undefined) clean.grade_level = raw.grade_level ? String(raw.grade_level).trim() : null
+    if (raw.color_hex !== undefined) clean.color_hex = raw.color_hex ? String(raw.color_hex).trim() : '#3B82F6'
+    if (raw.credits !== undefined) clean.credits = raw.credits !== '' ? Number(raw.credits) : 0
+    if (raw.hours_per_week !== undefined) clean.hours_per_week = raw.hours_per_week !== '' ? Number(raw.hours_per_week) : 4
+    if (raw.is_active !== undefined) clean.is_active = Boolean(raw.is_active)
+    if (raw.is_elective !== undefined) clean.is_elective = Boolean(raw.is_elective)
+
+    // Filter to whitelisted columns
+    const filtered = {}
+    for (const key of Object.keys(clean)) {
+      if (ALLOWED_SUBJECT_COLUMNS.has(key)) {
+        filtered[key] = clean[key]
+      }
+    }
+    return filtered
   }
 
   async create(data, params) {
-    // Sanitization & Validation
-    const name = data.name ? String(data.name).trim() : ''
-    const code = data.code ? String(data.code).trim().toUpperCase() : ''
-    
-    if (!name) {
-      throw new BadRequest('El nombre de la materia es requerido')
-    }
-    if (!code) {
-      throw new BadRequest('El código de la materia es requerido')
-    }
-
-    const sanitizedData = {
-      ...data,
-      name,
-      code,
-      grade_level: data.grade_level ? String(data.grade_level).trim() : null,
-      description: data.description ? String(data.description).trim() : null,
-      credits: data.credits !== undefined && data.credits !== '' ? Number(data.credits) : 0,
-      hours_per_week: data.hours_per_week !== undefined && data.hours_per_week !== '' ? Number(data.hours_per_week) : 4,
-      institution_id: data.institution_id || 1,
-      is_active: data.is_active !== undefined ? Boolean(data.is_active) : true,
-      color_hex: data.color_hex || '#3B82F6'
-    }
+    const sanitized = this._sanitizeSubjectData(data, true)
+    const db = this.getModel(params)
 
     // Check duplicate code
-    const db = this.getModel(params)
     const existing = await db('school.subjects')
-      .where({ code, is_deleted: false })
+      .where({ code: sanitized.code, is_deleted: false })
       .first()
-      .catch(() => null)
 
     if (existing) {
-      throw new BadRequest(`Ya existe una materia con el código ${code}`)
+      throw new BadRequest(`Ya existe una materia con el código ${sanitized.code}`)
     }
 
-    return super.create(sanitizedData, params)
+    const created = await super.create(sanitized, params)
+    return _enrichSubject(created)
   }
 
   async patch(id, data, params) {
-    const patchData = { ...data }
-    if (patchData.name !== undefined) {
-      patchData.name = String(patchData.name).trim()
-      if (!patchData.name) throw new BadRequest('El nombre no puede estar vacío')
-    }
-    if (patchData.code !== undefined) {
-      patchData.code = String(patchData.code).trim().toUpperCase()
-      if (!patchData.code) throw new BadRequest('El código no puede estar vacío')
-    }
-    if (patchData.grade_level !== undefined && patchData.grade_level !== null) {
-      patchData.grade_level = String(patchData.grade_level).trim()
-    }
-    if (patchData.description !== undefined && patchData.description !== null) {
-      patchData.description = String(patchData.description).trim()
-    }
-    if (patchData.credits !== undefined) {
-      patchData.credits = Number(patchData.credits) || 0
-    }
-
-    return super.patch(id, patchData, params)
+    const sanitized = this._sanitizeSubjectData(data, false)
+    sanitized.updated_at = new Date()
+    const patched = await super.patch(id, sanitized, params)
+    return _enrichSubject(patched)
   }
 
   async remove(id, params) {
     const db = this.getModel(params)
-    
-    // Check if subject is associated with classes or schedules
-    const classSubject = await db('school.class_subjects')
-      .where({ subject_id: id })
-      .first()
-      .catch(() => null)
-
-    if (classSubject) {
-      throw new BadRequest('No se puede eliminar la materia porque tiene clases o secciones asociadas. Desasigne las clases primero.')
-    }
-
-    const schedule = await db('school.schedules')
-      .where({ subject_id: id })
-      .first()
-      .catch(() => null)
-
-    if (schedule) {
-      throw new BadRequest('No se puede eliminar la materia porque tiene horarios asignados.')
-    }
-
-    return super.remove(id, params)
+    await db('school.subjects').where({ id }).update({
+      is_deleted: true,
+      is_active: false,
+      deleted_at: new Date()
+    })
+    return { id, is_deleted: true }
   }
 }
 
@@ -105,7 +152,7 @@ module.exports = function (app) {
     Model: app.get('knexClient'),
     name: 'school.subjects',
     paginate: {
-      default: 20,
+      default: 50,
       max: 100
     }
   }
@@ -117,8 +164,8 @@ module.exports = function (app) {
   service.hooks({
     before: {
       all: [authenticateHook],
-      find: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent')],
-      get: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent')],
+      find: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent', 'staff')],
+      get: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent', 'staff')],
       create: [restrictToRoles('admin', 'control_estudio', 'coordinator')],
       update: [restrictToRoles('admin', 'control_estudio', 'coordinator')],
       patch: [restrictToRoles('admin', 'control_estudio', 'coordinator')],

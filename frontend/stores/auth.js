@@ -4,6 +4,7 @@ export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null,
     token: null,
+    sessionId: null,
     isAuthenticated: false,
     twoFactorPending: false,
     tempToken: null,
@@ -13,6 +14,7 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     getUser: (state) => state.user,
     getToken: (state) => state.token,
+    getSessionId: (state) => state.sessionId,
     isLoggedIn: (state) => state.isAuthenticated,
     is2FAPending: (state) => state.twoFactorPending,
     userRole: (state) => state.user?.role || null
@@ -44,21 +46,34 @@ export const useAuthStore = defineStore('auth', {
         }
 
         this.token = response.accessToken
+        this.sessionId = response.session_id || null
         this.user = response.user
         this.isAuthenticated = true
         this.twoFactorPending = false
         this.tempToken = null
         this.tempUser = null
 
+        // Cookie efímera de sesión (se destruye automáticamente al cerrar el navegador)
+        const sessionCookie = useCookie('session_token', { sameSite: 'lax', secure: false })
+        sessionCookie.value = response.accessToken
+
+        const sessionIdCookie = useCookie('session_id', { sameSite: 'lax', secure: false })
+        sessionIdCookie.value = response.session_id || ''
+
         if (import.meta.client) {
           sessionStorage.setItem('token', response.accessToken)
+          sessionStorage.setItem('session_id', response.session_id || '')
           sessionStorage.setItem('user', JSON.stringify(response.user))
           sessionStorage.removeItem('temp_2fa_token')
           sessionStorage.removeItem('temp_2fa_user')
+          sessionStorage.removeItem('simulated_role')
+
           // Limpiar residuo histórico de localStorage para evitar bypass
           localStorage.removeItem('token')
           localStorage.removeItem('user')
           localStorage.removeItem('simulated_role')
+          localStorage.removeItem('feathers-jwt')
+          localStorage.removeItem('school_jwt')
         }
 
         return response
@@ -85,20 +100,33 @@ export const useAuthStore = defineStore('auth', {
         })
 
         this.token = response.accessToken
+        this.sessionId = response.session_id || null
         this.user = response.user
         this.isAuthenticated = true
         this.twoFactorPending = false
         this.tempToken = null
         this.tempUser = null
 
+        // Cookie efímera de sesión
+        const sessionCookie = useCookie('session_token', { sameSite: 'lax', secure: false })
+        sessionCookie.value = response.accessToken
+
+        const sessionIdCookie = useCookie('session_id', { sameSite: 'lax', secure: false })
+        sessionIdCookie.value = response.session_id || ''
+
         if (import.meta.client) {
           sessionStorage.setItem('token', response.accessToken)
+          sessionStorage.setItem('session_id', response.session_id || '')
           sessionStorage.setItem('user', JSON.stringify(response.user))
           sessionStorage.removeItem('temp_2fa_token')
           sessionStorage.removeItem('temp_2fa_user')
+          sessionStorage.removeItem('simulated_role')
+
           localStorage.removeItem('token')
           localStorage.removeItem('user')
           localStorage.removeItem('simulated_role')
+          localStorage.removeItem('feathers-jwt')
+          localStorage.removeItem('school_jwt')
         }
 
         return response
@@ -118,7 +146,20 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
+      // Limpiar cookies de sesión de forma segura si el contexto Nuxt está disponible
+      try {
+        const sessionCookie = useCookie('session_token')
+        if (sessionCookie) sessionCookie.value = null
+        const sessionIdCookie = useCookie('session_id')
+        if (sessionIdCookie) sessionIdCookie.value = null
+      } catch (_) {
+        // En contexto async desvinculado en SSR, ignorar
+      }
+
+      const currentToken = this.token || (import.meta.client ? sessionStorage.getItem('token') : null)
+
       this.token = null
+      this.sessionId = null
       this.user = null
       this.isAuthenticated = false
       this.twoFactorPending = false
@@ -127,6 +168,7 @@ export const useAuthStore = defineStore('auth', {
 
       if (import.meta.client) {
         sessionStorage.removeItem('token')
+        sessionStorage.removeItem('session_id')
         sessionStorage.removeItem('user')
         sessionStorage.removeItem('simulated_role')
         sessionStorage.removeItem('temp_2fa_token')
@@ -137,59 +179,84 @@ export const useAuthStore = defineStore('auth', {
         localStorage.removeItem('feathers-jwt')
         localStorage.removeItem('school_jwt')
       }
+
+      // Notificar al backend para revocar la sesión en school.user_sessions
+      if (currentToken) {
+        try {
+          const config = useRuntimeConfig()
+          await $fetch(`${config.public.apiBase}/authentication`, {
+            method: 'DELETE',
+            headers: {
+              Authorization: `Bearer ${currentToken}`
+            }
+          })
+        } catch (_) {
+          // Ignorar error de red durante logout
+        }
+      }
     },
 
-    setRole(role) {
-      if (!this.user) {
-        this.user = { id: 1, role, first_name: 'Usuario', last_name: role, email: `${role}@colegio.edu` }
-      } else {
-        this.user.role = role
-        this.user.user_type = role
-      }
-      if (import.meta.client) {
-        sessionStorage.setItem('user', JSON.stringify(this.user))
-        sessionStorage.setItem('simulated_role', role)
-      }
-    },
-
+    /**
+     * Valida en tiempo real la vigencia y unicidad de la sesión contra el Backend.
+     * Si la sesión fue revocada, invalidada por otro login o expirada, limpia el storage.
+     */
     async checkAuth() {
-      if (import.meta.client) {
-        // Defensive cleanup of legacy persistent localStorage tokens
-        if (localStorage.getItem('token') || localStorage.getItem('user')) {
-          localStorage.removeItem('token')
-          localStorage.removeItem('user')
-          localStorage.removeItem('simulated_role')
-          localStorage.removeItem('feathers-jwt')
-          localStorage.removeItem('school_jwt')
+      let token = null
+      try {
+        const sessionCookie = useCookie('session_token')
+        token = sessionCookie.value || null
+      } catch (_) {}
+
+      if (!token && import.meta.client) {
+        token = sessionStorage.getItem('token')
+      }
+
+      if (!token) {
+        // No hay token ni cookie de sesión: forzar limpieza inmediata
+        this.token = null
+        this.sessionId = null
+        this.user = null
+        this.isAuthenticated = false
+        if (import.meta.client) {
+          sessionStorage.removeItem('token')
+          sessionStorage.removeItem('session_id')
+          sessionStorage.removeItem('user')
+          sessionStorage.removeItem('simulated_role')
         }
+        return false
+      }
 
-        // Enforce strict session: read exclusively from sessionStorage
-        const token = sessionStorage.getItem('token')
-        const user = sessionStorage.getItem('user')
-
-        if (token && user) {
-          this.token = token
-          this.user = JSON.parse(user)
-          const simRole = sessionStorage.getItem('simulated_role')
-          if (simRole && this.user) {
-            this.user.role = simRole
-            this.user.user_type = simRole
+      try {
+        const config = useRuntimeConfig()
+        const response = await $fetch(`${config.public.apiBase}/authentication`, {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`
           }
-          this.isAuthenticated = true
-        } else {
-          this.token = null
-          this.user = null
-          this.isAuthenticated = false
-        }
+        })
 
-        // Restore pending 2FA state if page was refreshed during 2FA challenge
-        const tempToken = sessionStorage.getItem('temp_2fa_token')
-        const tempUser = sessionStorage.getItem('temp_2fa_user')
-        if (tempToken && !this.isAuthenticated) {
-          this.twoFactorPending = true
-          this.tempToken = tempToken
-          this.tempUser = tempUser ? JSON.parse(tempUser) : null
+        if (response && response.authenticated && response.user) {
+          this.token = token
+          this.sessionId = response.session_id || null
+          this.user = response.user
+          this.isAuthenticated = true
+
+          if (import.meta.client) {
+            sessionStorage.setItem('token', token)
+            sessionStorage.setItem('user', JSON.stringify(response.user))
+            if (response.session_id) {
+              sessionStorage.setItem('session_id', response.session_id)
+            }
+          }
+          return true
+        } else {
+          await this.logout()
+          return false
         }
+      } catch (error) {
+        // Token inválido, revocado, o sesión iniciada en otro dispositivo (401)
+        await this.logout()
+        return false
       }
     }
   }

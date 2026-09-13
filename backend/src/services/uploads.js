@@ -10,9 +10,32 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 }
 
 module.exports = function (app) {
-  // Endpoint de subida de avatar/fotos de perfil
+  // Endpoint de subida de avatar/fotos de perfil (requiere autenticación)
   app.post('/uploads/avatar', async (req, res) => {
     try {
+      const authHeader = req.headers['authorization']
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Autenticación requerida para subir imágenes.' })
+      }
+      const token = authHeader.split(' ')[1]
+      let authPayload
+      try {
+        authPayload = await app.service('authentication').verifyAccessToken(token)
+      } catch (err) {
+        return res.status(401).json({ error: 'Token inválido o expirado.' })
+      }
+
+      if (authPayload.session_id) {
+        const db = app.get('knexClient')
+        const session = await db('school.user_sessions')
+          .where({ token: authPayload.session_id, user_id: authPayload.sub, is_active: true })
+          .andWhere('expires_at', '>', db.fn.now())
+          .first()
+        if (!session) {
+          return res.status(401).json({ error: 'Sesión caducada o invalidada.' })
+        }
+      }
+
       const { image, filename: clientFilename } = req.body
 
       if (!image) {

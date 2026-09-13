@@ -22,6 +22,7 @@
           v-if="canManage"
           @click="openCreateModal($event)" 
           type="button"
+          data-testid="create-subject-btn"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -101,6 +102,7 @@
           </span>
           <input 
             v-model="search" 
+            data-testid="subject-search-input"
             type="text" 
             placeholder="Buscar materia por nombre o código..." 
             class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple transition-all"
@@ -112,6 +114,7 @@
           <!-- Department Select -->
           <select 
             v-model="filterDepartment"
+            data-testid="subject-department-filter"
             class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
           >
             <option value="">Todos los departamentos</option>
@@ -134,6 +137,7 @@
           <select 
             v-else
             v-model="filterLevel"
+            data-testid="subject-level-filter"
             class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer font-medium"
           >
             <option value="">Todos los niveles</option>
@@ -190,6 +194,7 @@
       <div 
         v-for="subject in filteredSubjects" 
         :key="subject.id"
+        data-testid="subject-card"
         class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between transition-all"
         :class="!subject.is_active ? 'opacity-85 border-amber-500/30' : ''"
       >
@@ -280,6 +285,7 @@
           <div class="flex items-center gap-1">
             <button 
               @click="openEditModal(subject, $event)"
+              data-testid="edit-subject-btn"
               class="p-2 text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-amber-500/30"
               title="Editar materia curricular"
             >
@@ -290,6 +296,7 @@
             <button 
               v-if="canManage"
               @click="promptDeleteSubject(subject, $event)"
+              data-testid="delete-subject-btn"
               class="p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-rose-500/30"
               title="Eliminar materia curricular"
             >
@@ -383,6 +390,7 @@
         @click.self="closeModal"
       >
         <div 
+          data-testid="subject-modal"
           class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
         >
           <!-- Institutional Header Banner -->
@@ -430,6 +438,7 @@
                     </label>
                     <input 
                       v-model="form.code" 
+                      data-testid="subject-code-input"
                       type="text" 
                       placeholder="Ej: MAT-M, CNAT-M" 
                       :class="[
@@ -449,6 +458,7 @@
                     </label>
                     <input 
                       v-model="form.name" 
+                      data-testid="subject-name-input"
                       type="text" 
                       placeholder="Ej: Matemática, Ciencias Naturales" 
                       :class="[
@@ -470,6 +480,7 @@
                     </label>
                     <select 
                       v-model="form.grade_level" 
+                      data-testid="subject-level-select"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
                       <option value="media">Media / Bachillerato</option>
@@ -528,6 +539,7 @@
                     </label>
                     <input 
                       v-model="form.category_name" 
+                      data-testid="subject-category-input"
                       type="text" 
                       placeholder="Ej: Ciencias Naturales y Exactas" 
                       list="departments-datalist"
@@ -545,6 +557,7 @@
                     </label>
                     <select 
                       v-model="form.teacher_name" 
+                      data-testid="subject-teacher-select"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer font-medium"
                     >
                       <option value="">Seleccionar profesor (Opcional)</option>
@@ -561,6 +574,7 @@
                     </label>
                     <input 
                       v-model.number="form.hours_per_week" 
+                      data-testid="subject-hours-input"
                       type="number" 
                       min="1" 
                       max="30"
@@ -575,8 +589,9 @@
                     </label>
                     <input 
                       v-model.number="form.credits" 
+                      data-testid="subject-credits-input"
                       type="number" 
-                      min="0"
+                      min="0" 
                       max="20"
                       placeholder="0" 
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
@@ -599,6 +614,7 @@
                   </label>
                   <input 
                     v-model="form.prerequisites" 
+                    data-testid="subject-prerequisites-input"
                     type="text" 
                     placeholder="Ej: Matemática I, Física Básica (Opcional)" 
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
@@ -612,6 +628,7 @@
                   </label>
                   <textarea 
                     v-model="form.description" 
+                    data-testid="subject-description-input"
                     rows="3" 
                     placeholder="Descripción curricular y propósitos formativos de la asignatura en la U.E Santa Luisa..." 
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all resize-none"
@@ -635,6 +652,7 @@
               </button>
               <button 
                 type="submit" 
+                data-testid="submit-subject-btn"
                 :disabled="isSubmitting"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
               >
@@ -656,6 +674,7 @@
     <Teleport to="body">
       <div 
         v-if="showDeleteModal" 
+        data-testid="subject-delete-modal"
         class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
         @click.self="closeDeleteModal"
       >
@@ -688,6 +707,7 @@
             </button>
             <button 
               type="button" 
+              data-testid="confirm-delete-subject-btn"
               @click="confirmDeleteSubject"
               :disabled="isDeleting"
               class="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 active:scale-95 transition-all cursor-pointer"
@@ -703,12 +723,12 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import { useApi } from '~/composables/useApi'
 import { useToast } from '~/composables/useToast'
 
-const config = useRuntimeConfig()
-const apiBase = config.public.apiBase || 'http://localhost:3031'
+const api = useApi()
 const authStore = useAuthStore()
 const toast = useToast()
 
@@ -849,23 +869,6 @@ const formatGradeLevel = (level) => {
   return level
 }
 
-// Fetch Subjects from Backend API
-const fetchSubjects = async () => {
-  try {
-    const token = localStorage.getItem('token') || localStorage.getItem('feathers-jwt') || localStorage.getItem('school_jwt')
-    const headers = token ? { Authorization: `Bearer ${token}` } : {}
-    const res = await $fetch(`${apiBase}/subjects`, { headers }).catch(() => null)
-    
-    if (res && res.data && res.data.length > 0) {
-      subjects.value = res.data.map(mapSubject)
-    } else if (subjects.value.length === 0) {
-      loadFallbackReferenceData()
-    }
-  } catch (err) {
-    if (subjects.value.length === 0) loadFallbackReferenceData()
-  }
-}
-
 const mapSubject = (s) => {
   return {
     id: s.id,
@@ -882,82 +885,22 @@ const mapSubject = (s) => {
   }
 }
 
-// Fallback seed
-const loadFallbackReferenceData = () => {
-  subjects.value = [
-    {
-      id: 1,
-      code: 'CNAT-M',
-      name: 'Ciencias Naturales',
-      description: 'Ciencias Naturales y Biología para bachillerato',
-      grade_level: 'media',
-      teacher_name: 'Laura Méndez',
-      credits: 0,
-      hours_per_week: 4,
-      category_name: 'Ciencias Naturales y Exactas',
-      is_active: true
-    },
-    {
-      id: 2,
-      code: 'CAST-M',
-      name: 'Castellano y Literatura',
-      description: 'Lengua, Literatura y Comunicación para bachillerato',
-      grade_level: 'media',
-      teacher_name: 'Carmen Domínguez',
-      credits: 0,
-      hours_per_week: 4,
-      category_name: 'Lengua, Humanidades y Arte',
-      is_active: true
-    },
-    {
-      id: 3,
-      code: 'MAT-M',
-      name: 'Matemática',
-      description: 'Álgebra, Geometría y Razonamiento Lógico',
-      grade_level: 'media',
-      teacher_name: 'Miguel Silva',
-      credits: 0,
-      hours_per_week: 5,
-      category_name: 'Matemática y Lógica',
-      is_active: true
-    },
-    {
-      id: 4,
-      code: 'EDFE-M',
-      name: 'Educación de la Fe',
-      description: 'Formación Ética, Ciudadana y Valores Cristianos',
-      grade_level: 'media',
-      teacher_name: 'José Antonio Vásquez',
-      credits: 0,
-      hours_per_week: 2,
-      category_name: 'Formación Integral y Valores',
-      is_active: true
-    },
-    {
-      id: 5,
-      code: 'QUIM-M',
-      name: 'Química',
-      description: 'Química General y Orgánica de Educación Media',
-      grade_level: 'media',
-      teacher_name: 'Roberto Gómez',
-      credits: 0,
-      hours_per_week: 4,
-      category_name: 'Ciencias Naturales y Exactas',
-      is_active: true
-    },
-    {
-      id: 6,
-      code: 'FIS-M',
-      name: 'Física',
-      description: 'Mecánica clásica, cinemática y leyes de Newton',
-      grade_level: 'media',
-      teacher_name: 'Laura Méndez',
-      credits: 0,
-      hours_per_week: 4,
-      category_name: 'Ciencias Naturales y Exactas',
-      is_active: true
+// Fetch Subjects from Backend API (Live PostgreSQL)
+const fetchSubjects = async () => {
+  try {
+    const res = await api.get('subjects')
+    if (res && Array.isArray(res.data)) {
+      subjects.value = res.data.map(mapSubject)
+    } else if (Array.isArray(res)) {
+      subjects.value = res.map(mapSubject)
+    } else {
+      subjects.value = []
     }
-  ]
+  } catch (err) {
+    console.error('Error fetching subjects:', err)
+    subjects.value = []
+    toast.error('Error al cargar la lista de materias.')
+  }
 }
 
 const validateForm = () => {
@@ -1029,7 +972,7 @@ const saveSubject = async () => {
 
   // Check duplicate code
   const isDuplicate = subjects.value.some(s => 
-    s.code.toUpperCase() === code && (!editingSubject.value || s.id !== editingSubject.value.id)
+    s.code.toUpperCase() === code && (!editingSubject.value || String(s.id) !== String(editingSubject.value.id))
   )
   if (isDuplicate) {
     toast.error(`Ya existe una materia registrada con el código ${code}.`)
@@ -1052,32 +995,19 @@ const saveSubject = async () => {
   }
 
   try {
-    const token = localStorage.getItem('token') || localStorage.getItem('feathers-jwt') || localStorage.getItem('school_jwt')
-    const headers = token ? { Authorization: `Bearer ${token}` } : {}
-
     if (editingSubject.value) {
       // Update
-      await $fetch(`${apiBase}/subjects/${editingSubject.value.id}`, {
-        method: 'PATCH',
-        headers,
-        body: payload
-      }).catch(() => null)
-
-      const index = subjects.value.findIndex(s => s.id === editingSubject.value.id)
+      const res = await api.patch(`subjects/${editingSubject.value.id}`, payload)
+      const index = subjects.value.findIndex(s => String(s.id) === String(editingSubject.value.id))
       if (index !== -1) {
-        subjects.value[index] = { ...subjects.value[index], ...payload }
+        subjects.value[index] = mapSubject(res || { ...subjects.value[index], ...payload })
       }
       toast.success(`Materia "${name}" actualizada exitosamente.`)
     } else {
       // Create
-      const res = await $fetch(`${apiBase}/subjects`, {
-        method: 'POST',
-        headers,
-        body: payload
-      }).catch(() => null)
-
-      const newId = res && res.id ? res.id : Date.now()
-      subjects.value.unshift({ id: newId, ...payload })
+      const res = await api.post('subjects', payload)
+      const newSubject = mapSubject(res || { id: Date.now(), ...payload })
+      subjects.value.unshift(newSubject)
       toast.success(`Materia "${name}" creada exitosamente.`)
     }
 
@@ -1104,19 +1034,9 @@ const confirmDeleteSubject = async () => {
   isDeleting.value = true
 
   try {
-    const token = localStorage.getItem('token') || localStorage.getItem('feathers-jwt') || localStorage.getItem('school_jwt')
-    const headers = token ? { Authorization: `Bearer ${token}` } : {}
-
-    await $fetch(`${apiBase}/subjects/${subjectToDelete.value.id}`, {
-      method: 'DELETE',
-      headers
-    }).catch((err) => {
-      if (err && err.data) throw err
-      return null
-    })
-
+    await api.remove(`subjects/${subjectToDelete.value.id}`)
     const deletedName = subjectToDelete.value.name
-    subjects.value = subjects.value.filter(s => s.id !== subjectToDelete.value.id)
+    subjects.value = subjects.value.filter(s => String(s.id) !== String(subjectToDelete.value.id))
     closeDeleteModal()
     toast.warning(`Materia "${deletedName}" eliminada del plan de estudios.`)
   } catch (err) {

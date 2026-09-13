@@ -3,8 +3,8 @@ import { useAuthStore } from '~/stores/auth'
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const authStore = useAuthStore()
 
-  // Ensure state is restored from localStorage/sessionStorage on initial client navigation
-  if (import.meta.client && !authStore.isLoggedIn && !authStore.is2FAPending) {
+  // Ensure state is restored and verified against backend on both SSR and client
+  if (!authStore.isLoggedIn || !authStore.user) {
     await authStore.checkAuth()
   }
 
@@ -13,6 +13,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     to.path === '/auth/2fa-challenge' || 
     to.path === '/404' || 
     to.path.startsWith('/verificar-boleta')
+
+  // Root redirect: '/' -> '/dashboard' if logged in, else '/auth/login'
+  if (to.path === '/') {
+    if (authStore.isLoggedIn) {
+      return navigateTo('/dashboard')
+    }
+    return navigateTo('/auth/login')
+  }
 
   // 1. If 2FA challenge is currently pending, lock user exclusively to the 2FA challenge page
   if (authStore.is2FAPending) {
@@ -39,12 +47,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     // 4. Role-Based Access Control (RBAC) Matrix
     const userRole = authStore.userRole || 'student'
 
-    const restrictedRoutes = {
+    const restrictedRoutes: Record<string, string[]> = {
       '/teachers': ['admin', 'coordinator'],
       '/staff': ['admin', 'coordinator'],
       '/reports': ['admin', 'coordinator', 'control_estudio'],
       '/academic-planning': ['admin', 'coordinator', 'teacher'],
-      '/classes': ['admin', 'coordinator', 'control_estudio', 'teacher']
+      '/classes': ['admin', 'coordinator', 'control_estudio', 'teacher'],
+      '/settings': ['admin']
     }
 
     for (const [routePrefix, allowedRoles] of Object.entries(restrictedRoutes)) {
@@ -57,3 +66,4 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     }
   }
 })
+

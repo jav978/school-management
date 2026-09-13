@@ -3,11 +3,29 @@ const { BadRequest } = require('@feathersjs/errors')
 const bcrypt = require('bcryptjs')
 const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 
+const ALLOWED_TEACHER_COLUMNS = new Set([
+  'user_id', 'institution_id', 'employee_id', 'first_name', 'middle_name', 'last_name',
+  'date_of_birth', 'gender', 'blood_type', 'nationality', 'national_id', 'passport_number',
+  'marital_status', 'photo_url', 'bio', 'email_personal', 'phone_mobile', 'phone_home',
+  'phone_work', 'address_line1', 'address_line2', 'hire_date', 'contract_type', 'salary',
+  'salary_currency', 'department', 'position_title', 'office_location', 'highest_education',
+  'specialization', 'years_experience', 'certifications', 'languages', 'linkedin_url',
+  'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_rel', 'notes',
+  'status', 'is_deleted', 'deleted_at', 'deleted_by', 'updated_at', 'updated_by'
+])
+
 class TeachersService extends KnexService {
   async find(params) {
     const query = { ...params?.query }
     if (query.is_deleted === undefined) {
       query.is_deleted = false
+    }
+    if (query.$sort && typeof query.$sort === 'object') {
+      for (const [k, v] of Object.entries(query.$sort)) {
+        query.$sort[k] = parseInt(v, 10) || (String(v).toLowerCase() === 'desc' ? -1 : 1)
+      }
+    } else if (!query.$sort) {
+      query.$sort = { employee_id: 1 }
     }
     return super.find({ ...params, query })
   }
@@ -48,7 +66,7 @@ class TeachersService extends KnexService {
         role: 'teacher',
         status: 'active'
       }).returning('id')
-      userId = newUser[0].id || newUser[0]
+      userId = newUser[0]?.id || newUser[0]
     }
 
     const sanitizedData = {
@@ -69,7 +87,14 @@ class TeachersService extends KnexService {
       is_deleted: false
     }
 
-    return super.create(sanitizedData, params)
+    const cleanData = {}
+    for (const [key, val] of Object.entries(sanitizedData)) {
+      if (ALLOWED_TEACHER_COLUMNS.has(key)) {
+        cleanData[key] = val
+      }
+    }
+
+    return super.create(cleanData, params)
   }
 
   async patch(id, data, params) {
@@ -96,11 +121,28 @@ class TeachersService extends KnexService {
         throw new BadRequest(`Ya existe otro profesor con el código ${patchData.employee_id}`)
       }
     }
-    return super.patch(id, patchData, params)
+
+    const cleanPatch = {}
+    for (const [key, val] of Object.entries(patchData)) {
+      if (ALLOWED_TEACHER_COLUMNS.has(key)) {
+        cleanPatch[key] = val
+      }
+    }
+    cleanPatch.updated_at = new Date()
+
+    return super.patch(id, cleanPatch, params)
   }
 
   async remove(id, params) {
-    return super.patch(id, { is_deleted: true, deleted_at: new Date() }, params)
+    const db = this.getModel(params)
+    await db('school.teachers')
+      .where({ id })
+      .update({
+        is_deleted: true,
+        status: 'inactive',
+        deleted_at: new Date()
+      })
+    return { id, is_deleted: true, status: 'inactive' }
   }
 }
 
@@ -127,6 +169,28 @@ module.exports = function (app) {
       update: [restrictToRoles('admin', 'control_estudio')],
       patch: [restrictToRoles('admin', 'control_estudio')],
       remove: [restrictToRoles('admin', 'control_estudio')]
+    },
+    after: {
+      all: [
+        async context => {
+          const addVirtuals = record => {
+            if (record && typeof record === 'object') {
+              record.full_name = [record.first_name, record.last_name].filter(Boolean).join(' ')
+            }
+            return record
+          }
+          if (context.result) {
+            if (Array.isArray(context.result)) {
+              context.result.forEach(addVirtuals)
+            } else if (Array.isArray(context.result.data)) {
+              context.result.data.forEach(addVirtuals)
+            } else {
+              addVirtuals(context.result)
+            }
+          }
+          return context
+        }
+      ]
     }
   })
 }

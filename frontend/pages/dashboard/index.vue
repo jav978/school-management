@@ -9,7 +9,7 @@
             <span v-if="currentRole === 'student'">🎓</span>
             <span v-else-if="currentRole === 'teacher'">👨‍🏫</span>
             <span v-else-if="currentRole === 'parent'">👨‍👩‍👦</span>
-            <span v-else>👑</span>
+            <span v-else>👩‍🦰</span>
           </div>
           <div>
             <div class="flex items-center gap-2 flex-wrap">
@@ -33,7 +33,7 @@
             </div>
             <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium">
               <template v-if="currentRole === 'student'">
-                3er Año • Sección U • C.I. V-32.456.789 • Año Escolar 2025-2026
+                3er Año • Sección U • C.I. V-32.456.789 • Año Escolar 2026-2027
               </template>
               <template v-else-if="currentRole === 'teacher'">
                 Dpto. de Ciencias Naturales y Exactas • Carga: 28 Horas Académicas
@@ -71,8 +71,8 @@
             </button>
           </div>
           <div v-else class="text-right hidden sm:block">
-            <span class="text-xs font-bold text-slate-400">Lunes, 15 Septiembre</span>
-            <p class="text-xs font-black text-brand-primary dark:text-brand-secondary">Semana 1 • 1er Lapso</p>
+            <span class="text-xs font-bold text-slate-400">{{ formattedCurrentDate }}</span>
+            <p class="text-xs font-black text-brand-primary dark:text-brand-secondary">{{ academicLapsoInfo }}</p>
           </div>
         </div>
       </div>
@@ -1033,7 +1033,43 @@ const authStore = useAuthStore()
 const { activeStudentKey, setActiveStudent } = useActiveStudent()
 
 // Live persona detection
-const currentRole = computed(() => authStore.userRole || 'admin')
+const currentRole = computed(() => authStore.userRole || '')
+
+// Fecha automática del servidor / sistema
+const formattedCurrentDate = computed(() => {
+  const now = new Date()
+  const dayName = now.toLocaleDateString('es-VE', { weekday: 'long' })
+  const day = now.getDate()
+  const monthName = now.toLocaleDateString('es-VE', { month: 'long' })
+  const capitalizedDay = dayName.charAt(0).toUpperCase() + dayName.slice(1)
+  const capitalizedMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1)
+  return `${capitalizedDay}, ${day} de ${capitalizedMonth}`
+})
+
+// Contabilización dinámica de la semana académica (Semana 1 arranca el lunes 14 de Septiembre)
+const academicLapsoInfo = computed(() => {
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  const schoolStartYear = now.getMonth() >= 8 ? currentYear : currentYear - 1
+  const startDate = new Date(schoolStartYear, 8, 14)
+
+  const diffTime = now.getTime() - startDate.getTime()
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
+
+  let weekNum = 1
+  if (diffDays >= 0) {
+    weekNum = Math.floor(diffDays / 7) + 1
+  }
+
+  let lapsoName = '1er Lapso'
+  if (now.getMonth() >= 0 && now.getMonth() <= 3) {
+    lapsoName = '2do Lapso'
+  } else if (now.getMonth() >= 4 && now.getMonth() <= 6) {
+    lapsoName = '3er Lapso'
+  }
+
+  return `Semana ${weekNum} • ${lapsoName}`
+})
 
 const selectedYear = ref('2025')
 const calendarTab = ref('dayToDay')

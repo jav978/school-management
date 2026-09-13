@@ -1,13 +1,56 @@
 const { authenticate } = require('@feathersjs/authentication')
-const { Forbidden } = require('@feathersjs/errors')
+const { Forbidden, NotAuthenticated } = require('@feathersjs/errors')
 
 const baseAuthenticate = authenticate('jwt')
 
 const authenticateHook = async (context) => {
-  await baseAuthenticate(context)
-  if (context.params.authentication && context.params.authentication.payload && context.params.authentication.payload.two_factor_pending) {
+  if (!context.params.provider) {
+    return context
+  }
+
+  const authService = context.app.defaultAuthentication ? context.app.defaultAuthentication() : context.app.service('authentication')
+  if (context.service === authService || context.path === 'authentication') {
+    if (!context.params.authentication) {
+      throw new NotAuthenticated('Autenticación requerida')
+    }
+    const { provider, authentication, ...authParams } = context.params
+    const authResult = await authService.authenticate(authentication, authParams, 'jwt')
+    const { accessToken, ...authResultWithoutToken } = authResult
+    context.params = {
+      ...context.params,
+      ...authResultWithoutToken,
+      authenticated: true
+    }
+  } else {
+    await baseAuthenticate(context)
+  }
+
+  const authPayload = context.params.authentication && context.params.authentication.payload
+  if (!authPayload) {
+    throw new NotAuthenticated('Autenticación requerida')
+  }
+
+  if (authPayload.two_factor_pending) {
     throw new Forbidden('Se requiere verificación de dos factores (2FA) para acceder a este recurso')
   }
+
+  // Active Single Session Verification
+  if (authPayload.session_id) {
+    const db = context.app.get('knexClient')
+    const session = await db('school.user_sessions')
+      .where({
+        token: authPayload.session_id,
+        user_id: authPayload.sub,
+        is_active: true
+      })
+      .andWhere('expires_at', '>', db.fn.now())
+      .first()
+
+    if (!session) {
+      throw new NotAuthenticated('Su sesión ha caducado porque se inició sesión en otro dispositivo o ventana.')
+    }
+  }
+
   return context
 }
 

@@ -6,6 +6,7 @@ const helmet = require('helmet')
 const dotenv = require('dotenv')
 const { authLimiter, apiLimiter } = require('./middleware/rate-limiter')
 const errorHandler = require('./middleware/error-handler')
+const querySanitizer = require('./middleware/query-sanitizer')
 
 dotenv.config()
 
@@ -56,6 +57,9 @@ app.use(cors())
 app.use('/authentication', authLimiter)
 app.use('/two-factor', authLimiter)
 app.use(apiLimiter)
+
+// Query Sanitization & SQL Injection Defense
+app.use(querySanitizer)
 
 // Controlled Payload parsing (supporting base64 image uploads up to 2MB binary)
 const path = require('path')

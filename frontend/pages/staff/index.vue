@@ -20,6 +20,7 @@
         <button 
           @click="openModal()" 
           type="button"
+          data-testid="create-staff-btn"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,6 +94,7 @@
         <div class="flex-1 relative min-w-[240px]">
           <input 
             v-model="searchQuery"
+            data-testid="staff-search-input"
             type="text" 
             placeholder="Buscar por nombre, cédula, cargo, departamento o código..."
             class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple transition-all"
@@ -106,6 +108,7 @@
         <div class="flex flex-wrap items-center gap-2.5">
           <select 
             v-model="selectedType" 
+            data-testid="staff-type-filter"
             class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
           >
             <option value="">Todos los Roles</option>
@@ -116,6 +119,7 @@
 
           <select 
             v-model="selectedStatus" 
+            data-testid="staff-status-filter"
             class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
           >
             <option value="">Todos los Estados</option>
@@ -145,6 +149,7 @@
       <div 
         v-for="person in filteredStaff" 
         :key="person.id"
+        data-testid="staff-card"
         class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between transition-all"
         :class="person.status === 'inactivo' ? 'opacity-85 border-amber-500/30' : ''"
       >
@@ -219,6 +224,7 @@
             <button 
               v-if="person.status === 'inactivo'"
               @click="reactivatePerson(person)"
+              data-testid="reactivate-staff-btn"
               class="px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-xl transition-all flex items-center gap-1"
               title="Reactivar Colaborador"
             >
@@ -227,6 +233,7 @@
             </button>
             <button 
               @click="editPerson(person)"
+              data-testid="edit-staff-btn"
               class="p-2 text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-amber-500/30"
               title="Editar miembro del personal"
             >
@@ -237,6 +244,7 @@
             <button 
               v-if="person.status !== 'inactivo'"
               @click="openDeleteModal(person)"
+              data-testid="delete-staff-btn"
               class="p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-rose-500/30"
               title="Inhabilitar miembro del personal"
             >
@@ -257,6 +265,7 @@
         @click.self="closeModal"
       >
         <div 
+          data-testid="staff-modal"
           class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
         >
           <!-- Institutional Header Banner -->
@@ -303,6 +312,7 @@
                     </label>
                     <input 
                       v-model="form.staff_id" 
+                      data-testid="staff-id-input"
                       type="text" 
                       placeholder="STF-001"
                       :class="[
@@ -322,6 +332,7 @@
                     </label>
                     <input 
                       v-model="form.id_card" 
+                      data-testid="staff-id-card-input"
                       type="text" 
                       placeholder="V-12345678"
                       :class="[
@@ -341,6 +352,7 @@
                     </label>
                     <select 
                       v-model="form.staff_type" 
+                      data-testid="staff-type-select"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
                       <option value="administrativo">Administrativo</option>
@@ -417,6 +429,7 @@
                     </label>
                     <input 
                       v-model="form.first_name" 
+                      data-testid="staff-firstname-input"
                       type="text" 
                       placeholder="Ej. Elena María"
                       :class="[
@@ -436,6 +449,7 @@
                     </label>
                     <input 
                       v-model="form.last_name" 
+                      data-testid="staff-lastname-input"
                       type="text" 
                       placeholder="Ej. Vargas Mendoza"
                       :class="[
@@ -457,6 +471,7 @@
                     </label>
                     <input 
                       v-model="form.position" 
+                      data-testid="staff-position-input"
                       type="text" 
                       placeholder="Ej. Coordinador de Servicios / Asistente Administrativo"
                       :class="[
@@ -476,6 +491,7 @@
                     </label>
                     <input 
                       v-model="form.department" 
+                      data-testid="staff-department-input"
                       type="text" 
                       placeholder="Ej. Administración, Mantenimiento, Orientación"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
@@ -499,6 +515,7 @@
                     </label>
                     <input 
                       v-model="form.email" 
+                      data-testid="staff-email-input"
                       type="email" 
                       placeholder="correo@santaluisa.edu.ve"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
@@ -512,6 +529,7 @@
                     </label>
                     <input 
                       v-model="form.phone" 
+                      data-testid="staff-phone-input"
                       type="text" 
                       placeholder="+58 414 123 4567"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
@@ -597,6 +615,7 @@
               </button>
               <button 
                 type="submit" 
+                data-testid="submit-staff-btn"
                 :disabled="saving"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
               >
@@ -622,7 +641,10 @@
         class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
         @click.self="isDeleteModalOpen = false"
       >
-        <div class="bg-white dark:bg-[#170f33] rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md p-6 text-center animate-scale-up">
+        <div 
+          data-testid="staff-delete-modal"
+          class="bg-white dark:bg-[#170f33] rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md p-6 text-center animate-scale-up"
+        >
           <div class="w-14 h-14 rounded-2xl bg-amber-500/15 border border-amber-500/30 text-amber-600 dark:text-brand-gold flex items-center justify-center mx-auto mb-4 text-2xl shadow-xs">
             ⚠️
           </div>
@@ -646,6 +668,7 @@
             </button>
             <button 
               @click="confirmDeletePerson" 
+              data-testid="confirm-delete-staff-btn"
               class="px-5 py-2.5 text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md shadow-amber-600/20 active:scale-95 transition-all cursor-pointer"
             >
               Confirmar Inhabilitación
@@ -715,7 +738,13 @@ const fetchStaff = async () => {
   loading.value = true
   try {
     const res = await api.get('staff')
-    staff.value = res.data || res || []
+    if (res && Array.isArray(res.data)) {
+      staff.value = res.data
+    } else if (Array.isArray(res)) {
+      staff.value = res
+    } else {
+      staff.value = []
+    }
   } catch (err) {
     console.warn('Silent fallback fetching staff:', err)
     staff.value = []
@@ -726,10 +755,10 @@ const fetchStaff = async () => {
 
 const stats = computed(() => {
   const total = staff.value.length
-  const administrativos = staff.value.filter(s => s.staff_type === 'administrativo').length
-  const profesionales = staff.value.filter(s => s.staff_type === 'profesional').length
-  const obreros = staff.value.filter(s => s.staff_type === 'obrero').length
-  const activos = staff.value.filter(s => s.status === 'activo').length
+  const administrativos = staff.value.filter(s => s.staff_type === 'administrativo' || s.category === 'administrative').length
+  const profesionales = staff.value.filter(s => s.staff_type === 'profesional' || s.category === 'professional').length
+  const obreros = staff.value.filter(s => s.staff_type === 'obrero' || s.category === 'worker' || s.category === 'services').length
+  const activos = staff.value.filter(s => s.status === 'activo' || s.status === 'active').length
   return { total, administrativos, profesionales, obreros, activos }
 })
 
@@ -739,11 +768,17 @@ const filteredStaff = computed(() => {
     const matchesSearch = !q || 
       `${s.first_name} ${s.last_name}`.toLowerCase().includes(q) ||
       (s.id_card && s.id_card.toLowerCase().includes(q)) ||
+      (s.national_id && s.national_id.toLowerCase().includes(q)) ||
       (s.staff_id && s.staff_id.toLowerCase().includes(q)) ||
-      (s.position && s.position.toLowerCase().includes(q))
+      (s.employee_id && s.employee_id.toLowerCase().includes(q)) ||
+      (s.position && s.position.toLowerCase().includes(q)) ||
+      (s.position_title && s.position_title.toLowerCase().includes(q))
 
-    const matchesType = !selectedType.value || s.staff_type === selectedType.value
-    const matchesStatus = !selectedStatus.value || s.status === selectedStatus.value
+    const typeNormalized = s.staff_type || (s.category === 'administrative' ? 'administrativo' : s.category)
+    const statusNormalized = (s.status === 'active' || s.status === 'activo') ? 'activo' : ((s.status === 'inactive' || s.status === 'inactivo') ? 'inactivo' : s.status)
+
+    const matchesType = !selectedType.value || typeNormalized === selectedType.value
+    const matchesStatus = !selectedStatus.value || statusNormalized === selectedStatus.value
 
     return matchesSearch && matchesType && matchesStatus
   })
@@ -790,7 +825,17 @@ const editPerson = (person) => {
   isEditing.value = true
   currentId.value = person.id
   formErrors.value = {}
-  form.value = { ...person }
+  form.value = {
+    ...person,
+    position: person.position || person.position_title || '',
+    staff_type: person.staff_type || (person.category === 'administrative' ? 'administrativo' : person.category) || 'administrativo',
+    staff_id: person.staff_id || person.employee_id || '',
+    id_card: person.id_card || person.national_id || '',
+    phone: person.phone || person.phone_mobile || '',
+    email: person.email || person.email_personal || '',
+    emergency_contact: person.emergency_contact || person.emergency_contact_name || '',
+    emergency_phone: person.emergency_phone || person.emergency_contact_phone || ''
+  }
   isModalOpen.value = true
 }
 
@@ -807,11 +852,23 @@ const savePerson = async () => {
 
   saving.value = true
   try {
+    const payload = {
+      ...form.value,
+      position_title: form.value.position,
+      category: form.value.staff_type,
+      employee_id: form.value.staff_id,
+      national_id: form.value.id_card,
+      phone_mobile: form.value.phone,
+      email_personal: form.value.email,
+      emergency_contact_name: form.value.emergency_contact,
+      emergency_contact_phone: form.value.emergency_phone
+    }
+
     if (isEditing.value) {
-      await api.patch(`staff/${currentId.value}`, form.value)
+      await api.patch(`staff/${currentId.value}`, payload)
       toast.success(`Datos de ${form.value.first_name} ${form.value.last_name} actualizados exitosamente`)
     } else {
-      await api.post('staff', form.value)
+      await api.post('staff', payload)
       toast.success(`Miembro de personal ${form.value.first_name} ${form.value.last_name} registrado en la U.E Santa Luisa`)
     }
     isModalOpen.value = false

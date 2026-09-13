@@ -419,11 +419,11 @@ const userDisplayName = computed(() => {
 })
 
 const userEmail = computed(() => {
-  return authStore.user?.email || 'director@santaluisa.edu.ve'
+  return authStore.user?.email || ''
 })
 
 const currentRole = computed(() => {
-  return authStore.userRole || authStore.user?.role || 'admin'
+  return authStore.userRole || authStore.user?.role || ''
 })
 
 const userRoleName = computed(() => {

@@ -253,8 +253,40 @@ class TwoFactorService {
         throw new BadRequest('Código de verificación o de respaldo incorrecto. Intente nuevamente.')
       }
 
-      // Issue full legitimate Access Token
-      const accessToken = await authService.createAccessToken({ sub: dbUser.id })
+      // Generate unique session ID for 2FA login
+      const sessionId = crypto.randomUUID()
+
+      // 1. Kick out previous active sessions for this user
+      await this.db('school.user_sessions')
+        .where({ user_id: dbUser.id, is_active: true })
+        .update({
+          is_active: false,
+          ended_at: this.db.fn.now()
+        })
+
+      // 2. Insert new active session
+      const rawIp = params.ip || (params.headers && params.headers['x-forwarded-for']) || '127.0.0.1'
+      const cleanIp = String(rawIp).includes(',') ? String(rawIp).split(',')[0].trim() : String(rawIp)
+      const validIp = cleanIp.match(/^(\d{1,3}\.){3}\d{1,3}$/) ? cleanIp : '127.0.0.1'
+      const userAgent = (params.headers && params.headers['user-agent']) || 'Unknown Browser'
+
+      await this.db('school.user_sessions').insert({
+        user_id: dbUser.id,
+        token: sessionId,
+        ip_address: validIp,
+        user_agent: String(userAgent).substring(0, 500),
+        started_at: this.db.fn.now(),
+        expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000),
+        is_active: true
+      })
+
+      // Issue full legitimate Access Token with session_id
+      const accessToken = await authService.createAccessToken({
+        sub: dbUser.id,
+        session_id: sessionId,
+        role: dbUser.role,
+        email: dbUser.email
+      })
 
       // Sanitize user
       const userCopy = { ...dbUser }
@@ -265,6 +297,7 @@ class TwoFactorService {
 
       return {
         accessToken,
+        session_id: sessionId,
         user: userCopy,
         used_backup: usedBackup
       }

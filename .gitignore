@@ -48,3 +48,9 @@ backend/public/uploads/avatars/*
 !backend/public/uploads/avatars/.gitkeep
 backend/public/uploads/documents/*
 !backend/public/uploads/documents/.gitkeep
+
+# Playwright
+test-results/
+playwright-report/
+.auth/
+

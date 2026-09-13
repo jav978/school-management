@@ -10,9 +10,15 @@
     "build": "cd frontend && npm run build",
     "start": "cd backend && PORT=3031 npm start",
     "migrate": "cd backend && npm run migrate",
-    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:slow": "SLOWMO=900 playwright test --headed",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "concurrently": "^8.2.0"
   }
 }

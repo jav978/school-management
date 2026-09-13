@@ -1,7 +1,27 @@
 const { KnexService } = require('@feathersjs/knex')
+const { BadRequest } = require('@feathersjs/errors')
 const { authenticateHook, restrictToAdmin, restrictToRoles } = require('../hooks/auth')
 
 const VALID_BLOOD_TYPES = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'unknown']
+
+const ALLOWED_STUDENT_COLUMNS = new Set([
+  'id', 'uuid', 'user_id', 'institution_id', 'student_id',
+  'first_name', 'middle_name', 'last_name', 'date_of_birth',
+  'gender', 'blood_type', 'nationality', 'national_id',
+  'photo_url', 'email_personal', 'phone_mobile',
+  'address_line1', 'address_line2', 'city_id', 'state_id', 'country_id',
+  'postal_code', 'admission_date', 'graduation_date', 'expected_graduation',
+  'current_class_id', 'current_grade_id', 'medical_conditions',
+  'allergies', 'medications', 'special_needs', 'disability_info',
+  'doctor_name', 'doctor_phone', 'insurance_provider', 'insurance_policy_no',
+  'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_rel',
+  'religion', 'ethnicity', 'first_language', 'transport_route',
+  'scholarship', 'scholarship_details', 'notes', 'status',
+  'created_at', 'created_by', 'updated_at', 'updated_by',
+  'deleted_at', 'deleted_by', 'is_deleted', 'version',
+  'ip_address', 'user_agent', 'photo_history', 'socioeconomic_data',
+  'authorized_pickup', 'medical_data'
+])
 
 class StudentsService extends KnexService {
   async find(params) {
@@ -103,7 +123,23 @@ class StudentsService extends KnexService {
       }
     }
 
-    return clean
+    // Preserve virtual grade and section in notes if passed
+    if (clean.grade || clean.section) {
+      const gradeStr = [clean.grade, clean.section ? `Sección ${clean.section}` : ''].filter(Boolean).join(' - ')
+      if (gradeStr && (!clean.notes || !clean.notes.includes(gradeStr))) {
+        clean.notes = clean.notes ? `${gradeStr} | ${clean.notes}` : gradeStr
+      }
+    }
+
+    // Retain only valid database columns
+    const safeData = {}
+    for (const key of Object.keys(clean)) {
+      if (ALLOWED_STUDENT_COLUMNS.has(key)) {
+        safeData[key] = clean[key]
+      }
+    }
+
+    return safeData
   }
 
   async create(data, params) {
@@ -145,6 +181,25 @@ module.exports = function (app) {
       update: [restrictToRoles('admin', 'control_estudio')],
       patch: [restrictToRoles('admin', 'control_estudio', 'teacher')],
       remove: [restrictToRoles('admin', 'control_estudio')]
+    },
+    after: {
+      all: [
+        context => {
+          const enrich = s => {
+            if (!s || typeof s !== 'object') return s
+            s.full_name = `${s.first_name || ''} ${s.last_name || ''}`.trim()
+            return s
+          }
+          if (Array.isArray(context.result?.data)) {
+            context.result.data = context.result.data.map(enrich)
+          } else if (Array.isArray(context.result)) {
+            context.result = context.result.map(enrich)
+          } else if (context.result) {
+            context.result = enrich(context.result)
+          }
+          return context
+        }
+      ]
     }
   })
 }

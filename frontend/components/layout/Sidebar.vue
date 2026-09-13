@@ -146,7 +146,7 @@ const allMenuItems = [
 ]
 
 const currentRole = computed(() => {
-  return authStore.userRole || authStore.user?.role || 'admin'
+  return authStore.userRole || authStore.user?.role || ''
 })
 
 const menuItems = computed(() => {

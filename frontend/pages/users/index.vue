@@ -502,14 +502,14 @@ const saveUser = async () => {
         full_name: userForm.value.full_name,
         email: userForm.value.email,
         user_type: userForm.value.user_type,
-        role: userForm.value.user_type === 'admin' ? 'admin' : 'user',
+        role: userForm.value.user_type,
         status: userForm.value.status
       })
       toast.success('Usuario actualizado exitosamente.')
     } else {
       await api.post('users', {
         ...userForm.value,
-        role: userForm.value.user_type === 'admin' ? 'admin' : 'user'
+        role: userForm.value.user_type
       })
       toast.success('Nuevo usuario registrado en la plataforma.')
     }

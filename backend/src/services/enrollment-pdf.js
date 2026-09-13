@@ -864,12 +864,35 @@ function buildEnrollmentHtml(data, isBlank = false) {
 }
 
 module.exports = function (app) {
-  // POST /enrollment-pdf: Generates clean 2-page PDF
+  // POST /enrollment-pdf: Generates clean 2-page PDF (requiere autenticación)
   app.post('/enrollment-pdf', async (req, res) => {
     let tempHtmlPath = null
     let tempPdfPath = null
 
     try {
+      const authHeader = req.headers['authorization']
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Autenticación requerida para generar documentos oficiales.' })
+      }
+      const token = authHeader.split(' ')[1]
+      let authPayload
+      try {
+        authPayload = await app.service('authentication').verifyAccessToken(token)
+      } catch (err) {
+        return res.status(401).json({ error: 'Token inválido o expirado.' })
+      }
+
+      if (authPayload.session_id) {
+        const db = app.get('knexClient')
+        const session = await db('school.user_sessions')
+          .where({ token: authPayload.session_id, user_id: authPayload.sub, is_active: true })
+          .andWhere('expires_at', '>', db.fn.now())
+          .first()
+        if (!session) {
+          return res.status(401).json({ error: 'Sesión caducada o invalidada.' })
+        }
+      }
+
       const { data, isBlank = false, student_id } = req.body || {}
 
       const htmlContent = buildEnrollmentHtml(data, isBlank)

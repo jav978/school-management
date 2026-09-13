@@ -1,4 +1,5 @@
 const { KnexService } = require('@feathersjs/knex')
+const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 
 class EventsService extends KnexService {
   async find(params) {
@@ -33,4 +34,17 @@ module.exports = function (app) {
   }
 
   app.use('events', new EventsService(options))
+
+  const service = app.service('events')
+
+  service.hooks({
+    before: {
+      all: [authenticateHook],
+      create: [restrictToRoles('admin', 'coordinator', 'teacher')],
+      update: [restrictToRoles('admin', 'coordinator', 'teacher')],
+      patch: [restrictToRoles('admin', 'coordinator', 'teacher')],
+      remove: [restrictToRoles('admin', 'coordinator')]
+    }
+  })
 }
+

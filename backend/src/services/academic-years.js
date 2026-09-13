@@ -1,4 +1,5 @@
 const { KnexService } = require('@feathersjs/knex')
+const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 
 class AcademicYearsService extends KnexService {
   async find(params) {
@@ -33,4 +34,17 @@ module.exports = function (app) {
   }
 
   app.use('academic-years', new AcademicYearsService(options))
+
+  const service = app.service('academic-years')
+
+  service.hooks({
+    before: {
+      all: [authenticateHook],
+      create: [restrictToRoles('admin', 'coordinator')],
+      update: [restrictToRoles('admin', 'coordinator')],
+      patch: [restrictToRoles('admin', 'coordinator')],
+      remove: [restrictToRoles('admin')]
+    }
+  })
 }
+
