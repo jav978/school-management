@@ -60,6 +60,15 @@ module.exports = function querySanitizer(req, res, next) {
       req.query.$skip = isNaN(parsed) ? 0 : Math.max(0, parsed)
     }
 
+    // Normalizar y parsear $sort si viene serializado en JSON por ofetch/axios
+    if (typeof req.query.$sort === 'string' && req.query.$sort.trim().startsWith('{')) {
+      try {
+        req.query.$sort = JSON.parse(req.query.$sort)
+      } catch (_) {
+        delete req.query.$sort
+      }
+    }
+
     // Validar ordenamiento $sort
     if (req.query.$sort && typeof req.query.$sort === 'object') {
       for (const sortCol of Object.keys(req.query.$sort)) {

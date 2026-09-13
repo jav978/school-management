@@ -30,6 +30,7 @@
 
         <button 
           v-if="canManage"
+          data-testid="btn-new-grade"
           @click="openCreateModal($event)" 
           type="button"
           class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all duration-200"
@@ -285,6 +286,7 @@
                   <button
                     @click="openEditModal(grade, $event)"
                     type="button"
+                    data-testid="btn-edit-grade"
                     class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     title="Editar Nota"
                   >
@@ -295,6 +297,7 @@
                   <button
                     @click="promptDeleteGrade(grade, $event)"
                     type="button"
+                    data-testid="btn-delete-grade"
                     class="w-7 h-7 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                     title="Eliminar Registro"
                   >
@@ -434,6 +437,7 @@
                 </label>
                 <select
                   v-model="form.exam_id"
+                  data-testid="select-grade-exam"
                   :disabled="isEditing"
                   required
                   class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 disabled:opacity-60 cursor-pointer"
@@ -451,6 +455,7 @@
                 </label>
                 <select
                   v-model="form.student_id"
+                  data-testid="select-grade-student"
                   :disabled="isEditing"
                   required
                   class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 disabled:opacity-60 cursor-pointer"
@@ -469,6 +474,7 @@
                   </label>
                   <input
                     v-model.number="form.marks_obtained"
+                    data-testid="input-grade-marks"
                     type="number"
                     step="0.5"
                     min="0"
@@ -484,6 +490,7 @@
                   </label>
                   <input
                     v-model.number="form.total_marks"
+                    data-testid="input-grade-total"
                     type="number"
                     min="1"
                     max="100"
@@ -500,6 +507,7 @@
                 </label>
                 <textarea
                   v-model="form.remarks"
+                  data-testid="input-grade-remarks"
                   rows="3"
                   placeholder="Comentarios sobre fortalezas o aspectos por reforzar..."
                   class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl p-3 text-xs sm:text-sm text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 resize-none"
@@ -521,6 +529,7 @@
               </button>
               <button
                 type="submit"
+                data-testid="btn-submit-grade"
                 :disabled="isSubmitting"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
               >
@@ -576,6 +585,7 @@
             <button
               @click="confirmDeleteGrade"
               type="button"
+              data-testid="btn-confirm-delete-grade"
               class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-[0.98] transition-all cursor-pointer"
             >
               Eliminar

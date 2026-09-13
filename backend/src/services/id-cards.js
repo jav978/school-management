@@ -1,15 +1,109 @@
 const { KnexService } = require('@feathersjs/knex')
-const { authenticateHook, restrictToAdmin, restrictToRoles } = require('../hooks/auth')
+const crypto = require('crypto')
+const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 
-class IdCardsService extends KnexService {}
+const ALLOWED_COLUMNS = new Set([
+  'id', 'uuid', 'card_code', 'recipient_name', 'recipient_id_card',
+  'recipient_type', 'position', 'department', 'blood_type',
+  'emergency_contact', 'emergency_phone', 'address', 'photo_url',
+  'issue_date', 'valid_until', 'status', 'is_deleted', 'deleted_at',
+  'created_at', 'updated_at'
+])
+
+class IdCardsService extends KnexService {
+  _sanitizeData(data) {
+    const clean = {}
+    for (const [key, value] of Object.entries(data)) {
+      if (ALLOWED_COLUMNS.has(key)) {
+        clean[key] = value
+      }
+    }
+    if (data.expiry_date && !clean.valid_until) {
+      clean.valid_until = data.expiry_date
+    }
+    return clean
+  }
+
+  async find(params) {
+    const query = { ...params?.query }
+    if (query.is_deleted === undefined) {
+      query.is_deleted = false
+    }
+    return super.find({ ...params, query })
+  }
+
+  async create(data, params) {
+    const db = this.getModel(params)
+    const clean = this._sanitizeData(data)
+
+    if (!clean.uuid) {
+      clean.uuid = crypto.randomUUID()
+    }
+    if (!clean.card_code) {
+      clean.card_code = `CRD-${Date.now().toString().slice(-6)}`
+    }
+    if (!clean.issue_date) {
+      clean.issue_date = new Date().toISOString().split('T')[0]
+    }
+    if (!clean.valid_until) {
+      clean.valid_until = '2027-07-31'
+    }
+    if (!clean.status) {
+      clean.status = 'activo'
+    }
+    clean.is_deleted = false
+    clean.created_at = new Date()
+    clean.updated_at = new Date()
+
+    const [inserted] = await db('school.id_cards')
+      .insert(clean)
+      .returning('*')
+    return inserted
+  }
+
+  async patch(id, data, params) {
+    const db = this.getModel(params)
+    const clean = this._sanitizeData(data)
+    clean.updated_at = new Date()
+
+    const [updated] = await db('school.id_cards')
+      .where({ id })
+      .update(clean)
+      .returning('*')
+    return updated
+  }
+
+  async remove(id, params) {
+    const db = this.getModel(params)
+    const [removed] = await db('school.id_cards')
+      .where({ id })
+      .update({ is_deleted: true, deleted_at: new Date() })
+      .returning('*')
+    return removed
+  }
+}
+
+const optionalAuthForPublicCard = async (context) => {
+  if (context.params.query?.card_code) {
+    return context
+  }
+  return authenticateHook(context)
+}
+
+const optionalRoleForPublicCard = (context) => {
+  if (context.params.query?.card_code) {
+    return context
+  }
+  return restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent', 'staff')(context)
+}
 
 module.exports = function (app) {
   const options = {
     Model: app.get('knexClient'),
     name: 'school.id_cards',
     paginate: {
-      default: 10,
-      max: 50
+      default: 20,
+      max: 100
     }
   }
 
@@ -19,13 +113,13 @@ module.exports = function (app) {
 
   service.hooks({
     before: {
-      all: [authenticateHook],
-      find: [restrictToRoles('admin', 'teacher', 'student', 'parent', 'staff')],
-      get: [restrictToRoles('admin', 'teacher', 'student', 'parent', 'staff')],
-      create: [restrictToAdmin],
-      update: [restrictToAdmin],
-      patch: [restrictToAdmin],
-      remove: [restrictToAdmin]
+      all: [],
+      find: [optionalAuthForPublicCard, optionalRoleForPublicCard],
+      get: [authenticateHook, restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student', 'parent', 'staff')],
+      create: [authenticateHook, restrictToRoles('admin', 'control_estudio', 'coordinator')],
+      update: [authenticateHook, restrictToRoles('admin', 'control_estudio', 'coordinator')],
+      patch: [authenticateHook, restrictToRoles('admin', 'control_estudio', 'coordinator')],
+      remove: [authenticateHook, restrictToRoles('admin', 'control_estudio', 'coordinator')]
     }
   })
 }

@@ -59,14 +59,16 @@ test.describe('Módulo de Autenticación', () => {
   test('01.5 - Debe permitir cerrar sesión correctamente y limpiar la sesión activa', async ({ page }) => {
     await loginAsAdmin(page);
     await page.goto('/dashboard');
-    await page.waitForLoadState('domcontentloaded');
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(500);
 
     // Abrir menú de usuario en el Header
-    const userButton = page.locator('header button:has(img), header button:has-text("ADMINISTRADOR"), header button:has-text("Admin")').first();
+    const userButton = page.locator('[data-testid="header-user-menu-btn"]').first();
+    await expect(userButton).toBeVisible({ timeout: 10000 });
     await userButton.click();
 
     // Clic en Cerrar sesión
-    const logoutBtn = page.locator('button:has-text("Cerrar sesión")').first();
+    const logoutBtn = page.locator('[data-testid="header-logout-btn"]').first();
     await expect(logoutBtn).toBeVisible({ timeout: 5000 });
     await logoutBtn.click();
 

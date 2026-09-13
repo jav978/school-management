@@ -260,8 +260,9 @@
         <!-- User Profile Avatar & Interactive Dropdown -->
         <div class="relative" ref="profileDropdownRef">
           <button 
-            @click="toggleProfileDropdown"
+            @click.stop="toggleProfileDropdown"
             type="button"
+            data-testid="header-user-menu-btn"
             class="flex items-center gap-2.5 p-1 sm:px-2 sm:py-1 rounded-2xl hover:bg-slate-100 dark:hover:bg-white/10 transition-all cursor-pointer border border-transparent hover:border-slate-200 dark:hover:border-white/10"
             title="Menú de cuenta y usuario"
           >
@@ -350,6 +351,7 @@
               <button 
                 @click="handleLogout"
                 type="button"
+                data-testid="header-logout-btn"
                 class="w-full flex items-center gap-3 px-4 py-2.5 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 font-bold transition-colors cursor-pointer"
               >
                 <svg class="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">

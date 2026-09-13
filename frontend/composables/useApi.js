@@ -54,10 +54,19 @@ export const useApi = () => {
     return apiFetch(endpoint, { method: 'DELETE' })
   }
 
+  const service = (name) => ({
+    find: (params = {}) => get(name, params?.query || params),
+    get: (id, params = {}) => get(`${name}/${id}`, params?.query || params),
+    create: (data = {}) => post(name, data),
+    patch: (id, data = {}) => patch(`${name}/${id}`, data),
+    remove: (id) => remove(`${name}/${id}`)
+  })
+
   return {
     get,
     post,
     patch,
-    remove
+    remove,
+    service
   }
 }

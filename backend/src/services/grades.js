@@ -113,6 +113,15 @@ class GradesService extends KnexService {
 
     const isPassed = data.is_passed !== undefined ? Boolean(data.is_passed) : (marks >= (total * 0.5))
 
+    let attemptNumber = data.attempt_number
+    if (!attemptNumber) {
+      const last = await db('school.exam_results')
+        .where({ exam_id: data.exam_id, student_id: data.student_id })
+        .max('attempt_number as max_attempt')
+        .first()
+      attemptNumber = (last?.max_attempt ? Number(last.max_attempt) : 0) + 1
+    }
+
     const payload = {
       uuid: crypto.randomUUID(),
       exam_id: data.exam_id,
@@ -121,7 +130,7 @@ class GradesService extends KnexService {
       total_marks: total,
       grade_letter: gradeLetter,
       is_passed: isPassed,
-      attempt_number: data.attempt_number || 1,
+      attempt_number: attemptNumber,
       is_absent: Boolean(data.is_absent),
       remarks: data.remarks || null,
       graded_by: data.graded_by || 1,

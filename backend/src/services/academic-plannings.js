@@ -12,9 +12,11 @@ class AcademicPlanningsService extends KnexService {
 
   _sanitizePlanning(data, isCreate = false) {
     const clean = { ...data }
+    delete clean.submission_date
     if (isCreate) {
       delete clean.id
       clean.institution_id = clean.institution_id || 1
+      if (clean.is_deleted === undefined) clean.is_deleted = false
     }
 
     if (clean.teacher_id === '' || clean.teacher_id === undefined) {

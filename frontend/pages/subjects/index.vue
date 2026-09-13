@@ -941,7 +941,7 @@ const openEditModal = (subject) => {
     hours_per_week: subject.hours_per_week || 4,
     teacher_name: subject.teacher_name === 'No asignado' ? '' : (subject.teacher_name || ''),
     category_name: subject.category_name || '',
-    prerequisites: subject.prerequisites || '',
+    prerequisites: Array.isArray(subject.prerequisites) ? subject.prerequisites.join(', ') : (subject.prerequisites ? String(subject.prerequisites) : ''),
     description: subject.description || '',
     is_active: subject.is_active !== undefined ? subject.is_active : true
   }
@@ -965,7 +965,9 @@ const saveSubject = async () => {
   const grade_level = form.value.grade_level.trim()
   const description = (form.value.description || '').trim()
   const category_name = (form.value.category_name || '').trim() || 'General'
-  const prerequisites = (form.value.prerequisites || '').trim()
+  const prerequisites = typeof form.value.prerequisites === 'string'
+    ? form.value.prerequisites.trim()
+    : (Array.isArray(form.value.prerequisites) ? form.value.prerequisites.join(', ') : '')
   const teacher_name = form.value.teacher_name || 'No asignado'
   const credits = Number(form.value.credits) || 0
   const hours_per_week = Number(form.value.hours_per_week) || 4

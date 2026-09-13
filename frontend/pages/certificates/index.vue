@@ -23,6 +23,7 @@
         <button 
           @click="openCreateModal()" 
           type="button"
+          data-testid="btn-open-create-cert"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-amber-500/20 active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,6 +51,7 @@
           <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Seleccionar Diploma:</span>
           <select 
             v-model="selectedCertId" 
+            data-testid="select-certificate"
             class="px-3.5 py-2 text-xs bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl font-medium text-slate-800 dark:text-slate-100 cursor-pointer"
           >
             <option v-for="c in certificates" :key="c.id" :value="c.id">
@@ -71,6 +73,7 @@
           <button
             @click="openEditModal()"
             type="button"
+            data-testid="btn-edit-cert"
             class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             title="Modificar datos del certificado"
           >
@@ -83,6 +86,7 @@
           <button
             @click="openDeleteModal()"
             type="button"
+            data-testid="btn-delete-cert"
             class="px-3 py-1.5 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             title="Anular y eliminar diploma"
           >
@@ -106,7 +110,7 @@
       <p class="text-xs text-slate-400 mt-2">Cargando certificados...</p>
     </div>
 
-    <div v-else-if="!activeCert" class="bg-white dark:bg-[#170f33] rounded-2xl p-12 text-center border border-slate-200 dark:border-white/10">
+    <div v-else-if="!activeCert || certificates.length === 0" class="bg-white dark:bg-[#170f33] rounded-2xl p-12 text-center border border-slate-200 dark:border-white/10">
       <p class="text-4xl mb-2">📜</p>
       <h3 class="text-base font-bold text-slate-700 dark:text-slate-200">No hay certificados registrados</h3>
       <p class="text-xs text-slate-400 mt-1">Presione "Emitir Nuevo Diploma" para crear el primero.</p>
@@ -204,7 +208,7 @@
 
             <!-- Recipient Name Display: Bold, Centered, High Contrast Slate-950 with Gold Underline -->
             <div class="my-1.5 sm:my-2 w-full">
-              <h4 class="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-slate-950 tracking-tight">
+              <h4 data-testid="cert-recipient-canvas" class="text-3xl sm:text-4xl lg:text-5xl font-black font-display text-slate-950 tracking-tight">
                 {{ activeCert.recipient_name }}
               </h4>
               <!-- Gold Underline -->
@@ -329,6 +333,7 @@
                 <input 
                   v-model="certForm.recipient_name" 
                   required 
+                  data-testid="input-cert-recipient-name"
                   placeholder="Ej: Pedro Pérez Gómez"
                   class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
                 />
@@ -349,6 +354,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tipo de Certificado</label>
                   <select 
                     v-model="certForm.certificate_type"
+                    data-testid="select-cert-type"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 font-bold text-amber-600 dark:text-brand-gold focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
                   >
                     <option value="excelencia_academica">Certificado de Excelencia Académica</option>
@@ -365,6 +371,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Año Escolar</label>
                   <input 
                     v-model="certForm.academic_year" 
+                    data-testid="input-cert-academic-year"
                     placeholder="2025-2026"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
                   />
@@ -375,6 +382,7 @@
                     v-model.number="certForm.average_grade" 
                     type="number" 
                     step="0.01" 
+                    data-testid="input-cert-average"
                     placeholder="19.8"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 font-bold focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
                   />
@@ -395,6 +403,7 @@
                 <textarea 
                   v-model="certForm.description" 
                   rows="3"
+                  data-testid="textarea-cert-description"
                   placeholder="Por haber demostrado excelencia académica, constancia y disciplina..."
                   class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 resize-none"
                 ></textarea>
@@ -415,6 +424,7 @@
               </button>
               <button 
                 type="submit" 
+                data-testid="btn-save-cert"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] border border-brand-primary/30 cursor-pointer"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -461,6 +471,7 @@
             </button>
             <button 
               type="button" 
+              data-testid="btn-confirm-delete-cert"
               @click="confirmDeleteCert"
               class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
             >
@@ -506,41 +517,7 @@ const fetchCertificates = async () => {
   try {
     const res = await api.get('certificates')
     const list = res.data || res || []
-    
-    if (list.length === 0) {
-      certificates.value = [
-        {
-          id: 1,
-          recipient_name: 'Pedro Pérez Gómez',
-          recipient_type: 'estudiante',
-          certificate_type: 'excelencia_academica',
-          academic_year: '2025-2026',
-          grade_level: '1er Año de Educación Media General',
-          average_grade: 19.8,
-          verification_code: 'CERT-MTKBKQ8D',
-          issue_date: '1 de septiembre de 2026',
-          issued_by: 'Sor María Dolores Amaya',
-          issued_role: 'Directora',
-          description: 'Por haber demostrado un destacado rendimiento académico, constancia y apego a los valores de nuestra institución educativa.'
-        },
-        {
-          id: 2,
-          recipient_name: 'Sofía Valentina Morales',
-          recipient_type: 'estudiante',
-          certificate_type: 'mejor_promedio',
-          academic_year: '2025-2026',
-          grade_level: '2do Año Sección B',
-          average_grade: 20.0,
-          verification_code: 'CERT-SVM2026B',
-          issue_date: '1 de septiembre de 2026',
-          issued_by: 'Sor María Dolores Amaya',
-          issued_role: 'Directora',
-          description: 'Por obtener el promedio más alto de la cohorte 2025-2026 con calificación perfecta de 20 puntos.'
-        }
-      ]
-    } else {
-      certificates.value = list.filter(c => !c.is_deleted && c.status !== 'anulado')
-    }
+    certificates.value = list.filter(c => !c.is_deleted && c.status !== 'anulado')
 
     if (certificates.value.length > 0 && !selectedCertId.value) {
       selectedCertId.value = certificates.value[0].id
@@ -553,7 +530,8 @@ const fetchCertificates = async () => {
 }
 
 const activeCert = computed(() => {
-  return certificates.value.find(c => c.id === selectedCertId.value) || certificates.value[0] || {}
+  if (certificates.value.length === 0) return null
+  return certificates.value.find(c => c.id === selectedCertId.value) || certificates.value[0] || null
 })
 
 const formatCertType = (type) => {
@@ -631,7 +609,7 @@ const confirmDeleteCert = async () => {
   if (!certToDelete.value) return
   const id = certToDelete.value.id
   try {
-    await api.patch(`certificates/${id}`, { status: 'anulado', is_deleted: true }).catch(() => null)
+    await api.patch(`certificates/${id}`, { status: 'anulado', is_deleted: true })
     certificates.value = certificates.value.filter(c => c.id !== id)
     if (selectedCertId.value === id) {
       selectedCertId.value = certificates.value[0]?.id || null
@@ -647,7 +625,7 @@ const saveCertificate = async () => {
   try {
     if (isEditingCert.value && selectedCertId.value) {
       const payload = { ...certForm.value }
-      await api.patch(`certificates/${selectedCertId.value}`, payload).catch(() => null)
+      await api.patch(`certificates/${selectedCertId.value}`, payload)
       
       const idx = certificates.value.findIndex(c => c.id === selectedCertId.value)
       if (idx !== -1) {
@@ -666,13 +644,12 @@ const saveCertificate = async () => {
       status: 'emitido'
     }
 
-    const created = await api.post('certificates', payload).catch(() => null)
+    const created = await api.post('certificates', payload)
     if (created?.id) {
       certificates.value.unshift(created)
       selectedCertId.value = created.id
     } else {
-      certificates.value.unshift({ id: Date.now(), ...payload })
-      selectedCertId.value = certificates.value[0].id
+      await fetchCertificates()
     }
     isModalOpen.value = false
     toast.success('Diploma Emitido', 'El certificado ceremonial se ha registrado y firmado exitosamente.')

@@ -20,6 +20,7 @@
 
       <div class="flex items-center gap-3 w-full sm:w-auto">
         <button 
+          data-testid="create-exam-btn"
           @click="openExamModal()" 
           type="button"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-rose-500/20 active:scale-[0.98] transition-all duration-200"
@@ -140,6 +141,7 @@
                   <!-- Quick actions on card -->
                   <div class="opacity-80 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
                     <button 
+                      data-testid="edit-exam-btn"
                       @click.stop="openEditExamModal(exam)" 
                       class="p-1 rounded-lg text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" 
                       title="Editar Examen"
@@ -149,6 +151,7 @@
                       </svg>
                     </button>
                     <button 
+                      data-testid="delete-exam-btn"
                       @click.stop="promptDeleteExam(exam)" 
                       class="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" 
                       title="Eliminar Examen"
@@ -460,7 +463,10 @@
         class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
         @click.self="isExamModalOpen = false"
       >
-        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up">
+        <div 
+          data-testid="exam-modal"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
+        >
           <!-- Institutional Header Banner -->
           <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -491,6 +497,7 @@
               <div>
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Título de la Prueba *</label>
                 <input 
+                  data-testid="exam-title-input"
                   v-model="examForm.title" 
                   required 
                   placeholder="Ej: 2do Parcial: Leyes de Newton y Dinámica"
@@ -570,6 +577,7 @@
                 <span>Cancelar</span>
               </button>
               <button 
+                data-testid="exam-submit-btn"
                 type="submit" 
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] border border-brand-primary/30 cursor-pointer"
               >
@@ -591,7 +599,10 @@
         class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
         @click.self="isDeleteExamModalOpen = false; examToDelete = null"
       >
-        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-white/10 animate-scale-up text-center">
+        <div 
+          data-testid="delete-exam-modal"
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-white/10 animate-scale-up text-center"
+        >
           <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/60 dark:border-rose-800/40 shadow-inner">
             <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -613,6 +624,7 @@
               <span>Cancelar</span>
             </button>
             <button 
+              data-testid="confirm-delete-exam-btn"
               type="button" 
               @click="confirmDeleteExam"
               class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"

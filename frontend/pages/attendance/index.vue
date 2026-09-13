@@ -50,6 +50,7 @@
           <!-- Mark all present -->
           <button
             v-if="students.length > 0"
+            data-testid="btn-mark-all-present"
             @click="markAllPresent"
             type="button"
             class="inline-flex items-center justify-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm transition-all duration-200 active:scale-[0.98]"
@@ -62,6 +63,7 @@
 
           <!-- Save Button -->
           <button
+            data-testid="btn-save-attendance"
             @click="saveAttendance"
             :disabled="isSaving || students.length === 0"
             type="button"
@@ -91,6 +93,7 @@
           <div class="relative">
             <select
               v-model="selectedClassId"
+              data-testid="select-attendance-class"
               @change="onClassChange"
               :disabled="isParent"
               class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 appearance-none pr-9 transition-all"
@@ -116,6 +119,7 @@
           <div class="relative">
             <input
               v-model="selectedDate"
+              data-testid="input-attendance-date"
               @change="onDateChange"
               type="date"
               class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20 cursor-pointer transition-all"
@@ -334,6 +338,7 @@
                   <button
                     @click="setStudentStatus(student, 'present')"
                     type="button"
+                    data-testid="status-present"
                     :class="student.attendance_status === 'present' 
                       ? 'bg-emerald-500 text-white font-bold shadow-xs' 
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60'"
@@ -350,6 +355,7 @@
                   <button
                     @click="setStudentStatus(student, 'absent')"
                     type="button"
+                    data-testid="status-absent"
                     :class="student.attendance_status === 'absent' 
                       ? 'bg-rose-500 text-white font-bold shadow-xs' 
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60'"
@@ -366,6 +372,7 @@
                   <button
                     @click="setStudentStatus(student, 'late')"
                     type="button"
+                    data-testid="status-late"
                     :class="student.attendance_status === 'late' 
                       ? 'bg-amber-500 text-white font-bold shadow-xs' 
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60'"
@@ -382,6 +389,7 @@
                   <button
                     @click="openJustifyModal(student, $event)"
                     type="button"
+                    data-testid="status-excused"
                     :class="student.attendance_status === 'excused' 
                       ? 'bg-sky-500 text-white font-bold shadow-xs' 
                       : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60'"
@@ -658,6 +666,25 @@
       </div>
     </Teleport>
 
+    <!-- Toast Notification -->
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="transform translate-y-4 opacity-0"
+      enter-to-class="transform translate-y-0 opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="transform translate-y-0 opacity-100"
+      leave-to-class="transform translate-y-4 opacity-0"
+    >
+      <div 
+        v-if="toastMessage" 
+        data-testid="attendance-toast"
+        class="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl border border-slate-700/80 font-semibold text-sm"
+      >
+        <span class="text-emerald-400 font-bold text-base">✓</span>
+        <span>{{ toastMessage }}</span>
+      </div>
+    </Transition>
+
   </div>
 </template>
 
@@ -666,8 +693,8 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useActiveStudent } from '~/composables/useActiveStudent'
 
-const nuxtApp = useNuxtApp()
 const authStore = useAuthStore()
+const api = useApi()
 const { activeStudent, isCarlos, isMaria } = useActiveStudent()
 
 const currentRole = computed(() => authStore.userRole || authStore.user?.role || 'admin')
@@ -855,12 +882,10 @@ const saveJustification = () => {
 // API Data Fetching
 const fetchClasses = async () => {
   try {
-    const res = await nuxtApp.$api.service('classes').find({
-      query: {
-        is_deleted: false,
-        $sort: { id: 1 },
-        $limit: 50
-      }
+    const res = await api.get('classes', {
+      is_deleted: false,
+      $sort: { id: 1 },
+      $limit: 50
     })
     classes.value = res.data || res || []
     if (classes.value.length > 0 && !selectedClassId.value) {
@@ -876,26 +901,30 @@ const fetchStudentsAndAttendance = async () => {
   isLoading.value = true
   try {
     // 1. Fetch Students in class
-    const studentsRes = await nuxtApp.$api.service('students').find({
-      query: {
-        current_class_id: selectedClassId.value,
+    const studentsRes = await api.get('students', {
+      current_class_id: selectedClassId.value,
+      is_deleted: false,
+      $sort: { last_name: 1, first_name: 1 },
+      $limit: 100
+    })
+    let loadedStudents = studentsRes.data || studentsRes || []
+    if (loadedStudents.length === 0) {
+      const allRes = await api.get('students', {
         is_deleted: false,
         $sort: { last_name: 1, first_name: 1 },
         $limit: 100
-      }
-    })
-    const loadedStudents = studentsRes.data || studentsRes || []
+      })
+      loadedStudents = allRes.data || allRes || []
+    }
 
     // 2. Fetch existing attendance for this class and date
     let existingAttendance = []
     try {
-      const attendRes = await nuxtApp.$api.service('attendance').find({
-        query: {
-          class_id: selectedClassId.value,
-          attendance_date: selectedDate.value,
-          is_deleted: false,
-          $limit: 100
-        }
+      const attendRes = await api.get('attendance', {
+        class_id: selectedClassId.value,
+        attendance_date: selectedDate.value,
+        is_deleted: false,
+        $limit: 100
       })
       existingAttendance = attendRes.data || attendRes || []
     } catch (e) {
@@ -955,7 +984,7 @@ const saveAttendance = async () => {
       }))
     }
 
-    await nuxtApp.$api.service('attendance').create(payload)
+    await api.post('attendance', payload)
     showToast('Asistencia guardada exitosamente')
     await fetchStudentsAndAttendance()
   } catch (error) {

@@ -31,6 +31,7 @@
 
         <button 
           v-if="canManage"
+          data-testid="btn-new-report-card"
           @click="openCreateModal()" 
           type="button"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all duration-200"
@@ -90,6 +91,7 @@
           <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Seleccionar Estudiante:</span>
           <select 
             v-model="selectedReportCardId"
+            data-testid="select-student-report-card"
             class="px-3 py-2 text-xs bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl font-medium text-slate-800 dark:text-slate-100 cursor-pointer"
           >
             <option v-for="rc in reportCards" :key="rc.id" :value="rc.id">
@@ -124,6 +126,7 @@
             <button
               @click="openEditModal()"
               type="button"
+              data-testid="btn-edit-report-card"
               class="px-3 py-1 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
               title="Modificar observaciones o notas de la boleta"
             >
@@ -136,6 +139,7 @@
             <button
               @click="openDeleteModal()"
               type="button"
+              data-testid="btn-delete-report-card"
               class="px-3 py-1 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
               title="Anular y retirar boleta"
             >
@@ -484,6 +488,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Estudiante *</label>
                   <select 
                     v-model="modalForm.student_id" 
+                    data-testid="modal-student-id"
                     required
                     :disabled="isEditingReportCard"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 disabled:opacity-60 cursor-pointer"
@@ -497,6 +502,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Lapso / Período *</label>
                   <select 
                     v-model="modalForm.period" 
+                    data-testid="modal-period"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
                   >
                     <option value="1er lapso">1er Lapso</option>
@@ -512,6 +518,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nivel Educativo *</label>
                   <select 
                     v-model="modalForm.education_level" 
+                    data-testid="modal-education-level"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
                   >
                     <option value="media">Media General (1-20)</option>
@@ -523,6 +530,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Promedio Obtenido *</label>
                   <input 
                     v-model.number="modalForm.final_average" 
+                    data-testid="modal-final-average"
                     type="number" 
                     step="0.01" 
                     required 
@@ -536,6 +544,7 @@
                 <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Observaciones del Docente</label>
                 <textarea 
                   v-model="modalForm.teacher_observations" 
+                  data-testid="modal-teacher-observations"
                   rows="3"
                   placeholder="Desempeño y apreciación cualitativa del estudiante..."
                   class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 resize-none"
@@ -557,6 +566,7 @@
               </button>
               <button 
                 type="submit" 
+                data-testid="btn-submit-report-card"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] border border-brand-primary/30 cursor-pointer"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -603,6 +613,7 @@
             </button>
             <button 
               type="button" 
+              data-testid="btn-confirm-delete-report-card"
               @click="confirmDeleteReportCard"
               class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
             >

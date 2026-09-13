@@ -6,7 +6,7 @@ test.describe('Módulo de Estudiantes: CRUD 100% Real contra PostgreSQL', () => 
   test.beforeAll(async () => {
     try {
       const db = require('../../../backend/src/database')
-      await db('school.students').where({ first_name: 'Santiago' }).del()
+      await db('school.students').where({ first_name: 'Santiago' }).update({ status: 'active', is_deleted: false })
     } catch (_) {}
   })
 

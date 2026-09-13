@@ -22,6 +22,7 @@
         <button 
           @click="openCreateModal()" 
           type="button"
+          data-testid="btn-open-create-card"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-blue-500/20 active:scale-[0.98] transition-all duration-200"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -46,6 +47,7 @@
         <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Filtrar por Tipo:</span>
         <select 
           v-model="filterType"
+          data-testid="select-filter-card-type"
           class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-slate-800 dark:text-slate-100"
         >
           <option value="">Todos los Carnets</option>
@@ -76,6 +78,7 @@
       <div 
         v-for="card in filteredCards" 
         :key="card.id"
+        data-testid="id-card-item"
         class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-150 dark:border-slate-800 shadow-sm print:p-0 print:border-none print:shadow-none"
       >
         <div class="flex justify-between items-center mb-4 print:hidden border-b pb-3">
@@ -92,6 +95,7 @@
             <button
               @click="openEditModal(card)"
               type="button"
+              data-testid="btn-edit-card"
               class="px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
               title="Modificar datos del carnet"
             >
@@ -105,6 +109,7 @@
             <button
               @click="openDeleteModal(card)"
               type="button"
+              data-testid="btn-revoke-card"
               class="px-2.5 py-1 rounded-xl border border-rose-200 dark:border-rose-900/40 bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
               title="Revocar carnet"
             >
@@ -262,6 +267,7 @@
                   <input 
                     v-model="cardForm.recipient_name" 
                     required 
+                    data-testid="input-card-recipient-name"
                     placeholder="Ej: Sofía Morales"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
                   />
@@ -271,6 +277,7 @@
                   <input 
                     v-model="cardForm.recipient_id_card" 
                     required 
+                    data-testid="input-card-recipient-id"
                     placeholder="V-32456789"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
                   />
@@ -282,6 +289,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tipo de Personal / Rol</label>
                   <select 
                     v-model="cardForm.recipient_type"
+                    data-testid="select-card-recipient-type"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
                   >
                     <option value="estudiante">Estudiante</option>
@@ -294,6 +302,7 @@
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Cargo o Grado</label>
                   <input 
                     v-model="cardForm.position" 
+                    data-testid="input-card-position"
                     placeholder="1er Año Sección A / Docente"
                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
                   />
@@ -343,6 +352,7 @@
               </button>
               <button 
                 type="submit" 
+                data-testid="btn-save-card"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] border border-brand-primary/30 cursor-pointer"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -389,6 +399,7 @@
             </button>
             <button 
               type="button" 
+              data-testid="btn-confirm-revoke"
               @click="confirmDeleteCard"
               class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
             >

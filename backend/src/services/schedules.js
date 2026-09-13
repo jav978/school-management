@@ -11,7 +11,7 @@ class SchedulesService extends KnexService {
     let knexQuery = db('school.schedules as s')
       .leftJoin('school.subjects as sub', 's.subject_id', 'sub.id')
       .leftJoin('school.teachers as t', 's.teacher_id', 't.id')
-      .leftJoin('school.classrooms as c', 's.classroom_id', 'c.id')
+      .leftJoin('school.classrooms as c', db.raw('CAST(s.classroom_id AS TEXT) = CAST(c.id AS TEXT) OR s.classroom_id = c.room_number'))
       .select(
         's.*',
         'sub.name as subject_name',
@@ -19,6 +19,7 @@ class SchedulesService extends KnexService {
         'sub.color_hex as subject_color',
         't.first_name as teacher_first_name',
         't.last_name as teacher_last_name',
+        db.raw("TRIM(CONCAT(t.first_name, ' ', t.last_name)) as teacher_name"),
         'c.name as classroom_name',
         'c.room_number as classroom_number'
       )
@@ -57,7 +58,7 @@ class SchedulesService extends KnexService {
     const schedule = await db('school.schedules as s')
       .leftJoin('school.subjects as sub', 's.subject_id', 'sub.id')
       .leftJoin('school.teachers as t', 's.teacher_id', 't.id')
-      .leftJoin('school.classrooms as c', 's.classroom_id', 'c.id')
+      .leftJoin('school.classrooms as c', db.raw('CAST(s.classroom_id AS TEXT) = CAST(c.id AS TEXT) OR s.classroom_id = c.room_number'))
       .where('s.id', id)
       .select(
         's.*',
@@ -66,6 +67,7 @@ class SchedulesService extends KnexService {
         'sub.color_hex as subject_color',
         't.first_name as teacher_first_name',
         't.last_name as teacher_last_name',
+        db.raw("TRIM(CONCAT(t.first_name, ' ', t.last_name)) as teacher_name"),
         'c.name as classroom_name',
         'c.room_number as classroom_number'
       )

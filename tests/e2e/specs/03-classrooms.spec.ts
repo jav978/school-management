@@ -5,11 +5,9 @@ test.describe('Módulo de Aulas y Espacios Escolares', () => {
 
   test.beforeEach(async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto('/dashboard');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('a[href="/classrooms"]').click();
-    await page.waitForURL('**/classrooms', { timeout: 10000 });
-    await page.waitForLoadState('domcontentloaded');
+    await page.goto('/classrooms');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('h1:has-text("Aulas y Espacios Escolares")')).toBeVisible();
   });
 
   test('03.1 - Debe renderizar el encabezado y las 4 tarjetas de resumen KPI', async ({ page }) => {

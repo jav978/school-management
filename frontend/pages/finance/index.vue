@@ -23,6 +23,7 @@
           v-if="canManage"
           @click="openCreateModal($event)" 
           type="button"
+          data-testid="create-payment-btn"
           class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all duration-200"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -209,12 +210,13 @@
             <tr
               v-for="p in filteredPayments"
               :key="p.id"
+              data-testid="payment-row"
               class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
             >
               <!-- Payer Info -->
               <td class="py-3.5 px-4 sm:px-6">
                 <div>
-                  <p class="text-xs sm:text-sm font-bold text-slate-850 dark:text-white">
+                  <p class="text-xs sm:text-sm font-bold text-slate-850 dark:text-white" data-testid="payment-payer-name">
                     {{ p.payer_first_name }} {{ p.payer_last_name }}
                   </p>
                   <div class="flex items-center gap-2 mt-0.5">
@@ -262,6 +264,7 @@
               <td class="py-3.5 px-4 text-center">
                 <span
                   :class="getStatusClass(p.status)"
+                  data-testid="payment-status-badge"
                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold capitalize"
                 >
                   <span class="w-1.5 h-1.5 rounded-full" :class="getStatusDotClass(p.status)"></span>
@@ -294,6 +297,7 @@
                     v-if="p.status === 'pendiente'"
                     @click="updateStatus(p, 'verificado')"
                     type="button"
+                    data-testid="approve-payment-btn"
                     class="px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 text-[11px] font-bold transition-colors"
                     title="Aprobar pago"
                   >
@@ -304,6 +308,7 @@
                     v-if="p.status === 'pendiente'"
                     @click="updateStatus(p, 'rechazado')"
                     type="button"
+                    data-testid="reject-payment-btn"
                     class="px-2 py-1 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 hover:bg-rose-100 text-[11px] font-bold transition-colors"
                     title="Rechazar pago"
                   >
@@ -313,6 +318,7 @@
                   <button
                     @click="openEditPaymentModal(p, $event)"
                     type="button"
+                    data-testid="edit-payment-btn"
                     class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                     title="Editar datos del pago"
                   >
@@ -324,6 +330,7 @@
                   <button
                     @click="promptDeletePayment(p, $event)"
                     type="button"
+                    data-testid="delete-payment-btn"
                     class="w-7 h-7 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
                     title="Eliminar registro"
                   >
@@ -485,6 +492,7 @@
                   v-model="form.payer_first_name"
                   type="text"
                   required
+                  data-testid="payment-payer-first-name"
                   placeholder="Ej. Roberto"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
@@ -497,6 +505,7 @@
                   v-model="form.payer_last_name"
                   type="text"
                   required
+                  data-testid="payment-payer-last-name"
                   placeholder="Ej. Sánchez"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
@@ -513,6 +522,7 @@
                   v-model="form.payer_id_card"
                   type="text"
                   required
+                  data-testid="payment-payer-id-card"
                   placeholder="Ej. V-18294821"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
@@ -524,6 +534,7 @@
                 <input
                   v-model="form.payer_phone"
                   type="text"
+                  data-testid="payment-payer-phone"
                   placeholder="+58 414 1234567"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
@@ -539,6 +550,7 @@
                 <select
                   v-model="form.payment_type"
                   required
+                  data-testid="payment-type-select"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 >
                   <option value="pago movil">Pago Móvil</option>
@@ -554,6 +566,7 @@
                 <select
                   v-model="form.bank_name"
                   required
+                  data-testid="payment-bank-select"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 >
                   <option value="Banesco">Banesco</option>
@@ -577,6 +590,7 @@
                   v-model="form.reference_number"
                   type="text"
                   required
+                  data-testid="payment-reference-input"
                   placeholder="Ej. REF-938210"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-mono font-bold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
@@ -591,6 +605,7 @@
                   step="0.01"
                   min="1"
                   required
+                  data-testid="payment-amount-input"
                   placeholder="75.00"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-black text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
@@ -607,6 +622,7 @@
                   v-model="form.payment_date"
                   type="date"
                   required
+                  data-testid="payment-date-input"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 />
               </div>
@@ -616,6 +632,7 @@
                 </label>
                 <select
                   v-model="form.status"
+                  data-testid="payment-status-select"
                   class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-850 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
                 >
                   <option value="verificado">Verificado</option>
@@ -633,6 +650,7 @@
               <textarea
                 v-model="form.admin_notes"
                 rows="2"
+                data-testid="payment-notes-input"
                 placeholder="Ej. Mensualidad Septiembre 2026 - Estudiante Juan Pérez"
                 class="w-full bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl p-3 text-xs sm:text-sm text-slate-850 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
               ></textarea>
@@ -739,6 +757,7 @@
               @click="submitPayment"
               :disabled="isSubmitting"
               type="button"
+              data-testid="submit-payment-btn"
               class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
             >
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -791,6 +810,7 @@
             <button
               @click="confirmDeletePayment"
               type="button"
+              data-testid="confirm-delete-payment-btn"
               class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-[0.98] transition-all cursor-pointer"
             >
               Eliminar
@@ -966,9 +986,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
+import { useApi } from '~/composables/useApi'
 
-const nuxtApp = useNuxtApp()
 const authStore = useAuthStore()
+const api = useApi()
 
 const userRole = computed(() => authStore.userRole || authStore.user?.role || 'parent')
 const isStaff = computed(() => {
@@ -1251,10 +1272,10 @@ const submitPayment = async () => {
   isSubmitting.value = true
   try {
     if (isEditingPayment.value && editingPaymentId.value) {
-      await nuxtApp.$api.service('payments').patch(editingPaymentId.value, form.value)
+      await api.service('payments').patch(editingPaymentId.value, form.value)
       showToast('Pago actualizado exitosamente')
     } else {
-      await nuxtApp.$api.service('payments').create(form.value)
+      await api.service('payments').create(form.value)
       showToast('Pago registrado exitosamente')
     }
     await fetchPayments()
@@ -1270,7 +1291,7 @@ const submitPayment = async () => {
 // Status quick update
 const updateStatus = async (payment, newStatus) => {
   try {
-    await nuxtApp.$api.service('payments').patch(payment.id, { status: newStatus })
+    await api.service('payments').patch(payment.id, { status: newStatus })
     payment.status = newStatus
     showToast(`Pago marcado como ${newStatus}`)
   } catch (error) {
@@ -1289,7 +1310,7 @@ const promptDeletePayment = (payment, event) => {
 const confirmDeletePayment = async () => {
   if (!paymentToDelete.value) return
   try {
-    await nuxtApp.$api.service('payments').remove(paymentToDelete.value.id)
+    await api.service('payments').remove(paymentToDelete.value.id)
     showToast('Registro de pago eliminado')
     await fetchPayments()
   } catch (error) {
@@ -1305,7 +1326,7 @@ const confirmDeletePayment = async () => {
 const fetchPayments = async () => {
   isLoading.value = true
   try {
-    const res = await nuxtApp.$api.service('payments').find({
+    const res = await api.service('payments').find({
       query: {
         $limit: 100
       }

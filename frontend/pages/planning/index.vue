@@ -18,6 +18,7 @@
 
       <div class="flex items-center gap-3 w-full sm:w-auto">
         <button 
+          data-testid="create-planning-btn"
           @click="openModal()" 
           type="button"
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30 cursor-pointer"
@@ -91,6 +92,7 @@
         <!-- Search Input -->
         <div class="flex-1 relative min-w-[240px]">
           <input 
+            data-testid="planning-search-input"
             v-model="searchQuery"
             type="text" 
             placeholder="Buscar por profesor, materia, tema o grado..."
@@ -326,6 +328,7 @@
 
             <!-- Editar (Lápiz amarillo con ayuda contextual) -->
             <button 
+              data-testid="edit-planning-btn"
               @click="editPlan(plan)"
               class="p-2 text-amber-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-amber-500/30"
               title="Editar planificación académica"
@@ -337,6 +340,7 @@
 
             <!-- Eliminar (Papelera roja con ayuda contextual) -->
             <button 
+              data-testid="delete-planning-btn"
               @click="openDeleteModal(plan)"
               class="p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-rose-500/30"
               title="Eliminar planificación académica"
@@ -358,6 +362,7 @@
         @click.self="closeModal"
       >
         <div 
+          data-testid="planning-modal"
           class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-6xl max-h-[95vh] flex flex-col overflow-hidden animate-scale-up"
         >
           <!-- Institutional Header Banner -->
@@ -496,6 +501,7 @@
                       Año Escolar *
                     </label>
                     <input 
+                      data-testid="planning-academic-year-input"
                       v-model="form.academic_year" 
                       type="text"
                       placeholder="2025-2026"
@@ -515,6 +521,7 @@
                       Período / Lapso *
                     </label>
                     <select 
+                      data-testid="planning-period-select"
                       v-model="form.period" 
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
@@ -530,7 +537,8 @@
                       Grado / Nivel *
                     </label>
                     <select 
-                      v-model="form.grade"
+                      data-testid="planning-grade-select"
+                      v-model="form.grade" 
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
                       <option v-for="g in gradesList" :key="g" :value="g">{{ g }}</option>
@@ -543,6 +551,7 @@
                       Sección
                     </label>
                     <select 
+                      data-testid="planning-section-select"
                       v-model="form.section" 
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
@@ -575,7 +584,7 @@
                       Estado del Plan
                     </label>
                     <select 
-                      v-model="form.status"
+                      v-model="form.status" 
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
                       <option value="borrador">En Borrador</option>
@@ -591,6 +600,7 @@
                     Tema Indispensable *
                   </label>
                   <input 
+                    data-testid="planning-indispensable-theme-input"
                     v-model="form.indispensable_theme" 
                     type="text"
                     placeholder="Ej: DEFENSA Y PRESERVACIÓN DE LA VIDA"
@@ -610,6 +620,7 @@
                     Tema del Proyecto
                   </label>
                   <input 
+                    data-testid="planning-project-theme-input"
                     v-model="form.project_theme" 
                     type="text"
                     placeholder="Ej: SOMOS DEFENSORES DE VIDA"
@@ -982,6 +993,7 @@
                   <span>Cancelar</span>
                 </button>
                 <button 
+                  data-testid="planning-submit-btn"
                   type="submit" 
                   :disabled="saving"
                   class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
@@ -1195,7 +1207,10 @@
         class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs print:hidden"
         @click.self="isDeleteModalOpen = false"
       >
-        <div class="bg-white dark:bg-[#170f33] rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md p-6 text-center animate-scale-up">
+        <div 
+          data-testid="planning-delete-modal"
+          class="bg-white dark:bg-[#170f33] rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md p-6 text-center animate-scale-up"
+        >
           <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 text-rose-500 flex items-center justify-center mx-auto mb-4 text-2xl shadow-xs">
             ⚠️
           </div>
@@ -1215,6 +1230,7 @@
               <span>Cancelar</span>
             </button>
             <button 
+              data-testid="confirm-delete-planning-btn"
               @click="confirmDeletePlan" 
               class="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 active:scale-95 transition-all cursor-pointer"
             >
@@ -1622,25 +1638,16 @@ const savePlan = async () => {
       weekly_planning: JSON.stringify(form.value.weekly_planning || []),
       general_objectives: JSON.stringify(form.value.general_objectives?.filter(Boolean) || []),
       evaluation_plan: JSON.stringify(form.value.evaluation_plan || []),
-      status: form.value.status || 'borrador',
-      submission_date: new Date().toISOString().split('T')[0]
+      status: form.value.status || 'borrador'
     }
 
     if (isEditing.value) {
-      await api.patch(`academic-plannings/${currentId.value}`, payload).catch(() => null)
-      // Update locally
-      const idx = plannings.value.findIndex(p => p.id === currentId.value)
-      if (idx !== -1) {
-        plannings.value[idx] = { ...plannings.value[idx], ...form.value }
-      }
+      await api.patch(`academic-plannings/${currentId.value}`, payload)
+      await fetchPlannings()
       toast.success('Planificación académica actualizada exitosamente')
     } else {
-      const created = await api.post('academic-plannings', payload).catch(() => null)
-      const newPlan = created && created.id ? created : {
-        id: Date.now(),
-        ...form.value
-      }
-      plannings.value.unshift(newPlan)
+      const created = await api.post('academic-plannings', payload)
+      plannings.value.unshift(created)
       toast.success('Planificación registrada exitosamente en la U.E Santa Luisa')
     }
     isModalOpen.value = false
@@ -1660,7 +1667,7 @@ const openDeleteModal = (plan) => {
 const confirmDeletePlan = async () => {
   if (!planToDelete.value) return
   try {
-    await api.remove(`academic-plannings/${planToDelete.value.id}`).catch(() => null)
+    await api.remove(`academic-plannings/${planToDelete.value.id}`)
     plannings.value = plannings.value.filter(p => p.id !== planToDelete.value.id)
     toast.warning('Planificación curricular eliminada')
     isDeleteModalOpen.value = false

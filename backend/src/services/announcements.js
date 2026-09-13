@@ -9,13 +9,12 @@ class AnnouncementsService extends KnexService {
     const query = { ...params?.query }
 
     let knexQuery = db('school.announcements as a')
-      .leftJoin('school.teachers as t', 'a.author_id', 't.id')
+      .leftJoin('school.users as u', 'a.author_id', 'u.id')
       .where('a.is_deleted', false)
       .select(
         'a.*',
-        't.first_name as author_first_name',
-        't.last_name as author_last_name',
-        't.department as author_department'
+        'u.username as author_username',
+        'u.role as author_role'
       )
 
     if (query.priority) {
@@ -34,23 +33,33 @@ class AnnouncementsService extends KnexService {
       total: data.length,
       limit: 50,
       skip: 0,
-      data
+      data: data.map(item => ({
+        ...item,
+        author_first_name: item.author_username || 'Dirección',
+        author_last_name: 'Académica',
+        author_department: 'Coordinación'
+      }))
     }
   }
 
   async get(id, params) {
     const db = this.getModel(params)
     const announcement = await db('school.announcements as a')
-      .leftJoin('school.teachers as t', 'a.author_id', 't.id')
+      .leftJoin('school.users as u', 'a.author_id', 'u.id')
       .where('a.id', id)
       .where('a.is_deleted', false)
-      .select('a.*', 't.first_name as author_first_name', 't.last_name as author_last_name')
+      .select('a.*', 'u.username as author_username', 'u.role as author_role')
       .first()
 
     if (!announcement) {
       throw new BadRequest(`Aviso con id ${id} no encontrado`)
     }
-    return announcement
+    return {
+      ...announcement,
+      author_first_name: announcement.author_username || 'Dirección',
+      author_last_name: 'Académica',
+      author_department: 'Coordinación'
+    }
   }
 
   async create(data, params) {
@@ -59,36 +68,54 @@ class AnnouncementsService extends KnexService {
     if (!data.title) throw new BadRequest('El título del aviso es requerido')
     if (!data.body) throw new BadRequest('El contenido del aviso es requerido')
 
-    const teacher = await db('school.teachers').first().catch(() => null)
-    const authorId = data.author_id || (teacher ? teacher.id : 1)
+    const user = params?.user || (await db('school.users').where({ role: 'admin' }).first()) || (await db('school.users').first())
+    const authorId = data.author_id || (user ? user.id : 1)
+    const inst = (await db('school.institutions').first()) || { id: 1 }
+
+    let priority = data.priority || 'normal'
+    if (!['low', 'normal', 'high', 'urgent'].includes(priority)) {
+      priority = 'normal'
+    }
 
     const payload = {
-      uuid: crypto.randomUUID(),
-      institution_id: 1,
+      institution_id: inst.id,
       author_id: authorId,
       title: data.title.trim(),
       body: data.body.trim(),
-      priority: data.priority || 'normal',
+      priority,
       is_published: true,
       published_at: new Date(),
       is_pinned: Boolean(data.is_pinned),
-      send_push: true,
+      send_push: false,
       send_email: false,
       send_sms: false,
       view_count: 1,
       created_at: new Date(),
+      created_by: authorId,
       is_deleted: false,
       version: 1
     }
 
     const [inserted] = await db('school.announcements').insert(payload).returning('*')
-    return inserted
+    return {
+      ...inserted,
+      author_first_name: user?.username || 'Dirección',
+      author_last_name: 'Académica',
+      author_department: 'Coordinación'
+    }
   }
 
   async patch(id, data, params) {
     const db = this.getModel(params)
-    const patchData = { ...data, updated_at: new Date() }
-    const [updated] = await db('school.announcements').where({ id }).update(patchData).returning('*')
+    const clean = {}
+    const patchable = ['title', 'body', 'priority', 'is_pinned', 'is_published']
+    for (const key of patchable) {
+      if (data[key] !== undefined) {
+        clean[key] = data[key]
+      }
+    }
+    clean.updated_at = new Date()
+    const [updated] = await db('school.announcements').where({ id }).update(clean).returning('*')
     return updated
   }
 

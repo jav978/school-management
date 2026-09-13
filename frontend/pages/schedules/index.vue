@@ -70,6 +70,7 @@
         <!-- Only Admin, Control de Estudio or Coordinator can create blocks -->
         <button 
           v-if="canManage"
+          data-testid="create-schedule-btn"
           @click="openCreateModal(null, null, $event)" 
           type="button"
           class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-brand-primary/25 active:scale-[0.98] transition-all duration-200 border border-brand-primary/30 cursor-pointer"
@@ -428,6 +429,7 @@
         @click.self="closeModal"
       >
         <div 
+          data-testid="schedule-modal"
           class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
         >
           <!-- Institutional Header Banner -->
@@ -473,6 +475,7 @@
                       Grado / Año Académico *
                     </label>
                     <select
+                      data-testid="schedule-grade-select"
                       v-model="form.grade"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
@@ -485,6 +488,7 @@
                       Sección *
                     </label>
                     <select
+                      data-testid="schedule-section-select"
                       v-model="form.section"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
@@ -500,6 +504,7 @@
                       Día de la Semana *
                     </label>
                     <select
+                      data-testid="schedule-day-select"
                       v-model="form.day_of_week"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
@@ -513,6 +518,7 @@
                       Bloque Horario (45 min) *
                     </label>
                     <select
+                      data-testid="schedule-start-time-select"
                       v-model="form.start_time"
                       @change="updateEndTime"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-mono"
@@ -537,6 +543,7 @@
                     Materia Curricular *
                   </label>
                   <select
+                    data-testid="schedule-subject-select"
                     v-model="form.subject_id"
                     :class="[
                       formErrors.subject_id ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10',
@@ -568,6 +575,7 @@
                       Docente Responsable *
                     </label>
                     <select
+                      data-testid="schedule-teacher-select"
                       v-model="form.teacher_id"
                       :class="[
                         formErrors.teacher_id ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10',
@@ -590,6 +598,7 @@
                       Aula / Espacio Físico *
                     </label>
                     <select
+                      data-testid="schedule-classroom-select"
                       v-model="form.classroom_id"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
@@ -616,6 +625,7 @@
                 <span>Cancelar</span>
               </button>
               <button
+                data-testid="schedule-submit-btn"
                 type="submit"
                 :disabled="isSubmitting"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
@@ -641,7 +651,10 @@
         class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
         @click.self="isDeleteModalOpen = false"
       >
-        <div class="bg-white dark:bg-[#170f33] rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md p-6 text-center animate-scale-up">
+        <div 
+          data-testid="schedule-delete-modal"
+          class="bg-white dark:bg-[#170f33] rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md p-6 text-center animate-scale-up"
+        >
           <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/50 dark:border-rose-900/40 text-rose-500 flex items-center justify-center mx-auto mb-4 text-2xl shadow-xs">
             ⚠️
           </div>
@@ -660,6 +673,7 @@
               <span>Cancelar</span>
             </button>
             <button 
+              data-testid="confirm-delete-schedule-btn"
               @click="confirmDeleteSchedule" 
               class="px-5 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl shadow-md shadow-rose-600/20 active:scale-95 transition-all cursor-pointer"
             >

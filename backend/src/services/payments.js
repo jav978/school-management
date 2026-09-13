@@ -3,12 +3,41 @@ const { BadRequest } = require('@feathersjs/errors')
 const crypto = require('crypto')
 const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 
+const ALLOWED_COLUMNS = [
+  'id', 'payer_first_name', 'payer_last_name', 'payer_id_card',
+  'payer_phone', 'payer_email', 'amount', 'currency', 'amount_bs',
+  'exchange_rate', 'payment_method', 'payment_type', 'reference_number',
+  'bank_origin', 'bank_destination', 'payment_date', 'status', 'notes',
+  'student_id', 'created_date', 'is_deleted', 'deleted_at', 'created_at', 'updated_at'
+]
+
+function sanitizePayload(raw) {
+  const clean = {}
+  for (const col of ALLOWED_COLUMNS) {
+    if (raw[col] !== undefined) {
+      clean[col] = raw[col]
+    }
+  }
+  return clean
+}
+
+function formatPaymentResponse(record) {
+  if (!record) return record
+  return {
+    ...record,
+    bank_name: record.bank_origin || '',
+    admin_notes: record.notes || ''
+  }
+}
+
 class PaymentsService extends KnexService {
   async find(params) {
     const db = this.getModel(params)
     const query = { ...params?.query }
 
-    let knexQuery = db('school.payments')
+    let knexQuery = db('school.payments').where(function() {
+      this.where('is_deleted', false).orWhereNull('is_deleted')
+    })
 
     if (query.status) {
       knexQuery = knexQuery.where('status', query.status)
@@ -22,24 +51,24 @@ class PaymentsService extends KnexService {
 
     const data = await knexQuery.orderBy([
       { column: 'payment_date', order: 'desc' },
-      { column: 'created_date', order: 'desc' }
+      { column: 'created_at', order: 'desc' }
     ])
 
     return {
       total: data.length,
       limit: 100,
       skip: 0,
-      data
+      data: data.map(formatPaymentResponse)
     }
   }
 
   async get(id, params) {
     const db = this.getModel(params)
     const payment = await db('school.payments').where('id', id).first()
-    if (!payment) {
+    if (!payment || payment.is_deleted) {
       throw new BadRequest(`Pago no encontrado con id ${id}`)
     }
-    return payment
+    return formatPaymentResponse(payment)
   }
 
   async create(data, params) {
@@ -59,7 +88,7 @@ class PaymentsService extends KnexService {
       .first()
       .catch(() => null)
 
-    if (existing) {
+    if (existing && !existing.is_deleted) {
       throw new BadRequest(`Ya existe un pago registrado con el número de referencia ${data.reference_number}`)
     }
 
@@ -81,39 +110,61 @@ class PaymentsService extends KnexService {
       status = 'pendiente'
     }
 
-    const payload = {
+    const rawPayload = {
       id,
       payer_first_name: data.payer_first_name.trim(),
       payer_last_name: data.payer_last_name.trim(),
       payer_id_card: data.payer_id_card.trim().toUpperCase(),
       payer_phone: data.payer_phone || null,
-      payment_type: paymentType,
-      bank_name: data.bank_name || 'Banesco',
-      reference_number: data.reference_number.trim(),
+      payer_email: data.payer_email || null,
       amount: Number(data.amount),
+      currency: data.currency || 'USD',
+      payment_method: data.payment_method || (paymentType === 'pago movil' ? 'pago_movil' : paymentType),
+      payment_type: paymentType,
+      reference_number: data.reference_number.trim(),
+      bank_origin: data.bank_origin || data.bank_name || 'Banesco',
       payment_date: data.payment_date || new Date().toISOString().split('T')[0],
-      receipt_image_url: data.receipt_image_url || 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&auto=format&fit=crop&q=80',
       status,
-      admin_notes: data.admin_notes || null,
-      created_date: new Date()
+      notes: data.notes || data.admin_notes || null,
+      is_deleted: false,
+      created_date: new Date().toISOString().split('T')[0],
+      created_at: new Date(),
+      updated_at: new Date()
     }
 
+    const payload = sanitizePayload(rawPayload)
     const [inserted] = await db('school.payments').insert(payload).returning('*')
-    return inserted
+    return formatPaymentResponse(inserted)
   }
 
   async patch(id, data, params) {
     const db = this.getModel(params)
-    const patchData = { ...data, updated_date: new Date() }
+    const patchRaw = { ...data }
+    if (patchRaw.bank_name !== undefined && patchRaw.bank_origin === undefined) {
+      patchRaw.bank_origin = patchRaw.bank_name
+    }
+    if (patchRaw.admin_notes !== undefined && patchRaw.notes === undefined) {
+      patchRaw.notes = patchRaw.admin_notes
+    }
+    patchRaw.updated_at = new Date()
+
+    const patchData = sanitizePayload(patchRaw)
     const [updated] = await db('school.payments').where({ id }).update(patchData).returning('*')
-    return updated
+    return formatPaymentResponse(updated)
   }
 
   async remove(id, params) {
     const db = this.getModel(params)
     const existing = await db('school.payments').where({ id }).first()
-    await db('school.payments').where({ id }).del()
-    return existing
+    if (!existing) {
+      throw new BadRequest(`Pago no encontrado con id ${id}`)
+    }
+    await db('school.payments').where({ id }).update({
+      is_deleted: true,
+      deleted_at: new Date(),
+      updated_at: new Date()
+    })
+    return formatPaymentResponse(existing)
   }
 }
 

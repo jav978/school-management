@@ -20,12 +20,12 @@ module.exports = function (app) {
   service.hooks({
     before: {
       all: [authenticateHook],
-      find: [restrictToRoles('admin', 'teacher', 'student')],
-      get: [restrictToRoles('admin', 'teacher', 'student')],
-      create: [restrictToRoles('admin', 'teacher')],
-      update: [restrictToRoles('admin', 'teacher')],
-      patch: [restrictToRoles('admin', 'teacher')],
-      remove: [restrictToRoles('admin', 'teacher')]
+      find: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student')],
+      get: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher', 'student')],
+      create: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher')],
+      update: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher')],
+      patch: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher')],
+      remove: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'teacher')]
     }
   })
 }

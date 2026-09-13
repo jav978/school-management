@@ -32,6 +32,7 @@
           v-if="canManage"
           @click="openCreateModal($event)" 
           type="button"
+          data-testid="create-announcement-btn"
           class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all duration-200"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -164,6 +165,7 @@
       <div
         v-for="a in filteredAnnouncements"
         :key="a.id"
+        data-testid="announcement-card"
         class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all hover:shadow-md relative overflow-hidden"
       >
         <!-- Top accent banner if pinned -->
@@ -175,6 +177,7 @@
             <div class="flex items-center gap-2">
               <span 
                 :class="getPriorityBadgeClass(a.priority)"
+                data-testid="announcement-priority-badge"
                 class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
               >
                 {{ getPriorityLabel(a.priority) }}
@@ -191,7 +194,7 @@
 
           <!-- Title & Body -->
           <div class="mt-3.5">
-            <h3 class="text-base font-bold font-display text-slate-850 dark:text-white leading-snug">
+            <h3 class="text-base font-bold font-display text-slate-850 dark:text-white leading-snug" data-testid="announcement-title">
               {{ a.title }}
             </h3>
             <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed whitespace-pre-line">
@@ -218,6 +221,7 @@
             <button
               @click="openEditModal(a, $event)"
               type="button"
+              data-testid="edit-announcement-btn"
               class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               title="Editar"
             >
@@ -228,6 +232,7 @@
             <button
               @click="promptDeleteAnnouncement(a, $event)"
               type="button"
+              data-testid="delete-announcement-btn"
               class="w-7 h-7 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
               title="Eliminar"
             >
@@ -287,6 +292,7 @@
                   v-model="form.title"
                   type="text"
                   required
+                  data-testid="announcement-title-input"
                   placeholder="Ej. Convocatoria a Asamblea General"
                   class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
                 />
@@ -301,6 +307,7 @@
                   <select
                     v-model="form.priority"
                     required
+                    data-testid="announcement-priority-select"
                     class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
                   >
                     <option value="normal">Normal</option>
@@ -314,6 +321,7 @@
                     <input
                       v-model="form.is_pinned"
                       type="checkbox"
+                      data-testid="announcement-pinned-checkbox"
                       class="w-4 h-4 rounded text-brand-purple focus:ring-brand-purple/20 cursor-pointer"
                     />
                     <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">
@@ -332,6 +340,7 @@
                   v-model="form.body"
                   required
                   rows="5"
+                  data-testid="announcement-body-input"
                   placeholder="Escriba el texto completo del comunicado o aviso..."
                   class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 leading-relaxed resize-none"
                 ></textarea>
@@ -353,6 +362,7 @@
               <button
                 type="submit"
                 :disabled="isSubmitting"
+                data-testid="submit-announcement-btn"
                 class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
               >
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -406,6 +416,7 @@
             <button
               @click="confirmDeleteAnnouncement"
               type="button"
+              data-testid="confirm-delete-announcement-btn"
               class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-[0.98] transition-all cursor-pointer"
             >
               Eliminar
@@ -433,9 +444,10 @@
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useActiveStudent } from '~/composables/useActiveStudent'
+import { useApi } from '~/composables/useApi'
 
-const nuxtApp = useNuxtApp()
 const authStore = useAuthStore()
+const api = useApi()
 const { activeStudent, isCarlos, isMaria } = useActiveStudent()
 
 const currentRole = computed(() => authStore.userRole || authStore.user?.role || '')
@@ -576,10 +588,10 @@ const submitAnnouncement = async () => {
   isSubmitting.value = true
   try {
     if (isEditing.value) {
-      await nuxtApp.$api.service('announcements').patch(form.value.id, form.value)
+      await api.service('announcements').patch(form.value.id, form.value)
       showToast('Comunicado actualizado')
     } else {
-      await nuxtApp.$api.service('announcements').create(form.value)
+      await api.service('announcements').create(form.value)
       showToast('Comunicado publicado exitosamente')
     }
     await fetchAnnouncements()
@@ -602,7 +614,7 @@ const promptDeleteAnnouncement = (a, event) => {
 const confirmDeleteAnnouncement = async () => {
   if (!announcementToDelete.value) return
   try {
-    await nuxtApp.$api.service('announcements').remove(announcementToDelete.value.id)
+    await api.service('announcements').remove(announcementToDelete.value.id)
     showToast('Comunicado retirado')
     await fetchAnnouncements()
   } catch (error) {
@@ -618,67 +630,12 @@ const confirmDeleteAnnouncement = async () => {
 const fetchAnnouncements = async () => {
   isLoading.value = true
   try {
-    const res = await nuxtApp.$api.service('announcements').find({
+    const res = await api.service('announcements').find({
       query: {
         $limit: 50
       }
     })
-    const baseList = res.data || res || []
-
-    // Enrich with educational level-specific sample notices for complete fidelity
-    const sampleNotices = [
-      {
-        id: 101,
-        title: 'Proyecto Científico y Laboratorio - 3er Año Media General',
-        body: 'Estimados representantes de 3er Año: El próximo viernes iniciarán las prácticas evaluadas de Biología y Química en el laboratorio central. Cada estudiante debe portar su bata blanca y guía pedagógica.',
-        priority: 'high',
-        is_pinned: true,
-        target_level: 'media',
-        author_first_name: 'Prof. Carlos',
-        author_last_name: 'Mendoza',
-        author_department: 'Coordinación Media General',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 102,
-        title: 'Festival de Lectura Inicial y Creatividad - 1er Grado Primaria',
-        body: 'Queridas familias de 1er Grado: Iniciamos la semana lúdica de lectoescritura con actividades plásticas. Por favor enviar en la cartuchera colores de cera y tijera punta roma debidamente identificados.',
-        priority: 'high',
-        is_pinned: true,
-        target_level: 'primaria',
-        author_first_name: 'Lic. Elena',
-        author_last_name: 'Gómez',
-        author_department: 'Docencia Primaria',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 103,
-        title: 'Horario de Merienda Escolar y Desayuno - Primaria',
-        body: 'Se recuerda que el receso de desayuno para Educación Primaria se realiza a las 8:40 AM. Agradecemos enviar loncheras nutritivas y termos con agua identificados con nombre y apellido.',
-        priority: 'normal',
-        is_pinned: false,
-        target_level: 'primaria',
-        author_first_name: 'Lic. Elena',
-        author_last_name: 'Gómez',
-        author_department: 'Coordinación de Primaria',
-        created_at: new Date().toISOString()
-      },
-      {
-        id: 104,
-        title: 'Guía de Orientación Vocacional y Pre-Inscripción - Media General',
-        body: 'Informamos a la comunidad de Media General que el departamento de Psicopedagogía realizará jornadas de orientación vocacional y técnicas de estudio para estudiantes de 3er Año.',
-        priority: 'normal',
-        is_pinned: false,
-        target_level: 'media',
-        author_first_name: 'Lic. Sofía',
-        author_last_name: 'Paredes',
-        author_department: 'Orientación Escolar',
-        created_at: new Date().toISOString()
-      }
-    ]
-
-    const existingIds = new Set(baseList.map(a => a.id))
-    announcements.value = [...baseList, ...sampleNotices.filter(s => !existingIds.has(s.id))]
+    announcements.value = res.data || res || []
   } catch (error) {
     console.error('Error fetching announcements:', error)
   } finally {
