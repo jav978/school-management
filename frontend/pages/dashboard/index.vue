@@ -16,7 +16,7 @@
               <h2 class="text-xl font-black text-slate-900 dark:text-white font-display tracking-tight">
                 <template v-if="currentRole === 'student'">¡Hola, Gabriel Martínez!</template>
                 <template v-else-if="currentRole === 'teacher'">¡Buen día, Prof. Carmen Fernández!</template>
-                <template v-else-if="currentRole === 'parent'">¡Bienvenida, Sra. Elena Rodríguez!</template>
+                <template v-else-if="currentRole === 'parent'">¡Bienvenida, Sra. {{ parentGreetingName }}!</template>
                 <template v-else>Panel Institucional • U.E Santa Luisa</template>
               </h2>
               <span 
@@ -39,7 +39,7 @@
                 Dpto. de Ciencias Naturales y Exactas • Carga: 28 Horas Académicas
               </template>
               <template v-else-if="currentRole === 'parent'">
-                2 Estudiantes Matriculados • Solvencia Administrativa al Día
+                {{ representedStudents.length }} Estudiante{{ representedStudents.length !== 1 ? 's' : '' }} Matriculado{{ representedStudents.length !== 1 ? 's' : '' }} • Solvencia Administrativa al Día
               </template>
               <template v-else>
                 Período Lectivo 2025-2026 • 1er Lapso Pedagógico en desarrollo
@@ -56,18 +56,14 @@
           </div>
           <div v-else-if="currentRole === 'parent'" class="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl">
             <button 
-              @click="setActiveStudent('carlos')"
-              :class="selectedChild === 'carlos' ? 'bg-brand-primary text-white shadow-xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
-              class="px-3 py-1.5 text-xs rounded-xl transition-all cursor-pointer"
+              v-for="child in representedStudents"
+              :key="child.key"
+              @click="setActiveStudent(child.key)"
+              :class="activeStudentKey === child.key ? 'bg-brand-primary text-white shadow-xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
+              class="px-3 py-1.5 text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1.5"
             >
-              👦 Carlos (3er Año U)
-            </button>
-            <button 
-              @click="setActiveStudent('maria')"
-              :class="selectedChild === 'maria' ? 'bg-brand-primary text-white shadow-xs font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
-              class="px-3 py-1.5 text-xs rounded-xl transition-all cursor-pointer"
-            >
-              👧 María (1er Grado U)
+              <span>{{ child.level === 'primaria' ? '👧' : '👦' }}</span>
+              <span>{{ child.first_name }} ({{ child.grade }} {{ child.section }})</span>
             </button>
           </div>
           <div v-else class="text-right hidden sm:block">
@@ -452,11 +448,11 @@
           <div>
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Promedio Escolar</p>
             <h3 class="text-3xl font-black text-brand-primary dark:text-white mt-1 font-display">
-              {{ selectedChild === 'carlos' ? '18.4' : '19.1' }} <span class="text-xs font-bold text-slate-400">/ 20</span>
+              {{ activeStudent?.key === 'maria' ? '19.1' : '18.4' }} <span class="text-xs font-bold text-slate-400">/ 20</span>
             </h3>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-emerald-600">
-            <span>{{ selectedChild === 'carlos' ? '3er Año Sección U' : '1er Grado Sección U' }}</span>
+            <span>{{ activeStudent ? `${activeStudent.grade} Sección ${activeStudent.section}` : (activeStudentKey === 'maria' ? '1er Grado Sección U' : '3er Año Sección U') }}</span>
             <span>Sobresaliente</span>
           </div>
         </div>
@@ -466,11 +462,11 @@
           <div>
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Asistencia</p>
             <h3 class="text-3xl font-black text-sky-600 dark:text-sky-400 mt-1 font-display">
-              {{ selectedChild === 'carlos' ? '97.8%' : '100%' }}
+              {{ activeStudent?.key === 'maria' ? '100%' : '97.8%' }}
             </h3>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-slate-400">
-            <span>{{ selectedChild === 'carlos' ? '1 falta justificada' : 'Sin inasistencias' }}</span>
+            <span>{{ activeStudent?.key === 'maria' ? 'Sin inasistencias' : '1 falta justificada' }}</span>
           </div>
         </div>
 
@@ -1030,10 +1026,19 @@ import { useActiveStudent } from '~/composables/useActiveStudent'
 
 const { t } = useLanguage()
 const authStore = useAuthStore()
-const { activeStudentKey, setActiveStudent } = useActiveStudent()
+const { representedStudents, activeStudent, activeStudentKey, setActiveStudent } = useActiveStudent()
 
 // Live persona detection
 const currentRole = computed(() => authStore.userRole || '')
+
+// Dynamic parent greeting name
+const parentGreetingName = computed(() => {
+  const user = authStore.user
+  if (user?.full_name) return user.full_name
+  if (user?.first_name && user?.last_name) return `${user.first_name} ${user.last_name}`
+  if (user?.name) return user.name
+  return 'Representante'
+})
 
 // Fecha automática del servidor / sistema
 const formattedCurrentDate = computed(() => {

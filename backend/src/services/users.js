@@ -167,6 +167,41 @@ const afterUserVirtuals = async (context) => {
   return context
 }
 
+const syncProfileTables = async (context) => {
+  const db = context.app.get('knexClient')
+  const user = context.result
+  if (!user || !context.data) return context
+
+  const phone = context.data.phone
+  const avatarUrl = context.data.avatar_url
+
+  try {
+    if (user.role === 'parent') {
+      const parentUpdate = {}
+      if (phone !== undefined) parentUpdate.phone_mobile = phone
+      if (avatarUrl !== undefined) parentUpdate.photo_url = avatarUrl
+      if (Object.keys(parentUpdate).length > 0) {
+        await db('school.parents')
+          .where('user_id', user.id)
+          .update({ ...parentUpdate, updated_at: db.fn.now() })
+      }
+    } else if (user.role === 'teacher') {
+      const teacherUpdate = {}
+      if (phone !== undefined) teacherUpdate.phone = phone
+      if (avatarUrl !== undefined) teacherUpdate.photo_url = avatarUrl
+      if (Object.keys(teacherUpdate).length > 0) {
+        await db('school.teachers')
+          .where('user_id', user.id)
+          .update({ ...teacherUpdate, updated_at: db.fn.now() })
+      }
+    }
+  } catch (err) {
+    console.error('Error syncing profile tables:', err.message)
+  }
+
+  return context
+}
+
 module.exports = function (app) {
   const options = {
     Model: app.get('knexClient'),
@@ -192,7 +227,8 @@ module.exports = function (app) {
       remove: [restrictToAdmin]
     },
     after: {
-      all: [protect('password_hash'), afterUserVirtuals]
+      all: [protect('password_hash'), afterUserVirtuals],
+      patch: [syncProfileTables]
     }
   })
 }

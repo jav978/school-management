@@ -30,7 +30,7 @@
           <input 
             v-model="searchQuery" 
             type="text" 
-            :placeholder="t('searchPlaceholder') || 'Buscar estudiantes, materias, cédulas...'" 
+            placeholder="Buscar estudiantes, materias, cédulas..." 
             class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-100/80 dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 transition-all shadow-xs"
           />
         </div>
@@ -44,14 +44,14 @@
           <button 
             @click="toggleLangDropdown"
             type="button" 
-            class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 font-bold text-xs transition-all border border-slate-200 dark:border-white/10 shadow-xs cursor-pointer"
-            title="Seleccionar idioma / Select language"
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs flex items-center gap-1.5 cursor-pointer font-bold text-xs"
+            title="Cambiar idioma del sistema"
           >
-            <svg class="w-4 h-4 text-amber-600 dark:text-brand-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
             </svg>
-            <span class="uppercase font-bold">{{ currentLang }}</span>
-            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <span class="uppercase font-extrabold text-[11px]">{{ currentLang }}</span>
+            <svg class="w-3 h-3 text-slate-400 transition-transform" :class="{ 'rotate-180': isLangOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
@@ -102,157 +102,167 @@
           <button 
             @click="toggleMessagesDropdown"
             type="button" 
-            class="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-white transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
-            title="Bandeja de Mensajes y Correo"
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all relative border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
+            title="Mensajes y Correspondencia Escolar"
           >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <span v-if="unreadMessagesCount > 0" class="absolute -top-1 -right-1 bg-amber-600 text-white font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
-              {{ unreadMessagesCount }}
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-950 font-black text-[9px] rounded-full flex items-center justify-center border-2 border-white dark:border-[#0f0a1e] animate-pulse">
+              1
             </span>
           </button>
 
-          <!-- Messages Popover -->
+          <!-- Messages Dropdown -->
           <div 
             v-if="isMessagesOpen" 
             class="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#1a1238] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 py-3 z-50 animate-fade-in"
           >
             <div class="flex items-center justify-between px-4 pb-2 border-b border-slate-100 dark:border-white/10">
               <div class="flex items-center gap-2">
-                <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white">Mensajería Institucional</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-brand-gold">
-                  {{ unreadMessagesCount }} nuevos
-                </span>
+                <span class="font-bold text-slate-900 dark:text-white text-xs font-display">Mensajes Recientes</span>
+                <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-brand-gold">1 nuevo</span>
               </div>
-              <button 
-                @click="markAllMessagesRead" 
-                class="text-[11px] text-amber-600 dark:text-brand-gold hover:underline font-bold cursor-pointer"
-              >
-                Marcar leídos
-              </button>
+              <NuxtLink to="/communication" @click="isMessagesOpen = false" class="text-[11px] font-bold text-amber-600 dark:text-brand-gold hover:underline">
+                Ver todos
+              </NuxtLink>
             </div>
 
-            <div class="divide-y divide-slate-100 dark:divide-white/5 max-h-72 overflow-y-auto">
+            <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5">
               <div 
                 v-for="msg in messagesList" 
-                :key="msg.id" 
-                class="p-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex items-start gap-3"
-                :class="{ 'bg-amber-50/40 dark:bg-white/[0.02]': !msg.read }"
+                :key="msg.id"
+                class="p-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex gap-3 items-start"
               >
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-orange-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
                   {{ msg.senderInitials }}
                 </div>
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between">
-                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">{{ msg.sender }}</p>
-                    <span class="text-[10px] text-slate-400">{{ msg.time }}</span>
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">{{ msg.sender }}</p>
+                    <span class="text-[10px] text-slate-400 font-medium">{{ msg.time }}</span>
                   </div>
-                  <p class="text-[11px] font-semibold text-slate-700 dark:text-slate-200 truncate mt-0.5">{{ msg.subject }}</p>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">{{ msg.preview }}</p>
+                  <p class="text-[11px] font-semibold text-slate-600 dark:text-slate-300 mt-0.5 truncate">{{ msg.subject }}</p>
+                  <p class="text-[10px] text-slate-400 dark:text-slate-400 line-clamp-1 mt-0.5">{{ msg.preview }}</p>
                 </div>
               </div>
             </div>
 
-            <div class="pt-2 px-4 border-t border-slate-100 dark:border-white/10 text-center">
+            <div class="pt-2 px-3 border-t border-slate-100 dark:border-white/10 text-center">
               <NuxtLink 
                 to="/communication" 
                 @click="isMessagesOpen = false"
-                class="text-xs font-bold text-amber-600 dark:text-brand-gold hover:underline block py-1"
+                class="inline-block w-full py-1.5 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-amber-500 hover:text-slate-950 dark:hover:bg-brand-gold dark:hover:text-slate-950 text-slate-700 dark:text-white text-xs font-bold transition-all text-center"
               >
-                Ver todos los mensajes en Comunicación →
+                Ir al Buzón Escolar
               </NuxtLink>
             </div>
           </div>
         </div>
 
-        <!-- Notifications Button & Dropdown -->
+        <!-- Notifications Bell & Dropdown -->
         <div class="relative" ref="notificationsDropdownRef">
           <button 
             @click="toggleNotificationsDropdown"
             type="button" 
-            class="relative p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-white transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
-            title="Centro de Notificaciones y Alertas"
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all relative border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
+            title="Notificaciones y Alertas Escolares"
           >
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <span v-if="unreadNotificationsCount > 0" class="absolute -top-1 -right-1 bg-rose-500 text-white font-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center shadow-sm">
-              {{ unreadNotificationsCount }}
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white font-black text-[9px] rounded-full flex items-center justify-center border-2 border-white dark:border-[#0f0a1e] animate-pulse">
+              3
             </span>
           </button>
 
-          <!-- Notifications Popover -->
+          <!-- Notifications Dropdown -->
           <div 
             v-if="isNotificationsOpen" 
             class="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#1a1238] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 py-3 z-50 animate-fade-in"
           >
             <div class="flex items-center justify-between px-4 pb-2 border-b border-slate-100 dark:border-white/10">
               <div class="flex items-center gap-2">
-                <span class="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-white">Alertas del Plantel</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-400">
-                  {{ unreadNotificationsCount }} pendientes
-                </span>
+                <span class="font-bold text-slate-900 dark:text-white text-xs font-display">Alertas Institucionales</span>
+                <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400">3 pendientes</span>
               </div>
-              <button 
-                @click="markAllNotificationsRead" 
-                class="text-[11px] text-rose-500 hover:underline font-bold cursor-pointer"
-              >
-                Limpiar alertas
+              <button class="text-[11px] font-bold text-amber-600 dark:text-brand-gold hover:underline cursor-pointer">
+                Marcar leídas
               </button>
             </div>
 
-            <div class="divide-y divide-slate-100 dark:divide-white/5 max-h-72 overflow-y-auto">
+            <div class="max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5">
               <div 
                 v-for="notif in notificationsList" 
-                :key="notif.id" 
-                class="p-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex items-start gap-3"
-                :class="{ 'bg-rose-50/40 dark:bg-white/[0.02]': !notif.read }"
+                :key="notif.id"
+                class="p-3 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer flex gap-3 items-start"
               >
-                <div class="w-8 h-8 rounded-xl flex items-center justify-center text-sm flex-shrink-0" :class="notif.iconBg">
-                  {{ notif.icon }}
+                <div 
+                  class="w-7 h-7 rounded-xl flex items-center justify-center flex-shrink-0 text-xs shadow-xs"
+                  :class="{
+                    'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400': notif.type === 'grade',
+                    'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-brand-gold': notif.type === 'attendance',
+                    'bg-purple-100 text-purple-700 dark:bg-purple-950/60 dark:text-purple-400': notif.type === 'circular'
+                  }"
+                >
+                  <svg v-if="notif.type === 'grade'" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <svg v-else-if="notif.type === 'attendance'" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <svg v-else class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+                  </svg>
                 </div>
                 <div class="flex-1 min-w-0">
-                  <p class="text-xs font-bold text-slate-800 dark:text-slate-100">{{ notif.title }}</p>
-                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">{{ notif.desc }}</p>
-                  <span class="text-[10px] text-slate-400 block mt-1">{{ notif.time }}</span>
+                  <div class="flex items-center justify-between">
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate">{{ notif.title }}</p>
+                    <span class="text-[10px] text-slate-400 font-medium">{{ notif.time }}</span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">{{ notif.text }}</p>
                 </div>
               </div>
             </div>
 
-            <!-- Footer Link -->
-            <div class="px-4 pt-2 border-t border-slate-100 dark:border-white/10 text-center">
+            <div class="pt-2 px-3 border-t border-slate-100 dark:border-white/10 text-center">
               <NuxtLink 
                 to="/communication" 
                 @click="isNotificationsOpen = false"
-                class="text-xs font-bold text-amber-600 dark:text-brand-gold hover:underline block py-1"
+                class="inline-block w-full py-1.5 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-amber-500 hover:text-slate-950 dark:hover:bg-brand-gold dark:hover:text-slate-950 text-slate-700 dark:text-white text-xs font-bold transition-all text-center"
               >
-                Ver todas las notificaciones →
+                Ver Todas las Alertas
               </NuxtLink>
             </div>
           </div>
         </div>
 
-        <!-- Represented Student Switcher (Visible ONLY when user is 'parent') -->
-        <div v-if="currentRole === 'parent'" class="flex items-center bg-slate-100/90 dark:bg-white/5 p-1 rounded-2xl border border-slate-200/80 dark:border-white/10 gap-1">
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-2 hidden md:inline">
+        <!-- Student Selector for Parents (Representante) -->
+        <div v-if="currentRole === 'parent' && representedStudents.length > 0" class="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 dark:bg-brand-gold/10 border border-amber-500/30 dark:border-brand-gold/30 rounded-2xl shadow-xs">
+          <span class="text-[10px] font-black uppercase text-amber-700 dark:text-brand-gold tracking-wider">
             Hijo:
           </span>
-          <button
-            v-for="st in representedStudents"
-            :key="st.key"
-            type="button"
-            @click="setActiveStudent(st.key)"
-            :class="activeStudentKey === st.key 
-              ? 'bg-white dark:bg-brand-primary text-amber-700 dark:text-brand-gold font-black shadow-xs border border-amber-500/30' 
-              : 'text-slate-600 dark:text-slate-400 font-semibold hover:text-slate-900 dark:hover:text-white border border-transparent'"
-            class="px-2.5 py-1 rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5"
-            :title="`Gestionar vista para ${st.full_name} (${st.grade})`"
-          >
-            <span class="text-sm">{{ st.key === 'carlos' ? '👦' : '👧' }}</span>
-            <span class="font-bold">{{ st.first_name }}</span>
-            <span class="text-[10px] opacity-75 hidden sm:inline">({{ st.grade }})</span>
-          </button>
+          <div class="flex items-center gap-1">
+            <button
+              v-for="student in representedStudents"
+              :key="student.id"
+              @click="setActiveStudent(student.key)"
+              type="button"
+              class="flex items-center gap-1 px-2 py-0.5 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              :class="activeStudentKey === student.key 
+                ? 'bg-amber-500 text-slate-950 dark:bg-brand-gold dark:text-slate-950 shadow-xs scale-105' 
+                : 'text-slate-600 dark:text-slate-300 hover:bg-amber-500/20 dark:hover:bg-brand-gold/20'"
+            >
+              <img 
+                :src="student.avatar" 
+                :alt="student.first_name" 
+                class="w-4 h-4 rounded-full object-cover border border-slate-950/20"
+                @error="student.avatar = 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=120'"
+              />
+              <span>{{ student.first_name }}</span>
+              <span class="text-[10px] font-normal opacity-80">({{ student.grade }})</span>
+            </button>
+          </div>
         </div>
 
         <div v-if="currentRole === 'parent'" class="h-6 w-[1px] bg-slate-200 dark:bg-white/10 mx-1 hidden sm:block"></div>
@@ -311,7 +321,7 @@
             <!-- Menu Navigation Links -->
             <div class="py-1">
               <NuxtLink 
-                to="/settings" 
+                to="/profile" 
                 @click="isProfileOpen = false"
                 class="flex items-center gap-3 px-4 py-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 font-medium transition-colors"
               >
@@ -321,7 +331,9 @@
                 <span>Mi Perfil</span>
               </NuxtLink>
 
+              <!-- Only show Configuración for Admin / Coordinator -->
               <NuxtLink 
+                v-if="['admin', 'coordinator'].includes(currentRole)"
                 to="/settings" 
                 @click="isProfileOpen = false"
                 class="flex items-center gap-3 px-4 py-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 font-medium transition-colors"
@@ -370,12 +382,13 @@
 
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useAuthStore } from '~/stores/auth'
 import { useLanguage } from '~/composables/useLanguage'
+import { useAuthStore } from '~/stores/auth'
+import { useColorMode } from '#imports'
 import { useActiveStudent } from '~/composables/useActiveStudent'
 
-const authStore = useAuthStore()
 const { currentLang, setLanguage, t } = useLanguage()
+const authStore = useAuthStore()
 const colorMode = useColorMode()
 const { representedStudents, activeStudentKey, setActiveStudent } = useActiveStudent()
 
@@ -414,10 +427,19 @@ const toggleTheme = () => {
 
 // User details and initials computation
 const userDisplayName = computed(() => {
+  if (authStore.user?.full_name) {
+    return authStore.user.full_name
+  }
   if (authStore.user?.first_name || authStore.user?.last_name) {
     return `${authStore.user.first_name || ''} ${authStore.user.last_name || ''}`.trim()
   }
-  return authStore.user?.name || 'Steven Jhon'
+  if (authStore.user?.name) {
+    return authStore.user.name
+  }
+  if (authStore.user?.username) {
+    return authStore.user.username
+  }
+  return authStore.userRole === 'parent' ? 'Representante' : authStore.userRole === 'teacher' ? 'Docente' : 'Administrador'
 })
 
 const userEmail = computed(() => {
