@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test';
 
 export const PARENT_CREDENTIALS = {
   email: 'priscilla0607@gmail.com',
-  password: 'admin123'
+  password: '123456'
 };
 
 async function loginAsParent(page: Page) {
