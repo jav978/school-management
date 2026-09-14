@@ -125,11 +125,20 @@
         <div class="flex flex-col sm:flex-row items-center justify-center gap-8 py-2">
           
           <!-- 1. FRENTE DEL CARNET -->
-          <div class="w-[280px] h-[440px] bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden flex flex-col justify-between text-slate-900 relative print:shadow-none print:border-slate-400">
+          <div class="w-[280px] h-[440px] bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden flex flex-col justify-between text-slate-900 relative print:shadow-none print:border-slate-400 print:break-inside-avoid">
+            <!-- Marca de agua de fondo (Watermark institucional) -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
+              <img 
+                src="/logocolegio.png" 
+                alt="" 
+                class="w-56 h-56 object-contain opacity-[0.07] grayscale contrast-125 select-none transform -rotate-12 pointer-events-none" 
+              />
+            </div>
+
             <!-- Header Banner -->
-            <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white p-3 text-center relative">
+            <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white p-3 text-center relative z-10">
               <div class="flex items-center justify-center gap-2">
-                <img src="/logocolegio.png" alt="Logo" class="w-8 h-8 object-contain bg-white rounded-lg p-0.5" />
+                <img src="/logocolegio.png" alt="Logo" class="w-8 h-8 object-contain bg-white rounded-lg p-0.5 shadow-xs" />
                 <div class="text-left">
                   <h3 class="font-black text-xs uppercase tracking-tight leading-none">U.E Santa Luisa</h3>
                   <span class="text-[8px] font-semibold opacity-90 block leading-tight">Comunidad Educativa Vicenciana</span>
@@ -138,16 +147,16 @@
             </div>
 
             <!-- Profile Photo -->
-            <div class="flex flex-col items-center px-4 pt-2">
+            <div class="flex flex-col items-center px-4 pt-2 relative z-10">
               <div class="w-28 h-28 rounded-2xl overflow-hidden border-2 border-orange-500 shadow-md bg-slate-100 flex items-center justify-center">
                 <img 
                   v-if="card.photo_url" 
-                  :src="card.photo_url" 
+                  :src="resolvePhotoUrl(card.photo_url)" 
                   :alt="card.recipient_name"
                   class="w-full h-full object-cover" 
                 />
                 <span v-else class="text-3xl font-bold text-slate-400">
-                  {{ card.recipient_name[0] }}
+                  {{ card.recipient_name ? card.recipient_name[0] : '🎓' }}
                 </span>
               </div>
 
@@ -164,7 +173,7 @@
             </div>
 
             <!-- Footer Section of Front -->
-            <div class="p-3 bg-slate-50 border-t border-slate-200 text-center space-y-1">
+            <div class="p-3 bg-slate-50/90 border-t border-slate-200 text-center space-y-1 relative z-10 backdrop-blur-[1px]">
               <div class="flex justify-between text-[10px] font-bold text-slate-700">
                 <span>C.I: {{ card.recipient_id_card || 'V-00000000' }}</span>
                 <span>VENCE: {{ formatDate(card.expiry_date) }}</span>
@@ -174,9 +183,18 @@
           </div>
 
           <!-- 2. REVERSO DEL CARNET -->
-          <div class="w-[280px] h-[440px] bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden flex flex-col justify-between text-slate-800 p-4 relative print:shadow-none print:border-slate-400">
+          <div class="w-[280px] h-[440px] bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden flex flex-col justify-between text-slate-800 p-4 relative print:shadow-none print:border-slate-400 print:break-inside-avoid">
+            <!-- Marca de agua de fondo (Watermark institucional) -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
+              <img 
+                src="/logocolegio.png" 
+                alt="" 
+                class="w-56 h-56 object-contain opacity-[0.06] grayscale contrast-125 select-none transform rotate-12 pointer-events-none" 
+              />
+            </div>
+
             <!-- Institutional Disclaimer -->
-            <div>
+            <div class="relative z-10">
               <div class="text-center pb-2 border-b border-slate-200">
                 <p class="text-[9px] font-bold uppercase text-slate-400">Credencial de Identificación</p>
                 <p class="text-[8px] text-slate-500 leading-tight">
@@ -206,7 +224,7 @@
             </div>
 
             <!-- QR Code and Scanner Validation -->
-            <div class="flex flex-col items-center justify-center my-auto py-2">
+            <div class="flex flex-col items-center justify-center my-auto py-2 relative z-10">
               <ui-qr-code 
                 :value="getVerificationUrl(card.card_code)"
                 :size="80"
@@ -215,7 +233,7 @@
             </div>
 
             <!-- Authorized Signature line -->
-            <div class="text-center pt-2 border-t border-slate-200">
+            <div class="text-center pt-2 border-t border-slate-200 relative z-10">
               <div class="w-24 border-b border-slate-600 mx-auto mb-0.5"></div>
               <p class="text-[8px] font-bold uppercase">Sor Dolores Amaya • Directora</p>
               <p class="text-[7px] text-slate-400">Calle Real del Prado de María, Caracas • (0212) 123-4567</p>
@@ -261,6 +279,23 @@
           <!-- Scrollable Modal Body -->
           <form @submit.prevent="saveCard" class="flex-1 flex flex-col min-h-0">
             <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-4">
+              <!-- Opcional: Selección rápida de estudiante registrado -->
+              <div v-if="!isEditingCard && registeredStudents.length" class="p-3 bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200/80 dark:border-white/10">
+                <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">
+                  Cargar datos desde Estudiante Registrado (Opcional)
+                </label>
+                <select 
+                  v-model="selectedStudentId"
+                  @change="onSelectStudent"
+                  class="w-full px-3 py-2 text-xs bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-brand-purple cursor-pointer"
+                >
+                  <option value="">-- Ingresar datos manualmente --</option>
+                  <option v-for="st in registeredStudents" :key="st.id" :value="st.id">
+                    {{ st.first_name }} {{ st.last_name }} ({{ st.national_id || st.student_id || ('ID ' + st.id) }}) - {{ st.grade || 'Estudiante' }}
+                  </option>
+                </select>
+              </div>
+
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre Completo *</label>
@@ -329,11 +364,9 @@
               </div>
 
               <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">URL Foto Carnet</label>
-                <input 
+                <ui-avatar-upload 
                   v-model="cardForm.photo_url" 
-                  placeholder="https://..."
-                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                  label="Fotografía para el Carnet" 
                 />
               </div>
             </div>
@@ -429,6 +462,18 @@ const editingCardId = ref(null)
 const isDeleteModalOpen = ref(false)
 const cardToDelete = ref(null)
 
+const registeredStudents = ref([])
+const selectedStudentId = ref('')
+
+const resolvePhotoUrl = (url) => {
+  if (!url) return ''
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url
+  }
+  const config = useRuntimeConfig()
+  return `${config.public.apiBase}${url}`
+}
+
 const cardForm = ref({
   recipient_name: '',
   recipient_id_card: '',
@@ -439,7 +484,7 @@ const cardForm = ref({
   emergency_contact: 'Representante Legal',
   emergency_phone: '+58 414 123 4567',
   address: 'Calle Real del Prado de María, Caracas',
-  photo_url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=300'
+  photo_url: ''
 })
 
 const fetchIdCards = async () => {
@@ -452,6 +497,31 @@ const fetchIdCards = async () => {
     console.error('Error fetching id cards:', err)
   } finally {
     loading.value = false
+  }
+}
+
+const fetchStudents = async () => {
+  try {
+    const res = await api.get('students', { $limit: 100 })
+    registeredStudents.value = res.data || res || []
+  } catch (err) {
+    console.warn('Error fetching registered students:', err)
+  }
+}
+
+const onSelectStudent = () => {
+  if (!selectedStudentId.value) return
+  const st = registeredStudents.value.find(s => s.id === Number(selectedStudentId.value))
+  if (st) {
+    cardForm.value.recipient_name = `${st.first_name || ''} ${st.last_name || ''}`.trim()
+    cardForm.value.recipient_id_card = st.national_id || st.student_id || ''
+    cardForm.value.recipient_type = 'estudiante'
+    cardForm.value.position = st.grade ? `${st.grade} Sección ${st.section || 'U'}` : 'Estudiante Regular'
+    cardForm.value.department = st.level === 'media' ? 'Educación Media General' : 'Educación Primaria'
+    cardForm.value.blood_type = st.blood_type || 'O+'
+    if (st.photo_url || st.avatar_url) {
+      cardForm.value.photo_url = st.photo_url || st.avatar_url
+    }
   }
 }
 
@@ -482,6 +552,7 @@ const triggerPrint = () => {
 const openCreateModal = () => {
   isEditingCard.value = false
   editingCardId.value = null
+  selectedStudentId.value = ''
   cardForm.value = {
     recipient_name: '',
     recipient_id_card: '',
@@ -492,7 +563,7 @@ const openCreateModal = () => {
     emergency_contact: 'Representante Legal',
     emergency_phone: '+58 414 123 4567',
     address: 'Calle Real del Prado de María, Caracas',
-    photo_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300'
+    photo_url: ''
   }
   isModalOpen.value = true
 }
@@ -500,6 +571,7 @@ const openCreateModal = () => {
 const openEditModal = (card) => {
   isEditingCard.value = true
   editingCardId.value = card.id
+  selectedStudentId.value = ''
   cardForm.value = {
     recipient_name: card.recipient_name || '',
     recipient_id_card: card.recipient_id_card || '',
@@ -566,5 +638,23 @@ const saveCard = async () => {
   }
 }
 
-onMounted(fetchIdCards)
+onMounted(() => {
+  fetchIdCards()
+  fetchStudents()
+})
 </script>
+
+<style scoped>
+@media print {
+  @page {
+    size: letter portrait;
+    margin: 8mm;
+  }
+  
+  /* Force exact background color and watermark printing across Chrome/Safari/Firefox */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+</style>
