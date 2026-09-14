@@ -39,9 +39,31 @@ class IdCardsService extends KnexService {
     if (!clean.uuid) {
       clean.uuid = crypto.randomUUID()
     }
-    if (!clean.card_code) {
-      clean.card_code = `CRD-${Date.now().toString().slice(-6)}`
+
+    // Ensure unique card_code, resolving collisions against active and deleted records
+    let candidate = clean.card_code
+    if (!candidate) {
+      const typePrefix = (clean.recipient_type || 'est').slice(0, 3).toUpperCase()
+      const year = new Date().getFullYear()
+      const randomDigits = Math.floor(1000 + Math.random() * 9000)
+      candidate = `CRD-${typePrefix}-${year}-${randomDigits}`
     }
+
+    let finalCode = candidate
+    let attempts = 0
+    while (attempts < 20) {
+      const existing = await db('school.id_cards').where({ card_code: finalCode }).first()
+      if (!existing) {
+        break
+      }
+      // If code already exists in DB (even if soft-deleted), generate a new unique suffix
+      const randomDigits = Math.floor(1000 + Math.random() * 9000)
+      const base = candidate.includes('-') ? candidate.replace(/-\d+$/, '') : candidate
+      finalCode = `${base}-${randomDigits}`
+      attempts++
+    }
+    clean.card_code = finalCode
+
     if (!clean.issue_date) {
       clean.issue_date = new Date().toISOString().split('T')[0]
     }

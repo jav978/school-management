@@ -619,7 +619,10 @@ const saveCard = async () => {
       return
     }
 
-    const code = `CRD-${cardForm.value.recipient_type.slice(0, 3).toUpperCase()}-2026-${String(idCards.value.length + 1).padStart(3, '0')}`
+    const typePrefix = (cardForm.value.recipient_type || 'est').slice(0, 3).toUpperCase()
+    const year = new Date().getFullYear()
+    const randomSuffix = Math.floor(1000 + Math.random() * 9000)
+    const code = `CRD-${typePrefix}-${year}-${randomSuffix}`
     const payload = {
       ...cardForm.value,
       card_code: code,
