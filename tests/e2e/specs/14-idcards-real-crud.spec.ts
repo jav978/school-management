@@ -204,5 +204,44 @@ test.describe('Módulo de Carnets de Identificación Escolar: Verificación Trip
     await page.locator('[data-testid="btn-close-duplex"]').click()
     await expect(page.locator('h2', { hasText: /Impresión Dúplex en Hoja Carta/i })).not.toBeVisible()
   })
+
+  test('TC-CRD-08: Renderizado de Plantillas Duales (Estudiante vs Personal Trabajador)', async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.goto('/idcards')
+    await page.waitForLoadState('networkidle')
+
+    // 1. Emitir un carnet de Personal Trabajador (Docente)
+    const STAFF_NAME = 'Prof. Carlos Mendoza ' + Date.now().toString().slice(-4)
+    const STAFF_ID = 'V-18' + Math.floor(100000 + Math.random() * 900000)
+
+    await page.locator('[data-testid="btn-open-create-card"]').click()
+    await expect(page.locator('[data-testid="input-card-recipient-name"]')).toBeVisible()
+
+    await page.locator('[data-testid="input-card-recipient-name"]').fill(STAFF_NAME)
+    await page.locator('[data-testid="input-card-recipient-id"]').fill(STAFF_ID)
+    await page.locator('[data-testid="select-card-recipient-type"]').selectOption('profesor')
+    await page.locator('[data-testid="input-card-position"]').fill('Docente de Ciencias')
+
+    await page.locator('[data-testid="btn-save-card"]').click()
+    await expect(page.locator('[data-testid="input-card-recipient-name"]')).not.toBeVisible()
+
+    // 2. Verificar que en la tarjeta individual de Personal se renderice la plantilla ejecutiva (Modelo 2)
+    const staffCardContainer = page.locator('[data-testid="id-card-item"]', { hasText: STAFF_NAME }).first()
+    await expect(staffCardContainer).toBeVisible({ timeout: 10000 })
+    
+    // Elementos exclusivos de la plantilla de Personal Trabajador
+    await expect(staffCardContainer.locator('text=Credencial de Personal').first()).toBeVisible()
+    await expect(staffCardContainer.locator('text=Credencial Laboral Institucional').first()).toBeVisible()
+    await expect(staffCardContainer.locator('text=CONTROL LABORAL Y ACCESO QR').first()).toBeVisible()
+    await expect(staffCardContainer.locator('text=Sor Yolanda Zambrano • Directora').first()).toBeVisible()
+
+    // 3. Limpieza: Revocar el carnet de prueba para mantener idempotencia
+    const revokeBtn = staffCardContainer.locator('[data-testid="btn-revoke-card"]')
+    await revokeBtn.click()
+    const confirmModal = page.locator('[data-testid="btn-confirm-revoke"]')
+    await expect(confirmModal).toBeVisible()
+    await confirmModal.click()
+    await expect(confirmModal).not.toBeVisible()
+  })
 })
 
