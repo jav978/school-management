@@ -145,4 +145,64 @@ test.describe('Módulo de Carnets de Identificación Escolar: Verificación Trip
     expect(revokedCard).toBeDefined()
     expect(revokedCard.is_deleted).toBe(true)
   })
+
+  test('TC-CRD-06: Selección de estudiante autocompleta documento válido sin dejar "V-" aislado', async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.goto('/idcards')
+    await page.waitForLoadState('networkidle')
+
+    // Abrir modal de creación
+    await page.locator('[data-testid="btn-open-create-card"]').click()
+    await expect(page.locator('[data-testid="input-card-recipient-name"]')).toBeVisible()
+
+    // Si hay un selector de estudiantes registrados, probar la selección
+    const studentSelect = page.locator('select', { hasText: /Ingresar datos manualmente/i })
+    if (await studentSelect.isVisible()) {
+      const options = await studentSelect.locator('option').allInnerTexts()
+      if (options.length > 1) {
+        // Seleccionar la segunda opción (primer estudiante real)
+        await studentSelect.selectOption({ index: 1 })
+        
+        // Verificar que el campo cédula no sea exactamente 'V-'
+        const idVal = await page.locator('[data-testid="input-card-recipient-id"]').inputValue()
+        expect(idVal).not.toBe('V-')
+        expect(idVal.length).toBeGreaterThan(2)
+      }
+    }
+
+    // Cerrar modal
+    await page.locator('button', { hasText: 'Cancelar' }).click()
+  })
+
+  test('TC-CRD-07: Asistente de Lote por Sección y Vista de Impresión Dúplex en Hoja Carta', async ({ page }) => {
+    await loginAsAdmin(page)
+    await page.goto('/idcards')
+    await page.waitForLoadState('networkidle')
+
+    // Abrir asistente de lote
+    const batchBtn = page.locator('[data-testid="btn-open-batch-modal"]')
+    await expect(batchBtn).toBeVisible()
+    await batchBtn.click()
+
+    // Modal de lote debe ser visible
+    await expect(page.locator('h3', { hasText: /Emisión e Impresión por Lote de Sección/i })).toBeVisible()
+
+    // Botón para previsualizar hoja carta dúplex
+    const previewDuplexBtn = page.locator('button', { hasText: /Previsualizar Hoja Carta Dúplex/i })
+    await expect(previewDuplexBtn).toBeVisible()
+    await previewDuplexBtn.click()
+
+    // Vista Dúplex debe desplegarse
+    await expect(page.locator('h2', { hasText: /Impresión Dúplex en Hoja Carta/i })).toBeVisible()
+    await expect(page.locator('text=ANVERSO (FRENTES)').first()).toBeVisible()
+    await expect(page.locator('text=REVERSO (DORSOS EN ESPEJO DÚPLEX)').first()).toBeVisible()
+
+    // Botón de imprimir debe estar disponible
+    await expect(page.locator('button', { hasText: /Imprimir Hojas Dúplex/i })).toBeVisible()
+
+    // Cerrar vista dúplex
+    await page.locator('[data-testid="btn-close-duplex"]').click()
+    await expect(page.locator('h2', { hasText: /Impresión Dúplex en Hoja Carta/i })).not.toBeVisible()
+  })
 })
+
