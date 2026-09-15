@@ -140,118 +140,118 @@
         <div class="flex flex-col sm:flex-row items-center justify-center gap-8 py-2">
           
           <!-- 1. FRENTE DEL CARNET -->
-          <div class="w-[280px] h-[440px] bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden flex flex-col justify-between text-slate-900 relative print:shadow-none print:border-slate-400 print:break-inside-avoid">
-            <!-- Marca de agua de fondo (Watermark institucional calibrada al 11%) -->
+          <div class="w-[280px] h-[450px] rounded-2xl shadow-xl border border-amber-300/80 overflow-hidden flex flex-col justify-between text-slate-900 relative print:shadow-none print:border-slate-400 print:break-inside-avoid bg-[#FEF9C3]/50">
+            <!-- Marca de agua de fondo (Watermark institucional centrada sin rotación) -->
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
               <img 
                 src="/logocolegio.png" 
                 alt="" 
-                class="w-60 h-60 object-contain opacity-[0.11] grayscale contrast-125 select-none transform -rotate-12 pointer-events-none" 
+                class="w-56 h-56 object-contain opacity-[0.11] select-none pointer-events-none" 
               />
             </div>
 
-            <!-- Header Banner -->
-            <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white p-3 text-center relative z-10">
-              <div class="flex items-center justify-center gap-2">
-                <img src="/logocolegio.png" alt="Logo" class="w-8 h-8 object-contain bg-white rounded-lg p-0.5 shadow-xs" />
-                <div class="text-left">
-                  <h3 class="font-black text-xs uppercase tracking-tight leading-none">U.E Santa Luisa</h3>
-                  <span class="text-[8px] font-semibold opacity-90 block leading-tight">Comunidad Educativa Vicenciana</span>
-                </div>
+            <!-- Header Banner Naranja con Logo a la izquierda -->
+            <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white px-3 py-2.5 flex items-center gap-2.5 relative z-10 shadow-xs">
+              <div class="w-10 h-10 rounded-xl bg-white p-1 shadow-sm flex items-center justify-center flex-shrink-0">
+                <img src="/logocolegio.png" alt="Logo" class="w-full h-full object-contain" />
+              </div>
+              <div class="text-left flex-1 min-w-0">
+                <h3 class="font-black text-sm uppercase tracking-tight leading-tight text-white drop-shadow-xs">U.E SANTA LUISA</h3>
+                <span class="text-[10px] font-semibold text-white/95 block leading-tight mt-0.5">Comunidad Educativa Vicenciana</span>
               </div>
             </div>
 
-            <!-- Profile Photo -->
-            <div class="flex flex-col items-center px-4 pt-2 relative z-10">
-              <div class="w-28 h-28 rounded-2xl overflow-hidden border-2 border-orange-500 shadow-md bg-slate-100 flex items-center justify-center">
+            <!-- Profile Photo & Student Details (Cuerpo Amarillo Crema) -->
+            <div class="flex flex-col items-center px-4 pt-2.5 pb-2 relative z-10 flex-1 justify-center">
+              <div class="w-32 h-32 rounded-2xl overflow-hidden border-2 border-orange-500 shadow-md bg-white flex items-center justify-center">
                 <img 
                   v-if="card.photo_url" 
                   :src="resolvePhotoUrl(card.photo_url)" 
                   :alt="card.recipient_name"
                   class="w-full h-full object-cover" 
                 />
-                <span v-else class="text-3xl font-bold text-slate-400">
+                <span v-else class="text-4xl font-bold text-slate-400">
                   {{ card.recipient_name ? card.recipient_name[0] : '🎓' }}
                 </span>
               </div>
 
               <!-- Name and Details -->
-              <h4 class="font-black text-sm text-center leading-tight mt-3 text-slate-900">
+              <h4 class="font-black text-base text-center leading-tight mt-2.5 text-slate-900 px-2">
                 {{ card.recipient_name }}
               </h4>
-              <p class="text-[11px] font-bold text-orange-600 uppercase mt-0.5">
+              <p class="text-xs font-black text-orange-700 uppercase mt-0.5 tracking-wide">
                 {{ card.position || card.recipient_type }}
               </p>
-              <p class="text-[10px] text-slate-500 font-semibold">
-                {{ card.grade_level || card.department || 'Educación Media' }}
+              <p class="text-[11px] text-slate-700 font-bold mt-0.5">
+                {{ card.grade_level || card.department || 'Educación Primaria' }}
               </p>
             </div>
 
-            <!-- Footer Section of Front -->
-            <div class="p-3 bg-slate-50/90 border-t border-slate-200 text-center space-y-1 relative z-10 backdrop-blur-[1px]">
-              <div class="flex justify-between text-[10px] font-bold text-slate-700">
+            <!-- Footer Section of Front (Azul Real Institucional) -->
+            <div class="p-3 bg-blue-900 border-t border-blue-950 text-center space-y-0.5 relative z-10 text-white shadow-inner">
+              <div class="flex justify-between items-center text-[10.5px] font-bold text-white px-1">
                 <span>C.I: {{ card.recipient_id_card || 'V-00000000' }}</span>
-                <span>VENCE: {{ formatDate(card.expiry_date || card.valid_until) }}</span>
+                <span>VENCE: <strong class="text-amber-300 font-bold">{{ formatDate(card.expiry_date || card.valid_until) }}</strong></span>
               </div>
-              <p class="font-mono text-[9px] text-slate-400">{{ card.card_code }}</p>
+              <p class="font-mono text-[9px] text-amber-300/90 font-bold tracking-wider">{{ card.card_code }}</p>
             </div>
           </div>
 
           <!-- 2. REVERSO DEL CARNET -->
-          <div class="w-[280px] h-[440px] bg-white rounded-2xl shadow-xl border border-slate-300 overflow-hidden flex flex-col justify-between text-slate-800 p-4 relative print:shadow-none print:border-slate-400 print:break-inside-avoid">
-            <!-- Marca de agua de fondo (Watermark institucional calibrada al 11%) -->
+          <div class="w-[280px] h-[450px] rounded-2xl shadow-xl border border-slate-300 overflow-hidden flex flex-col justify-between text-slate-900 relative print:shadow-none print:border-slate-400 print:break-inside-avoid bg-[#FEF9C3]/40">
+            <!-- Marca de agua de fondo (Watermark institucional centrada sin rotación) -->
             <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
               <img 
                 src="/logocolegio.png" 
                 alt="" 
-                class="w-60 h-60 object-contain opacity-[0.11] grayscale contrast-125 select-none transform rotate-12 pointer-events-none" 
+                class="w-56 h-56 object-contain opacity-[0.11] select-none pointer-events-none" 
               />
             </div>
 
-            <!-- Institutional Disclaimer -->
+            <!-- Institutional Disclaimer (Acento Naranja Superior) -->
             <div class="relative z-10">
-              <div class="text-center pb-2 border-b border-slate-200">
-                <p class="text-[9px] font-bold uppercase text-slate-400">Credencial de Identificación</p>
-                <p class="text-[8px] text-slate-500 leading-tight">
-                  Este carnet es personal e intransferible. Acredita al portador como miembro activo de la institución.
-                </p>
+              <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white py-2 px-3 text-center shadow-xs">
+                <p class="text-[10px] font-black uppercase tracking-wider text-amber-200">Credencial de Identificación</p>
+                <p class="text-[8px] text-white/95 leading-tight font-medium">Personal e intransferible. Acredita al portador como miembro activo.</p>
               </div>
 
               <!-- Medical and Emergency Details -->
-              <div class="mt-3 space-y-1.5 text-[10px]">
-                <div class="flex justify-between border-b pb-1">
-                  <span class="text-slate-400 font-bold">Tipo de Sangre:</span>
-                  <span class="font-bold text-rose-600">{{ card.blood_type || 'O+' }}</span>
+              <div class="p-3 space-y-1.5 text-xs">
+                <div class="flex justify-between border-b border-amber-200/80 pb-1">
+                  <span class="text-slate-600 font-bold">Tipo de Sangre:</span>
+                  <span class="font-black text-rose-600">{{ card.blood_type || 'O+' }}</span>
                 </div>
-                <div class="flex justify-between border-b pb-1">
-                  <span class="text-slate-400 font-bold">Emergencia:</span>
-                  <span class="font-semibold text-right truncate max-w-[140px]">{{ card.emergency_contact || 'Representante' }}</span>
+                <div class="flex justify-between border-b border-amber-200/80 pb-1">
+                  <span class="text-slate-600 font-bold">Emergencia:</span>
+                  <span class="font-bold text-slate-800 text-right truncate max-w-[140px]">{{ card.emergency_contact || 'Representante Legal' }}</span>
                 </div>
-                <div class="flex justify-between border-b pb-1">
-                  <span class="text-slate-400 font-bold">Tel. Emergencia:</span>
-                  <span class="font-semibold">{{ card.emergency_phone || '+58 414 000 0000' }}</span>
+                <div class="flex justify-between border-b border-amber-200/80 pb-1">
+                  <span class="text-slate-600 font-bold">Tel. Emergencia:</span>
+                  <span class="font-bold text-slate-800">{{ card.emergency_phone || '+58 414 000 0000' }}</span>
                 </div>
-                <div class="flex justify-between border-b pb-1">
-                  <span class="text-slate-400 font-bold">Dirección:</span>
-                  <span class="font-medium text-[9px] text-right truncate max-w-[140px]">{{ card.address || 'Caracas, Venezuela' }}</span>
+                <div class="flex justify-between border-b border-amber-200/80 pb-1">
+                  <span class="text-slate-600 font-bold">Dirección:</span>
+                  <span class="font-semibold text-[10px] text-slate-800 text-right truncate max-w-[140px]">{{ card.address || 'Caracas, Venezuela' }}</span>
                 </div>
               </div>
             </div>
 
-            <!-- QR Code and Scanner Validation -->
-            <div class="flex flex-col items-center justify-center my-auto py-2 relative z-10">
-              <ui-qr-code 
-                :value="getVerificationUrl(card.card_code)"
-                :size="80"
-              />
-              <span class="text-[8px] font-mono text-slate-500 mt-1 font-bold">LECTURA DE ASISTENCIA QR</span>
+            <!-- QR Code and Scanner Validation (Ampliado a 92px) -->
+            <div class="flex flex-col items-center justify-center my-auto py-1 relative z-10">
+              <div class="p-1.5 bg-white rounded-xl shadow-xs border border-amber-200">
+                <ui-qr-code 
+                  :value="getVerificationUrl(card.card_code)"
+                  :size="92"
+                />
+              </div>
+              <span class="text-[8.5px] font-mono text-slate-600 mt-1 font-bold tracking-wider">LECTURA DE ASISTENCIA QR</span>
             </div>
 
-            <!-- Authorized Signature line -->
-            <div class="text-center pt-2 border-t border-slate-200 relative z-10">
-              <div class="w-24 border-b border-slate-600 mx-auto mb-0.5"></div>
-              <p class="text-[8px] font-bold uppercase">Sor Dolores Amaya • Directora</p>
-              <p class="text-[7px] text-slate-400">Calle Real del Prado de María, Caracas • (0212) 123-4567</p>
+            <!-- Authorized Signature line (Azul Real con letras blancas y Sor Yolanda Zambrano) -->
+            <div class="bg-blue-900 text-white text-center py-2.5 px-3 relative z-10 border-t border-blue-950">
+              <div class="w-24 border-b border-amber-300/80 mx-auto mb-1"></div>
+              <p class="text-[9px] font-black uppercase text-amber-300 tracking-wide">Sor Yolanda Zambrano • Directora</p>
+              <p class="text-[7.5px] text-blue-100 font-medium leading-tight">Calle Real del Prado de María, Caracas • (0212) 123-4567</p>
             </div>
           </div>
 
@@ -687,27 +687,27 @@
                 <div 
                   v-for="(card, cardIdx) in sheet.fronts" 
                   :key="'front-' + card.id + '-' + cardIdx"
-                  class="w-[48mm] h-[82mm] bg-white rounded-xl border border-dashed border-slate-300 print:border-slate-400 overflow-hidden flex flex-col justify-between text-slate-900 relative print:break-inside-avoid print:shadow-none"
+                  class="w-[48mm] h-[82mm] bg-[#FEF9C3]/50 rounded-xl border border-dashed border-amber-400/80 print:border-slate-400 overflow-hidden flex flex-col justify-between text-slate-900 relative print:break-inside-avoid print:shadow-none"
                 >
-                  <!-- Marca de agua 11% -->
+                  <!-- Marca de agua 11% centrada sin rotación -->
                   <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
-                    <img src="/logocolegio.png" alt="" class="w-28 h-28 object-contain opacity-[0.11] grayscale contrast-125 select-none transform -rotate-12" />
+                    <img src="/logocolegio.png" alt="" class="w-28 h-28 object-contain opacity-[0.11] select-none pointer-events-none" />
                   </div>
 
-                  <!-- Header Banner -->
-                  <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white p-1 text-center relative z-10">
-                    <div class="flex items-center justify-center gap-1">
-                      <img src="/logocolegio.png" alt="Logo" class="w-4 h-4 object-contain bg-white rounded p-0.5" />
-                      <div class="text-left">
-                        <h4 class="font-black text-[8px] uppercase leading-none">U.E Santa Luisa</h4>
-                        <span class="text-[6px] opacity-90 block leading-none">Vicenciana</span>
-                      </div>
+                  <!-- Header Banner Naranja con Escudo a la izquierda -->
+                  <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white px-2 py-1.5 flex items-center gap-1.5 relative z-10 shadow-xs">
+                    <div class="w-6 h-6 rounded-md bg-white p-0.5 shadow-xs flex items-center justify-center flex-shrink-0">
+                      <img src="/logocolegio.png" alt="Logo" class="w-full h-full object-contain" />
+                    </div>
+                    <div class="text-left flex-1 min-w-0">
+                      <h4 class="font-black text-[8px] uppercase leading-tight text-white drop-shadow-xs">U.E SANTA LUISA</h4>
+                      <span class="text-[6px] font-semibold text-white/95 block leading-tight">Comunidad Educativa Vicenciana</span>
                     </div>
                   </div>
 
                   <!-- Photo & Name -->
                   <div class="flex flex-col items-center px-1 pt-1 relative z-10">
-                    <div class="w-14 h-14 rounded-lg overflow-hidden border border-orange-500 shadow-xs bg-slate-100 flex items-center justify-center">
+                    <div class="w-14 h-14 rounded-lg overflow-hidden border-2 border-orange-500 shadow-xs bg-white flex items-center justify-center">
                       <img 
                         v-if="card.photo_url" 
                         :src="resolvePhotoUrl(card.photo_url)" 
@@ -722,21 +722,21 @@
                     <h5 class="font-black text-[9px] text-center leading-tight mt-1 text-slate-900 truncate w-full px-0.5">
                       {{ card.recipient_name }}
                     </h5>
-                    <p class="text-[7.5px] font-bold text-orange-600 uppercase leading-none mt-0.5">
-                      {{ card.position || 'Estudiante' }}
+                    <p class="text-[7.5px] font-black text-orange-700 uppercase leading-none mt-0.5">
+                      {{ card.position || card.recipient_type || 'Estudiante' }}
                     </p>
-                    <p class="text-[7px] text-slate-500 font-semibold leading-none mt-0.5">
-                      {{ card.department || 'Educación Media' }}
+                    <p class="text-[7px] text-slate-700 font-bold leading-none mt-0.5">
+                      {{ card.grade_level || card.department || 'Educación Primaria' }}
                     </p>
                   </div>
 
-                  <!-- Footer Front -->
-                  <div class="p-1 bg-slate-50/90 border-t border-slate-200 text-center relative z-10 text-[7px] font-bold text-slate-700">
-                    <div class="flex justify-between px-0.5">
-                      <span>C.I: {{ card.recipient_id_card }}</span>
+                  <!-- Footer Front (Azul Real Institucional) -->
+                  <div class="p-1.5 bg-blue-900 border-t border-blue-950 text-center relative z-10 text-[7px] font-bold text-white shadow-inner">
+                    <div class="flex justify-between px-0.5 text-white">
+                      <span>C.I: {{ card.recipient_id_card || 'V-00000000' }}</span>
                       <span>{{ formatDate(card.expiry_date || card.valid_until) }}</span>
                     </div>
-                    <p class="font-mono text-[6px] text-slate-400 leading-none mt-0.5">{{ card.card_code }}</p>
+                    <p class="font-mono text-[6px] text-amber-300 font-bold leading-none mt-0.5 tracking-wider">{{ card.card_code }}</p>
                   </div>
                 </div>
               </div>
@@ -758,48 +758,53 @@
                 <div 
                   v-for="(card, cardIdx) in sheet.backsMirror" 
                   :key="'back-' + card.id + '-' + cardIdx"
-                  class="w-[48mm] h-[82mm] bg-white rounded-xl border border-dashed border-slate-300 print:border-slate-400 overflow-hidden flex flex-col justify-between text-slate-800 p-2 relative print:break-inside-avoid print:shadow-none"
+                  class="w-[48mm] h-[82mm] bg-[#FEF9C3]/40 rounded-xl border border-dashed border-slate-300 print:border-slate-400 overflow-hidden flex flex-col justify-between text-slate-900 relative print:break-inside-avoid print:shadow-none"
                 >
-                  <!-- Marca de agua 11% -->
+                  <!-- Marca de agua 11% centrada sin rotación -->
                   <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden z-0 select-none">
-                    <img src="/logocolegio.png" alt="" class="w-28 h-28 object-contain opacity-[0.11] grayscale contrast-125 select-none transform rotate-12" />
+                    <img src="/logocolegio.png" alt="" class="w-28 h-28 object-contain opacity-[0.11] select-none pointer-events-none" />
                   </div>
 
-                  <!-- Disclaimer -->
+                  <!-- Disclaimer con Banner Naranja Superior -->
                   <div class="relative z-10 text-center">
-                    <p class="text-[7px] font-bold uppercase text-slate-500">Credencial Escolar</p>
-                    <p class="text-[6px] text-slate-400 leading-tight">Personal e intransferible.</p>
+                    <div class="bg-gradient-to-r from-orange-600 to-amber-600 text-white py-1 px-1.5 text-center shadow-xs">
+                      <p class="text-[7.5px] font-black uppercase tracking-wider text-amber-200">Credencial Escolar</p>
+                      <p class="text-[5.5px] text-white/95 leading-tight font-medium">Personal e intransferible.</p>
+                    </div>
 
                     <!-- Emergency info -->
-                    <div class="mt-1 space-y-0.5 text-[6.5px] text-left">
-                      <div class="flex justify-between border-b pb-0.5">
-                        <span class="text-slate-400 font-bold">Sangre:</span>
-                        <span class="font-bold text-rose-600">{{ card.blood_type || 'O+' }}</span>
+                    <div class="p-1.5 space-y-0.5 text-[6.5px] text-left">
+                      <div class="flex justify-between border-b border-amber-200/80 pb-0.5">
+                        <span class="text-slate-600 font-bold">Sangre:</span>
+                        <span class="font-black text-rose-600">{{ card.blood_type || 'O+' }}</span>
                       </div>
-                      <div class="flex justify-between border-b pb-0.5">
-                        <span class="text-slate-400 font-bold">Emergencia:</span>
-                        <span class="font-semibold truncate max-w-[85px]">{{ card.emergency_contact || 'Representante' }}</span>
+                      <div class="flex justify-between border-b border-amber-200/80 pb-0.5">
+                        <span class="text-slate-600 font-bold">Emergencia:</span>
+                        <span class="font-bold text-slate-800 truncate max-w-[85px]">{{ card.emergency_contact || 'Representante' }}</span>
                       </div>
-                      <div class="flex justify-between border-b pb-0.5">
-                        <span class="text-slate-400 font-bold">Teléfono:</span>
-                        <span class="font-semibold">{{ card.emergency_phone || '+58 414 000 0000' }}</span>
+                      <div class="flex justify-between border-b border-amber-200/80 pb-0.5">
+                        <span class="text-slate-600 font-bold">Teléfono:</span>
+                        <span class="font-bold text-slate-800">{{ card.emergency_phone || '+58 414 000 0000' }}</span>
                       </div>
                     </div>
                   </div>
 
-                  <!-- QR Code -->
+                  <!-- QR Code (Ampliado) -->
                   <div class="flex flex-col items-center justify-center my-auto py-0.5 relative z-10">
-                    <ui-qr-code 
-                      :value="getVerificationUrl(card.card_code)"
-                      :size="48"
-                    />
-                    <span class="text-[5.5px] font-mono text-slate-400 mt-0.5 font-bold">ASISTENCIA QR</span>
+                    <div class="p-1 bg-white rounded-lg shadow-xs border border-amber-200">
+                      <ui-qr-code 
+                        :value="getVerificationUrl(card.card_code)"
+                        :size="54"
+                      />
+                    </div>
+                    <span class="text-[5.5px] font-mono text-slate-600 mt-0.5 font-bold tracking-wider">ASISTENCIA QR</span>
                   </div>
 
-                  <!-- Signature -->
-                  <div class="text-center pt-1 border-t border-slate-200 relative z-10">
-                    <div class="w-16 border-b border-slate-600 mx-auto mb-0.5"></div>
-                    <p class="text-[6px] font-bold uppercase">Sor Dolores Amaya • Directora</p>
+                  <!-- Signature Bar (Azul Real con Sor Yolanda Zambrano) -->
+                  <div class="bg-blue-900 text-white text-center py-1.5 px-1 relative z-10 border-t border-blue-950">
+                    <div class="w-14 border-b border-amber-300/80 mx-auto mb-0.5"></div>
+                    <p class="text-[6.5px] font-black uppercase text-amber-300 tracking-wide">Sor Yolanda Zambrano • Directora</p>
+                    <p class="text-[5.5px] text-blue-100 font-medium leading-tight">U.E Santa Luisa • Caracas</p>
                   </div>
                 </div>
               </div>
