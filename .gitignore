@@ -19,6 +19,8 @@ dist
 build
 .output
 .nuxt
+.vercel
+frontend/.vercel
 
 # IDE
 .vscode

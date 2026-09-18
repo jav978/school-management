@@ -4,6 +4,18 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", sans-serif;
   --font-display: "Outfit", sans-serif;
+
+  --color-brand-primary: #281470;
+  --color-brand-purple: #3e229c;
+  --color-brand-secondary: #38bdf8;
+  --color-brand-accent: #f7c301;
+  --color-brand-gold: #f7c301;
+  --color-brand-gold-light: #ffdf66;
+  --color-brand-red: #da2318;
+  --color-brand-gray: #dddedc;
+  --color-brand-dark: #23175c;
+  --color-brand-night: #16113a;
+  --color-brand-surface: #1b1145;
 }
 
 :root {
