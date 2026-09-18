@@ -1,4 +1,5 @@
 const { KnexService } = require('@feathersjs/knex')
+const { authenticateHook } = require('../hooks/auth')
 
 class NotificationsService extends KnexService {
   async find(params) {
@@ -33,4 +34,13 @@ module.exports = function (app) {
   }
 
   app.use('notifications', new NotificationsService(options))
+
+  const service = app.service('notifications')
+
+  service.hooks({
+    before: {
+      all: [authenticateHook]
+    }
+  })
 }
+

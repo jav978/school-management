@@ -8,11 +8,17 @@ echo "============================================="
 echo "🚀 Sistema de Gestión Escolar - Inicio"
 echo "============================================="
 echo ""
-echo "Elige cómo deseas levantar el sistema:"
-echo "1) Híbrido (BD y utilidades en Docker + Frontend y Backend locales)"
-echo "2) Todo en Docker (Frontend, Backend, BD y utilidades)"
-echo "3) Todo Local (Frontend, Backend y BD local ya iniciada)"
-echo "4) Salir"
+
+# Ejecutar migraciones en el backend
+echo "🔄 Ejecutando migraciones..."
+cd "$DIR_RAIZ/backend" && npm run migrate
+
+# Iniciar desarrollo
+echo ""
+echo "✅ ¡Todo listo! Iniciando servidores..."
+echo ""
+echo "Frontend: http://localhost:3001"
+echo "Backend:  http://localhost:3031"
 echo ""
 read -p "Selecciona una opción (1-4): " OPCION
 
@@ -71,18 +77,4 @@ case $OPCION in
             fi
         fi
 
-        echo "🔄 Ejecutando migraciones locales..."
-        cd "$DIR_RAIZ/backend" && npm run migrate
-        
-        echo ""
-        echo "✅ Iniciando servidores Frontend y Backend localmente..."
-        echo "Frontend: http://localhost:3000"
-        echo "Backend: http://localhost:3030"
-        echo ""
-        cd "$DIR_RAIZ" && npm run dev
-        ;;
-    *)
-        echo "👋 Salida."
-        exit 0
-        ;;
-esac
+

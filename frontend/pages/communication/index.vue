@@ -1,237 +1,656 @@
 <template>
   <div class="space-y-6">
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+    
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h2 class="text-2xl font-black font-display text-slate-800 dark:text-white">Comunicación</h2>
-        <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Envía mensajes, chatea y comparte anuncios con la comunidad escolar</p>
-      </div>
-      <button 
-        @click="showMessageModal = true" 
-        class="bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-slate-950 font-black py-3 px-5 rounded-2xl text-xs sm:text-sm shadow-lg shadow-emerald-500/10 active:scale-[0.98] transition-all duration-300"
-      >
-        + Nuevo Mensaje
-      </button>
-    </div>
-
-    <!-- Chat & Contact Layout -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      
-      <!-- Contact List -->
-      <div class="lg:col-span-1">
-        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-[2rem] p-6 shadow-sm">
-          <div class="relative mb-5">
-            <input
-              v-model="search"
-              type="text"
-              placeholder="Buscar contactos..."
-              class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 text-xs"
-            />
-            <span class="absolute left-3.5 top-3.5 text-slate-400">🔍</span>
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 flex items-center justify-center text-brand-primary dark:text-brand-gold border border-brand-primary/20 dark:border-brand-purple/40 text-xl shadow-xs">
+            📢
           </div>
-          
-          <div class="space-y-2 max-h-[400px] overflow-y-auto pr-1">
-            <div
-              v-for="contact in filteredContacts"
-              :key="contact.id"
-              @click="selectContact(contact)"
-              :class="[
-                selectedContact?.id === contact.id ? 'bg-emerald-500/10 border-emerald-500/30' : 'border-slate-50 dark:border-slate-850/60 hover:bg-slate-50 dark:hover:bg-slate-850/40',
-                'flex items-center p-3 rounded-2xl cursor-pointer border transition-all duration-200'
-              ]"
-            >
-              <div class="w-10 h-10 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-black text-xs mr-3">
-                {{ contact.initials }}
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class="font-bold text-slate-800 dark:text-slate-100 text-sm truncate leading-snug">{{ contact.name }}</p>
-                <p class="text-[10px] text-slate-400 dark:text-slate-500 truncate mt-0.5">{{ contact.role }}</p>
-              </div>
-              <div v-if="contact.unread" class="bg-rose-500 text-white text-[10px] font-black rounded-full w-5 h-5 flex items-center justify-center shadow-lg shadow-rose-500/20">
-                {{ contact.unread }}
-              </div>
-            </div>
-          </div>
+          <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight">
+            Avisos y Comunicados
+          </h1>
         </div>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Difusión de avisos institucionales, directivas escolares y mensajería interna
+        </p>
       </div>
 
-      <!-- Active Chat Window -->
-      <div class="lg:col-span-2">
-        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-[2rem] p-6 shadow-sm flex flex-col justify-between min-h-[492px]">
-          
-          <div v-if="selectedContact">
-            <!-- Chat Header -->
-            <div class="mb-6 pb-4 border-b border-slate-100 dark:border-slate-850/60 flex items-center justify-between">
-              <div class="flex items-center">
-                <div class="w-11 h-11 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl flex items-center justify-center font-black text-xs mr-4">
-                  {{ selectedContact.initials }}
-                </div>
-                <div>
-                  <h3 class="font-bold text-slate-800 dark:text-slate-100 text-base leading-tight">{{ selectedContact.name }}</h3>
-                  <p class="text-[10px] font-bold text-slate-450 dark:text-slate-500 uppercase tracking-widest mt-0.5">{{ selectedContact.role }}</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Messages Stream -->
-            <div class="h-80 overflow-y-auto mb-6 space-y-4 pr-1">
-              <div
-                v-for="message in messages"
-                :key="message.id"
-                :class="[message.sender === 'me' ? 'flex justify-end' : 'flex justify-start']"
-              >
-                <div
-                  :class="[
-                    message.sender === 'me' ? 'bg-gradient-to-tr from-emerald-400 to-teal-500 text-slate-950 font-medium' : 'bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-slate-850/60',
-                    'max-w-xs lg:max-w-md px-4 py-3 rounded-2xl text-xs shadow-sm'
-                  ]"
-                >
-                  <p class="leading-relaxed">{{ message.text }}</p>
-                  <p :class="[message.sender === 'me' ? 'text-slate-950/60' : 'text-slate-400', 'text-[9px] text-right font-bold mt-1.5']">
-                    {{ message.time }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Chat Inputs -->
-            <div class="flex gap-3">
-              <input
-                v-model="newMessage"
-                type="text"
-                placeholder="Escribe un mensaje..."
-                class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300 text-xs flex-1"
-                @keyup.enter="sendMessage"
-              />
-              <button 
-                @click="sendMessage" 
-                class="bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-slate-950 font-black py-3 px-6 rounded-2xl text-xs shadow-lg shadow-emerald-500/10 active:scale-95 transition-all duration-300"
-              >
-                Enviar
-              </button>
-            </div>
+      <!-- Action Button / Contextual Badge -->
+      <div class="flex items-center gap-2.5">
+        <!-- Active child indicator for parents -->
+        <div v-if="isParent && activeStudent" class="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 text-xs">
+          <span class="text-base">{{ isCarlos ? '👦' : '👧' }}</span>
+          <div>
+            <span class="font-extrabold text-slate-800 dark:text-slate-100">{{ activeStudent.full_name }}</span>
+            <span class="text-[10px] text-amber-700 dark:text-brand-gold font-bold ml-1.5">{{ activeStudent.grade }}</span>
           </div>
-
-          <div v-else class="flex-1 flex flex-col items-center justify-center text-center text-slate-400 dark:text-slate-500">
-            <span class="text-4xl mb-3">💬</span>
-            <p class="text-sm font-bold">Bandeja de Mensajes</p>
-            <p class="text-xs text-slate-450 mt-1">Selecciona un contacto para comenzar a chatear</p>
-          </div>
-
         </div>
+
+        <button 
+          v-if="canManage"
+          @click="openCreateModal($event)" 
+          type="button"
+          data-testid="create-announcement-btn"
+          class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-orange-500/20 active:scale-[0.98] transition-all duration-200"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Nuevo Comunicado</span>
+        </button>
       </div>
     </div>
 
-    <!-- Anuncios Recientes -->
-    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-[2rem] p-6 shadow-sm mt-6">
-      <h3 class="text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6">Anuncios Recientes de la Institución</h3>
-      <div class="space-y-4">
-        <div v-for="announcement in announcements" :key="announcement.id" class="p-4 bg-slate-50/50 dark:bg-slate-950/40 border border-slate-100/50 dark:border-slate-850/60 rounded-2xl">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h4 class="font-bold text-slate-800 dark:text-slate-100 text-sm leading-snug">{{ announcement.title }}</h4>
-              <p class="text-slate-500 dark:text-slate-400 text-xs mt-1.5 leading-relaxed">{{ announcement.content }}</p>
-              <p class="text-[10px] font-medium text-slate-400 dark:text-slate-550 mt-3">{{ announcement.date }} • Publicado por {{ announcement.author }}</p>
-            </div>
-            <span :class="[
-              announcement.priority === 'high' ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20',
-              'text-[9px] font-bold px-2 py-0.5 rounded-lg flex-shrink-0 uppercase tracking-wider'
-            ]">
-              {{ announcement.priority === 'high' ? 'Urgente' : 'Normal' }}
+    <!-- 4 KPI Summary Cards - Standardized Glass Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Total Comunicados -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Avisos Publicados</p>
+          <p class="text-3xl font-black font-display text-slate-850 dark:text-white mt-1 leading-tight tracking-tight">{{ filteredAnnouncements.length }}</p>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Urgentes -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Prioridad Urgente</p>
+          <p class="text-3xl font-black font-display text-rose-600 dark:text-rose-400 mt-1 leading-tight tracking-tight">{{ urgentCount }}</p>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Fijados en Cartelera -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Fijados en Cartelera</p>
+          <div class="flex items-baseline gap-2 mt-1">
+            <p class="text-3xl font-black font-display text-amber-500 mt-1 leading-tight tracking-tight">{{ pinnedCount }}</p>
+            <span class="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 px-1.5 py-0.5 rounded-md">
+              Destacados
             </span>
           </div>
         </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Lecturas Totales -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Lecturas Totales</p>
+          <p class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 mt-1 leading-tight tracking-tight">{{ totalViews }}</p>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        </div>
       </div>
     </div>
 
-    <!-- Create Message Modal Dialog -->
-    <div v-if="showMessageModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div @click="showMessageModal = false" class="absolute inset-0 bg-slate-900/40 dark:bg-slate-950/80 backdrop-blur-sm transition-opacity duration-350"></div>
+    <!-- Filters & Search Toolbar -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <!-- Search Input -->
+      <div class="relative flex-1 min-w-[240px]">
+        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Buscar por título o contenido..."
+          class="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs sm:text-sm text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all"
+        />
+      </div>
 
-      <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 shadow-2xl rounded-[2.5rem] p-8 w-full max-w-md relative z-10 animate-fade-in">
-        <h3 class="text-lg font-black text-slate-800 dark:text-white mb-6">Nuevo Mensaje</h3>
-        <form @submit.prevent="sendNewMessage" class="space-y-4">
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Para</label>
-            <select v-model="messageForm.to" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300">
-              <option v-for="contact in contacts" :key="contact.id" :value="contact.id">{{ contact.name }}</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Asunto</label>
-            <input v-model="messageForm.subject" type="text" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300" />
-          </div>
-          <div>
-            <label class="block text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">Mensaje</label>
-            <textarea v-model="messageForm.text" rows="4" required class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-850 rounded-2xl text-slate-800 dark:text-slate-100 placeholder-slate-450 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-300"></textarea>
-          </div>
-          <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-slate-850">
-            <button type="button" @click="showMessageModal = false" class="px-5 py-3 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-850 text-slate-500 dark:text-slate-400 font-bold rounded-2xl text-xs transition-colors">Cancelar</button>
-            <button type="submit" class="px-5 py-3 bg-gradient-to-r from-emerald-400 to-teal-500 hover:from-emerald-500 hover:to-teal-600 text-slate-950 font-black rounded-2xl text-xs shadow-lg shadow-emerald-500/10 active:scale-95 transition-all duration-300">Enviar</button>
-          </div>
-        </form>
+      <!-- Filters Row -->
+      <div class="flex flex-wrap items-center gap-2.5">
+        <!-- Priority Filter -->
+        <select
+          v-model="filterPriority"
+          class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 rounded-xl px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20"
+        >
+          <option value="">Todas las prioridades</option>
+          <option value="urgent">Urgente</option>
+          <option value="high">Alta</option>
+          <option value="normal">Normal</option>
+        </select>
       </div>
     </div>
+
+    <!-- Loading State -->
+    <div v-if="isLoading" class="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-orange-50 dark:bg-orange-950/40 text-orange-500 mb-3 animate-spin">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+      </div>
+      <p class="text-sm font-semibold text-slate-600 dark:text-slate-400">Cargando comunicados...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div v-else-if="filteredAnnouncements.length === 0" class="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800/80">
+      <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto text-slate-400 mb-3">
+        <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+      </div>
+      <h3 class="text-base font-bold text-slate-750 dark:text-white">No hay comunicados disponibles</h3>
+      <p class="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
+        No se encontraron anuncios activos con los filtros aplicados.
+      </p>
+    </div>
+
+    <!-- Announcements Feed Grid -->
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div
+        v-for="a in filteredAnnouncements"
+        :key="a.id"
+        data-testid="announcement-card"
+        class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-5 shadow-xs flex flex-col justify-between transition-all hover:shadow-md relative overflow-hidden"
+      >
+        <!-- Top accent banner if pinned -->
+        <div v-if="a.is_pinned" class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 to-orange-500"></div>
+
+        <div>
+          <!-- Header: Priority & Pinned Star -->
+          <div class="flex items-center justify-between gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-2">
+              <span 
+                :class="getPriorityBadgeClass(a.priority)"
+                data-testid="announcement-priority-badge"
+                class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
+              >
+                {{ getPriorityLabel(a.priority) }}
+              </span>
+              <span v-if="a.is_pinned" class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md">
+                ★ Destacado
+              </span>
+            </div>
+
+            <span class="text-[11px] font-medium text-slate-400">
+              {{ formatDate(a.created_at) }}
+            </span>
+          </div>
+
+          <!-- Title & Body -->
+          <div class="mt-3.5">
+            <h3 class="text-base font-bold font-display text-slate-850 dark:text-white leading-snug" data-testid="announcement-title">
+              {{ a.title }}
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed whitespace-pre-line">
+              {{ a.body }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Footer: Author & Actions -->
+        <div class="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-orange-100 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center text-xs font-bold">
+              {{ a.author_first_name ? a.author_first_name[0] : 'C' }}
+            </div>
+            <div class="text-[11px] leading-tight">
+              <p class="font-bold text-slate-750 dark:text-slate-200">
+                {{ a.author_first_name ? `${a.author_first_name} ${a.author_last_name}` : 'Dirección Académica' }}
+              </p>
+              <p class="text-[10px] text-slate-400">{{ a.author_department || 'Coordinación' }}</p>
+            </div>
+          </div>
+
+          <div v-if="canManage" class="flex items-center gap-1">
+            <button
+              @click="openEditModal(a, $event)"
+              type="button"
+              data-testid="edit-announcement-btn"
+              class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              title="Editar"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+            <button
+              @click="promptDeleteAnnouncement(a, $event)"
+              type="button"
+              data-testid="delete-announcement-btn"
+              class="w-7 h-7 rounded-lg flex items-center justify-center text-rose-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors"
+              title="Eliminar"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Standardized Modal: Publicar / Editar Comunicado -->
+    <Teleport to="body">
+      <div 
+        v-if="isModalOpen" 
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        @click.self="closeModal"
+      >
+        <div 
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-scale-up"
+          :style="modalSpatialStyle"
+        >
+          <!-- Institutional Header Banner -->
+          <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/10 border border-brand-gold/50 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+                📢
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold font-display text-white tracking-tight">
+                  {{ isEditing ? 'Editar Comunicado' : 'Publicar Nuevo Comunicado' }}
+                </h2>
+                <p class="text-[11px] font-semibold text-brand-gold/90 uppercase tracking-wider">
+                  U.E SANTA LUISA • COMUNICACIÓN Y CARTELERA DIGITAL
+                </p>
+              </div>
+            </div>
+            <button 
+              @click="closeModal" 
+              type="button" 
+              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Modal Scrollable Content -->
+          <form @submit.prevent="submitAnnouncement" class="flex-1 flex flex-col min-h-0">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-4">
+              <!-- Title -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                  Título del Comunicado *
+                </label>
+                <input
+                  v-model="form.title"
+                  type="text"
+                  required
+                  data-testid="announcement-title-input"
+                  placeholder="Ej. Convocatoria a Asamblea General"
+                  class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30"
+                />
+              </div>
+
+              <!-- Priority & Pinned -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Nivel de Prioridad *
+                  </label>
+                  <select
+                    v-model="form.priority"
+                    required
+                    data-testid="announcement-priority-select"
+                    class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+                  >
+                    <option value="normal">Normal</option>
+                    <option value="high">Alta</option>
+                    <option value="urgent">Urgente</option>
+                  </select>
+                </div>
+
+                <div class="flex items-center pt-6">
+                  <label class="flex items-center gap-2 cursor-pointer">
+                    <input
+                      v-model="form.is_pinned"
+                      type="checkbox"
+                      data-testid="announcement-pinned-checkbox"
+                      class="w-4 h-4 rounded text-brand-purple focus:ring-brand-purple/20 cursor-pointer"
+                    />
+                    <span class="text-xs font-semibold text-slate-700 dark:text-slate-200">
+                      Fijar al inicio de la cartelera
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Body -->
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                  Contenido del Comunicado *
+                </label>
+                <textarea
+                  v-model="form.body"
+                  required
+                  rows="5"
+                  data-testid="announcement-body-input"
+                  placeholder="Escriba el texto completo del comunicado o aviso..."
+                  class="w-full bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 leading-relaxed resize-none"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- Elevated Standard Footer -->
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/95 dark:bg-[#110926]/95 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3 shadow-xs">
+              <button
+                @click="closeModal"
+                type="button"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
+              </button>
+              <button
+                type="submit"
+                :disabled="isSubmitting"
+                data-testid="submit-announcement-btn"
+                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] disabled:opacity-50 border border-brand-primary/30 cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ isSubmitting ? 'Publicando...' : (isEditing ? 'Actualizar Comunicado' : 'Publicar Comunicado') }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Modal: Eliminar Comunicado -->
+    <Teleport to="body">
+      <div 
+        v-if="isDeleteModalOpen" 
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs transition-opacity duration-200"
+        @click.self="isDeleteModalOpen = false"
+      >
+        <div 
+          class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] transition-all animate-scale-up text-center"
+          :style="modalSpatialStyle"
+        >
+          <div class="p-6">
+            <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200/60 dark:border-rose-800/40 flex items-center justify-center text-rose-600 dark:text-rose-400 mx-auto mb-4 shadow-inner">
+              <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </div>
+            <h3 class="text-base sm:text-lg font-bold font-display text-slate-850 dark:text-white">
+              ¿Eliminar este comunicado?
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+              Se retirará de la cartelera digital el aviso <strong class="text-slate-800 dark:text-slate-100">{{ announcementToDelete?.title }}</strong>.
+            </p>
+          </div>
+
+          <!-- Permanent Sticky Footer -->
+          <div class="px-6 py-4 border-t border-slate-100 dark:border-white/10 bg-slate-50/95 dark:bg-[#110926]/95 flex items-center justify-center gap-3 flex-shrink-0">
+            <button
+              @click="isDeleteModalOpen = false"
+              type="button"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
+            </button>
+            <button
+              @click="confirmDeleteAnnouncement"
+              type="button"
+              data-testid="confirm-delete-announcement-btn"
+              class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-[0.98] transition-all cursor-pointer"
+            >
+              Eliminar
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Floating Feedback Toast -->
+    <Teleport to="body">
+      <div 
+        v-if="toastMessage" 
+        class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 border border-slate-800 text-xs sm:text-sm font-bold animate-in fade-in slide-in-from-bottom-5 duration-200"
+      >
+        <span class="w-2 h-2 rounded-full bg-orange-500"></span>
+        <span>{{ toastMessage }}</span>
+      </div>
+    </Teleport>
+
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '~/stores/auth'
+import { useActiveStudent } from '~/composables/useActiveStudent'
+import { useApi } from '~/composables/useApi'
 
+const authStore = useAuthStore()
+const api = useApi()
+const { activeStudent, isCarlos, isMaria } = useActiveStudent()
+
+const currentRole = computed(() => authStore.userRole || authStore.user?.role || '')
+const canManage = computed(() => ['admin', 'control_estudio', 'coordinator', 'teacher'].includes(currentRole.value))
+const isParent = computed(() => currentRole.value === 'parent')
+
+// State
+const announcements = ref([])
 const search = ref('')
-const selectedContact = ref(null)
-const newMessage = ref('')
-const showMessageModal = ref(false)
+const filterPriority = ref('')
+const isLoading = ref(false)
+const isSubmitting = ref(false)
+const toastMessage = ref('')
 
-const messageForm = ref({
-  to: '',
-  subject: '',
-  text: ''
+// Modal state
+const isModalOpen = ref(false)
+const isEditing = ref(false)
+const isDeleteModalOpen = ref(false)
+const announcementToDelete = ref(null)
+
+const triggerOrigin = ref({ x: 50, y: 50 })
+const modalSpatialStyle = computed(() => ({
+  transformOrigin: `${triggerOrigin.value.x}% ${triggerOrigin.value.y}%`
+}))
+
+const form = ref({
+  id: null,
+  title: '',
+  body: '',
+  priority: 'normal',
+  is_pinned: false
 })
 
-const contacts = ref([
-  { id: 1, name: 'Roberto Sánchez', role: 'Profesor de Matemáticas', initials: 'RS', unread: 2 },
-  { id: 2, name: 'Laura García', role: 'Profesor de Español', initials: 'LG', unread: 0 },
-  { id: 3, name: 'María López (Madre)', role: 'Padre de Familia', initials: 'ML', unread: 1 },
-  { id: 4, name: 'Pedro Torres (Padre)', role: 'Padre de Familia', initials: 'PT', unread: 0 },
-])
+// Filtered announcements
+const filteredAnnouncements = computed(() => {
+  let list = announcements.value
 
-const filteredContacts = computed(() => {
-  return contacts.value.filter(c => c.name.toLowerCase().includes(search.value.toLowerCase()))
+  if (isParent.value && activeStudent.value) {
+    const isCarlosChild = isCarlos.value
+    list = list.filter(a => {
+      // If explicitly targeted to a specific level
+      if (a.target_level) {
+        return isCarlosChild ? a.target_level === 'media' : a.target_level === 'primaria'
+      }
+      // Content-based level detection for realistic announcements
+      const text = `${a.title || ''} ${a.body || ''}`.toLowerCase()
+      const hasMedia = text.includes('media general') || text.includes('3er año') || text.includes('secundaria') || text.includes('bachillerato')
+      const hasPrimaria = text.includes('primaria') || text.includes('1er grado') || text.includes('1° grado')
+      
+      if (hasMedia && !isCarlosChild) return false
+      if (hasPrimaria && isCarlosChild) return false
+      return true
+    })
+  }
+
+  if (filterPriority.value) {
+    list = list.filter(a => a.priority === filterPriority.value)
+  }
+
+  if (search.value.trim()) {
+    const q = search.value.toLowerCase().trim()
+    list = list.filter(a => 
+      a.title.toLowerCase().includes(q) ||
+      a.body.toLowerCase().includes(q)
+    )
+  }
+
+  return list
 })
 
-const messages = ref([
-  { id: 1, sender: 'them', text: 'Buenos días, necesito hablar sobre la calificación de Juan', time: '10:30 AM' },
-  { id: 2, sender: 'me', text: 'Buenos días, claro. ¿En qué puedo ayudarle?', time: '10:32 AM' },
-  { id: 3, sender: 'them', text: '¿Podríamos agendar una reunión para esta semana?', time: '10:35 AM' },
-  { id: 4, sender: 'me', text: 'Sí, ¿le parece el jueves a las 3pm?', time: '10:37 AM' },
-])
+// KPIs based on current view
+const urgentCount = computed(() => filteredAnnouncements.value.filter(a => a.priority === 'urgent').length)
+const pinnedCount = computed(() => filteredAnnouncements.value.filter(a => a.is_pinned).length)
+const totalViews = computed(() => filteredAnnouncements.value.reduce((acc, a) => acc + (a.view_count || 1), 0))
 
-const announcements = ref([
-  { id: 1, title: 'Reunión de Padres de Familia', content: 'Se convoca a la reunión general del primer trimestre escolar este viernes 22 de marzo a las 5:00 PM. Se tratarán asuntos académicos clave.', date: '2024-03-18', author: 'Dirección', priority: 'high' },
-  { id: 2, title: 'Semana Cultural y Deportiva', content: 'La semana cultural de primavera se realizará del 1 al 5 de abril. El calendario detallado de eventos se enviará a la brevedad.', date: '2024-03-15', author: 'Coordinación', priority: 'normal' },
-  { id: 3, title: 'Modificación en Horario de Atención', content: 'Se informa que el horario de atención administrativa cambiará temporalmente a partir de la próxima semana a 8:00 AM - 4:00 PM.', date: '2024-03-10', author: 'Administración', priority: 'normal' },
-])
-
-const selectContact = (contact) => {
-  selectedContact.value = contact
-  contact.unread = 0
+const formatDate = (d) => {
+  if (!d) return ''
+  const date = new Date(d)
+  return date.toLocaleDateString('es-VE', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-const sendMessage = () => {
-  if (newMessage.value.trim()) {
-    messages.value.push({
-      id: Date.now(),
-      sender: 'me',
-      text: newMessage.value,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    })
-    newMessage.value = ''
+const getPriorityLabel = (priority) => {
+  if (priority === 'urgent') return 'Urgente'
+  if (priority === 'high') return 'Prioridad Alta'
+  return 'Informativo'
+}
+
+const getPriorityBadgeClass = (priority) => {
+  if (priority === 'urgent') return 'bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60'
+  if (priority === 'high') return 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300 border border-amber-200 dark:border-amber-800/60'
+  return 'bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60'
+}
+
+// Modal actions
+const captureTriggerOrigin = (event) => {
+  if (event && event.clientX && event.clientY) {
+    triggerOrigin.value = {
+      x: Math.round((event.clientX / window.innerWidth) * 100),
+      y: Math.round((event.clientY / window.innerHeight) * 100)
+    }
+  } else {
+    triggerOrigin.value = { x: 50, y: 50 }
   }
 }
 
-const sendNewMessage = () => {
-  alert('Mensaje enviado exitosamente')
-  showMessageModal.value = false
-  messageForm.value = { to: '', subject: '', text: '' }
+const openCreateModal = (event) => {
+  captureTriggerOrigin(event)
+  isEditing.value = false
+  form.value = {
+    id: null,
+    title: '',
+    body: '',
+    priority: 'normal',
+    is_pinned: false
+  }
+  isModalOpen.value = true
 }
+
+const openEditModal = (a, event) => {
+  captureTriggerOrigin(event)
+  isEditing.value = true
+  form.value = {
+    id: a.id,
+    title: a.title,
+    body: a.body,
+    priority: a.priority,
+    is_pinned: a.is_pinned
+  }
+  isModalOpen.value = true
+}
+
+const closeModal = () => {
+  isModalOpen.value = false
+}
+
+// Submit Announcement
+const submitAnnouncement = async () => {
+  isSubmitting.value = true
+  try {
+    if (isEditing.value) {
+      await api.service('announcements').patch(form.value.id, form.value)
+      showToast('Comunicado actualizado')
+    } else {
+      await api.service('announcements').create(form.value)
+      showToast('Comunicado publicado exitosamente')
+    }
+    await fetchAnnouncements()
+    closeModal()
+  } catch (error) {
+    console.error('Error saving announcement:', error)
+    showToast(error.message || 'Error al publicar el comunicado')
+  } finally {
+    isSubmitting.value = false
+  }
+}
+
+// Delete Announcement
+const promptDeleteAnnouncement = (a, event) => {
+  captureTriggerOrigin(event)
+  announcementToDelete.value = a
+  isDeleteModalOpen.value = true
+}
+
+const confirmDeleteAnnouncement = async () => {
+  if (!announcementToDelete.value) return
+  try {
+    await api.service('announcements').remove(announcementToDelete.value.id)
+    showToast('Comunicado retirado')
+    await fetchAnnouncements()
+  } catch (error) {
+    console.error('Error removing announcement:', error)
+    showToast(error.message || 'Error al retirar el comunicado')
+  } finally {
+    isDeleteModalOpen.value = false
+    announcementToDelete.value = null
+  }
+}
+
+// Fetch Announcements
+const fetchAnnouncements = async () => {
+  isLoading.value = true
+  try {
+    const res = await api.service('announcements').find({
+      query: {
+        $limit: 50
+      }
+    })
+    announcements.value = res.data || res || []
+  } catch (error) {
+    console.error('Error fetching announcements:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const showToast = (msg) => {
+  toastMessage.value = msg
+  setTimeout(() => {
+    toastMessage.value = ''
+  }, 3500)
+}
+
+onMounted(async () => {
+  await fetchAnnouncements()
+})
 </script>

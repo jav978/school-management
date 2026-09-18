@@ -39,7 +39,7 @@ const pageTitle = computed(() => {
 })
 
 const userName = computed(() => authStore.user?.name || 'Usuario')
-const userRole = computed(() => authStore.user?.role || 'admin')
+const userRole = computed(() => authStore.user?.role || '')
 const userInitials = computed(() => {
   const name = authStore.user?.name || 'U'
   return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)

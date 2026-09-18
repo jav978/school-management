@@ -8,8 +8,19 @@ export const useApi = () => {
       ...options.headers
     }
 
-    if (authStore.token) {
-      headers['Authorization'] = `Bearer ${authStore.token}`
+    let token = authStore.token
+    if (!token) {
+      try {
+        const sessionCookie = useCookie('session_token')
+        token = sessionCookie.value || null
+      } catch (_) {}
+    }
+    if (!token && import.meta.client) {
+      token = sessionStorage.getItem('token')
+    }
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`
     }
 
     try {
@@ -43,10 +54,19 @@ export const useApi = () => {
     return apiFetch(endpoint, { method: 'DELETE' })
   }
 
+  const service = (name) => ({
+    find: (params = {}) => get(name, params?.query || params),
+    get: (id, params = {}) => get(`${name}/${id}`, params?.query || params),
+    create: (data = {}) => post(name, data),
+    patch: (id, data = {}) => patch(`${name}/${id}`, data),
+    remove: (id) => remove(`${name}/${id}`)
+  })
+
   return {
     get,
     post,
     patch,
-    remove
+    remove,
+    service
   }
 }

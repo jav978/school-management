@@ -1,0 +1,524 @@
+<template>
+  <div class="space-y-6 animate-fade-in">
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div>
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-violet-50 dark:bg-violet-950/40 flex items-center justify-center text-violet-600 dark:text-violet-400 border border-violet-200/60 dark:border-violet-800/40">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-850 dark:text-white tracking-tight">
+            Gestión de Usuarios y Accesos
+          </h1>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Administración de cuentas, credenciales y asignación de los 6 roles de EduFlow
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <button 
+          @click="openModal()" 
+          type="button"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 text-white font-bold py-2.5 px-5 rounded-2xl text-xs sm:text-sm shadow-md shadow-violet-500/20 active:scale-[0.98] transition-all duration-200"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
+          </svg>
+          <span>Nuevo Usuario</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 KPI Summary Cards - Standardized Glass Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- Total Usuarios -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Usuarios</p>
+          <p class="text-3xl font-black font-display text-brand-primary dark:text-white mt-1 leading-tight tracking-tight">{{ users.length }}</p>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Activos -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Activos</p>
+          <div class="flex items-baseline gap-2 mt-1">
+            <p class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 leading-tight tracking-tight">{{ stats.active }}</p>
+            <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded-md">
+              Habilitados
+            </span>
+          </div>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Docentes / Staff -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Docentes / Staff</p>
+          <p class="text-3xl font-black font-display text-blue-600 dark:text-blue-400 mt-1 leading-tight tracking-tight">{{ stats.teachersAndStaff }}</p>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Estudiantes / Padres -->
+      <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
+        <div class="flex flex-col justify-center">
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Estudiantes / Padres</p>
+          <p class="text-3xl font-black font-display text-amber-600 dark:text-amber-400 mt-1 leading-tight tracking-tight">{{ stats.studentsAndParents }}</p>
+        </div>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter and Search Bar -->
+    <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl p-4 shadow-xs flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+      <div class="flex-1 relative">
+        <input 
+          v-model="searchQuery"
+          type="text" 
+          placeholder="Buscar por nombre, correo o rol..."
+          class="w-full pl-10 pr-4 py-2 text-sm bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500 text-slate-850 dark:text-white"
+        />
+        <svg class="w-4 h-4 absolute left-3.5 top-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-3">
+        <select 
+          v-model="selectedRole" 
+          class="px-3 py-2 text-xs bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-slate-700 dark:text-slate-200"
+        >
+          <option value="">Todos los Roles</option>
+          <option value="admin">Administrador</option>
+          <option value="teacher">Profesor</option>
+          <option value="student">Estudiante</option>
+          <option value="parent">Representante / Padre</option>
+          <option value="administrative">Administrativo</option>
+          <option value="academic_control">Control de Estudios</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div v-if="loading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-violet-500 border-t-transparent"></div>
+      <p class="text-xs text-slate-400 mt-2">Cargando usuarios...</p>
+    </div>
+
+    <div v-else class="bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800 rounded-2xl overflow-hidden shadow-xs">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 uppercase tracking-wider font-bold border-b border-slate-100 dark:border-slate-800">
+          <tr>
+            <th class="p-4">Usuario</th>
+            <th class="p-4">Correo Electrónico</th>
+            <th class="p-4">Rol del Sistema</th>
+            <th class="p-4 text-center">Estado</th>
+            <th class="p-4 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+          <tr v-for="user in filteredUsers" :key="user.id" class="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+            <td class="p-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-xl bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 font-bold text-xs flex items-center justify-center">
+                  {{ (user.full_name || user.email || 'U')[0].toUpperCase() }}
+                </div>
+                <div>
+                  <p class="font-bold text-slate-850 dark:text-white leading-tight">
+                    {{ user.full_name || user.email.split('@')[0] }}
+                  </p>
+                  <p class="text-[10px] text-slate-400 mt-0.5">ID: #{{ user.id }}</p>
+                </div>
+              </div>
+            </td>
+            <td class="p-4 font-mono text-slate-600 dark:text-slate-300">{{ user.email }}</td>
+            <td class="p-4">
+              <span 
+                :class="getRoleBadge(user.user_type || user.role)"
+                class="px-2.5 py-1 rounded-lg font-bold text-[11px] capitalize"
+              >
+                {{ formatRole(user.user_type || user.role) }}
+              </span>
+            </td>
+            <td class="p-4 text-center">
+              <span 
+                :class="user.status === 'inactive' ? 'bg-rose-500/10 text-rose-600' : 'bg-emerald-500/10 text-emerald-600'"
+                class="px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize"
+              >
+                {{ user.status || 'Activo' }}
+              </span>
+            </td>
+            <td class="p-4 text-right">
+              <div class="inline-flex items-center gap-1 justify-end">
+                <button 
+                  @click="editUser(user)"
+                  class="p-1.5 text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                  title="Editar Usuario"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                </button>
+                <button 
+                  @click="promptDeleteUser(user)"
+                  class="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                  title="Desactivar Usuario"
+                >
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Create / Edit User Modal (Standardized Institutional Header) -->
+    <Teleport to="body">
+      <div 
+        v-if="isModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        @click.self="isModalOpen = false"
+      >
+        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl shadow-2xl border border-slate-200 dark:border-white/10 w-full max-w-lg max-h-[90vh] flex flex-col overflow-hidden animate-scale-up">
+          <!-- Institutional Header Banner -->
+          <div class="flex-shrink-0 px-6 py-4 bg-gradient-to-r from-brand-primary via-brand-purple to-brand-primary border-b border-brand-gold/30 text-white flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-white/10 border border-brand-gold/50 flex items-center justify-center text-lg flex-shrink-0 shadow-inner">
+                👤
+              </div>
+              <div>
+                <h2 class="text-base sm:text-lg font-bold font-display text-white tracking-tight">
+                  {{ isEditing ? 'Editar Usuario' : 'Nuevo Usuario' }}
+                </h2>
+                <p class="text-[11px] font-semibold text-brand-gold/90 uppercase tracking-wider">
+                  U.E SANTA LUISA • GESTIÓN DE ACCESO Y SEGURIDAD
+                </p>
+              </div>
+            </div>
+            <button 
+              @click="isModalOpen = false" 
+              type="button" 
+              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Scrollable Modal Body -->
+          <form @submit.prevent="saveUser" class="flex-1 flex flex-col min-h-0">
+            <div class="flex-1 overflow-y-auto min-h-0 p-6 space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nombre Completo *</label>
+                <input 
+                  v-model="userForm.full_name" 
+                  required 
+                  placeholder="Ej: Carmen Rivas"
+                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Correo Electrónico *</label>
+                <input 
+                  v-model="userForm.email" 
+                  type="email"
+                  required 
+                  placeholder="usuario@santaluisa.edu.ve"
+                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                />
+              </div>
+
+              <div v-if="!isEditing">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Contraseña Inicial *</label>
+                <input 
+                  v-model="userForm.password" 
+                  type="password"
+                  required 
+                  placeholder="••••••••"
+                  class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30" 
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tipo de Usuario</label>
+                  <select 
+                    v-model="userForm.user_type"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+                  >
+                    <option value="admin">Administrador</option>
+                    <option value="academic_control">Control de Estudios</option>
+                    <option value="teacher">Profesor</option>
+                    <option value="administrative">Administrativo</option>
+                    <option value="parent">Representante</option>
+                    <option value="student">Estudiante</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Estado</label>
+                  <select 
+                    v-model="userForm.status"
+                    class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] rounded-xl border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+                  >
+                    <option value="active">Activo</option>
+                    <option value="inactive">Inactivo</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Elevated Standard Footer -->
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/95 dark:bg-[#110926]/95 border-t border-slate-200 dark:border-white/10 flex items-center justify-end gap-3 shadow-xs">
+              <button 
+                type="button" 
+                @click="isModalOpen = false"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                <span>Cancelar</span>
+              </button>
+              <button 
+                type="submit" 
+                class="inline-flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold bg-gradient-to-r from-brand-primary to-brand-purple hover:from-brand-purple hover:to-brand-primary text-white rounded-xl shadow-md shadow-brand-primary/25 transition-all active:scale-[0.98] border border-brand-primary/30 cursor-pointer"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>{{ isEditing ? 'Guardar Cambios' : 'Crear Usuario' }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
+
+    <!-- Delete / Deactivate User Confirmation Modal -->
+    <Teleport to="body">
+      <div 
+        v-if="isDeleteUserModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs"
+        @click.self="isDeleteUserModalOpen = false; userToDelete = null"
+      >
+        <div class="bg-white dark:bg-[#170f33] rounded-2xl sm:rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-white/10 text-center animate-scale-up">
+          <div class="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto mb-4 border border-rose-200/60 dark:border-rose-800/40 shadow-inner">
+            <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-black text-slate-900 dark:text-white">¿Desactivar este usuario?</h3>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+            Estás por inhabilitar el acceso de <strong class="text-slate-800 dark:text-slate-100">{{ userToDelete?.full_name || userToDelete?.email }}</strong>. No podrá iniciar sesión hasta que sea reactivado.
+          </p>
+          <div class="flex items-center justify-center gap-3 mt-6 pt-4 border-t border-slate-100 dark:border-white/10">
+            <button 
+              type="button" 
+              @click="isDeleteUserModalOpen = false; userToDelete = null"
+              class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-bold bg-white hover:bg-slate-100 text-slate-700 dark:bg-white/10 dark:hover:bg-white/15 dark:text-slate-200 border border-slate-200 dark:border-white/10 rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-xs"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              <span>Cancelar</span>
+            </button>
+            <button 
+              type="button" 
+              @click="confirmDeleteUser"
+              class="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl text-xs font-bold shadow-md shadow-rose-600/20 transition-all cursor-pointer"
+            >
+              Sí, Desactivar Usuario
+            </button>
+          </div>
+        </div>
+      </div>
+    </Teleport>
+  </div>
+</template>
+
+<script setup>
+import { ref, computed, onMounted } from 'vue'
+import { useApi } from '~/composables/useApi'
+import { useToast } from '~/composables/useToast'
+
+const api = useApi()
+const toast = useToast()
+
+const users = ref([])
+const loading = ref(true)
+const searchQuery = ref('')
+const selectedRole = ref('')
+const isModalOpen = ref(false)
+const isEditing = ref(false)
+const currentUserId = ref(null)
+
+const isDeleteUserModalOpen = ref(false)
+const userToDelete = ref(null)
+
+const userForm = ref({
+  full_name: '',
+  email: '',
+  password: 'password123',
+  user_type: 'teacher',
+  status: 'active'
+})
+
+const fetchUsers = async () => {
+  loading.value = true
+  try {
+    const res = await api.get('users')
+    users.value = res.data || res || []
+  } catch (err) {
+    console.error('Error fetching users:', err)
+  } finally {
+    loading.value = false
+  }
+}
+
+const stats = computed(() => {
+  const active = users.value.filter(u => u.status !== 'inactive').length
+  const teachersAndStaff = users.value.filter(u => ['teacher', 'administrative', 'academic_control'].includes(u.user_type || u.role)).length
+  const studentsAndParents = users.value.filter(u => ['student', 'parent'].includes(u.user_type || u.role)).length
+  return { active, teachersAndStaff, studentsAndParents }
+})
+
+const filteredUsers = computed(() => {
+  return users.value.filter(u => {
+    const term = searchQuery.value.toLowerCase()
+    const matchesSearch = !searchQuery.value ||
+      (u.full_name?.toLowerCase().includes(term) ||
+       u.email?.toLowerCase().includes(term) ||
+       (u.user_type || u.role)?.toLowerCase().includes(term))
+
+    const matchesRole = !selectedRole.value || (u.user_type || u.role) === selectedRole.value
+    return matchesSearch && matchesRole
+  })
+})
+
+const formatRole = (role) => {
+  switch (role) {
+    case 'admin': return 'Administrador'
+    case 'teacher': return 'Profesor'
+    case 'student': return 'Estudiante'
+    case 'parent': return 'Representante'
+    case 'administrative': return 'Administrativo'
+    case 'academic_control': return 'Control de Estudios'
+    default: return role || 'Usuario'
+  }
+}
+
+const getRoleBadge = (role) => {
+  switch (role) {
+    case 'admin': return 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+    case 'teacher': return 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+    case 'student': return 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+    case 'parent': return 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+    case 'academic_control': return 'bg-purple-500/10 text-purple-600 dark:text-purple-400'
+    default: return 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+  }
+}
+
+const openModal = () => {
+  isEditing.value = false
+  currentUserId.value = null
+  userForm.value = {
+    full_name: '',
+    email: '',
+    password: 'password123',
+    user_type: 'teacher',
+    status: 'active'
+  }
+  isModalOpen.value = true
+}
+
+const editUser = (user) => {
+  isEditing.value = true
+  currentUserId.value = user.id
+  userForm.value = {
+    full_name: user.full_name || '',
+    email: user.email,
+    user_type: user.user_type || user.role || 'teacher',
+    status: user.status || 'active'
+  }
+  isModalOpen.value = true
+}
+
+// Prompt Delete User
+const promptDeleteUser = (user) => {
+  const currentEmail = localStorage.getItem('user_email') || 'admin@santaluisa.edu.ve'
+  if (user.email === currentEmail) {
+    toast.error('No puedes desactivar tu propia cuenta en sesión activa.', 'Acción Denegada')
+    return
+  }
+  userToDelete.value = user
+  isDeleteUserModalOpen.value = true
+}
+
+// Confirm Delete User (Soft delete status: inactive)
+const confirmDeleteUser = async () => {
+  if (!userToDelete.value) return
+  const id = userToDelete.value.id
+  try {
+    await api.patch(`users/${id}`, { status: 'inactive' })
+    toast.warning(`Usuario ${userToDelete.value.full_name || userToDelete.value.email} desactivado.`)
+    isDeleteUserModalOpen.value = false
+    userToDelete.value = null
+    await fetchUsers()
+  } catch (err) {
+    toast.error('Error al desactivar usuario: ' + err.message)
+  }
+}
+
+const saveUser = async () => {
+  try {
+    if (isEditing.value) {
+      await api.patch(`users/${currentUserId.value}`, {
+        full_name: userForm.value.full_name,
+        email: userForm.value.email,
+        user_type: userForm.value.user_type,
+        role: userForm.value.user_type,
+        status: userForm.value.status
+      })
+      toast.success('Usuario actualizado exitosamente.')
+    } else {
+      await api.post('users', {
+        ...userForm.value,
+        role: userForm.value.user_type
+      })
+      toast.success('Nuevo usuario registrado en la plataforma.')
+    }
+    isModalOpen.value = false
+    await fetchUsers()
+  } catch (err) {
+    toast.error('Error al guardar usuario: ' + err.message)
+  }
+}
+
+onMounted(fetchUsers)
+</script>

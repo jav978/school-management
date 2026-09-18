@@ -1,4 +1,5 @@
 const { KnexService } = require('@feathersjs/knex')
+const { authenticateHook, restrictToAdmin } = require('../hooks/auth')
 
 class SettingsService extends KnexService {
   async find(params) {
@@ -33,4 +34,17 @@ module.exports = function (app) {
   }
 
   app.use('settings', new SettingsService(options))
+
+  const service = app.service('settings')
+
+  service.hooks({
+    before: {
+      all: [authenticateHook],
+      create: [restrictToAdmin],
+      update: [restrictToAdmin],
+      patch: [restrictToAdmin],
+      remove: [restrictToAdmin]
+    }
+  })
 }
+
