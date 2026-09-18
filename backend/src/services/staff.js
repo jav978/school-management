@@ -7,13 +7,15 @@ const ALLOWED_STAFF_COLUMNS = new Set([
   'date_of_birth', 'gender', 'blood_type', 'national_id', 'photo_url',
   'department', 'position_title', 'category', 'phone_mobile', 'phone_home',
   'email_personal', 'address_line1', 'emergency_contact_name',
-  'emergency_contact_phone', 'status', 'is_deleted', 'created_at', 'updated_at'
+  'emergency_contact_phone', 'hire_date', 'status', 'is_deleted', 'created_at', 'updated_at'
 ])
 
 function _enrichStaff(person) {
   if (!person) return person
   const categoryNormalized = person.category === 'administrative' ? 'administrativo' : (person.category || 'administrativo')
   const statusNormalized = (person.status === 'active' || person.status === 'activo') ? 'activo' : ((person.status === 'inactive' || person.status === 'inactivo') ? 'inactivo' : (person.status || 'activo'))
+  const hireDateFormatted = person.hire_date ? (person.hire_date instanceof Date ? person.hire_date.toISOString().split('T')[0] : String(person.hire_date).split('T')[0]) : null
+  const dobFormatted = person.date_of_birth ? (person.date_of_birth instanceof Date ? person.date_of_birth.toISOString().split('T')[0] : String(person.date_of_birth).split('T')[0]) : null
 
   return {
     ...person,
@@ -28,11 +30,21 @@ function _enrichStaff(person) {
     email: person.email_personal,
     emergency_contact: person.emergency_contact_name,
     emergency_phone: person.emergency_contact_phone,
-    status: statusNormalized
+    status: statusNormalized,
+    hire_date: hireDateFormatted,
+    date_of_birth: dobFormatted,
+    gender: person.gender || null,
+    has_user_account: Boolean(person.user_id),
+    user_id: person.user_id || null,
+    has_photo: Boolean(person.photo_url && String(person.photo_url).trim().length > 0)
   }
 }
 
 class StaffService extends KnexService {
+  setup(app) {
+    this.app = app
+  }
+
   async find(params) {
     const db = this.getModel(params)
     const query = { ...params?.query }
@@ -119,8 +131,13 @@ class StaffService extends KnexService {
     if (raw.date_of_birth === '') clean.date_of_birth = null
     else if (raw.date_of_birth !== undefined) clean.date_of_birth = raw.date_of_birth
 
-    if (raw.user_id === '') clean.user_id = null
-    else if (raw.user_id !== undefined) clean.user_id = raw.user_id
+    if (raw.hire_date === '') clean.hire_date = null
+    else if (raw.hire_date !== undefined) clean.hire_date = raw.hire_date
+
+    if (raw.gender !== undefined) clean.gender = raw.gender ? String(raw.gender).trim().toLowerCase() : null
+
+    if (raw.user_id === '' || raw.user_id === null) clean.user_id = null
+    else if (raw.user_id !== undefined) clean.user_id = Number(raw.user_id) || null
 
     // Category / status normalization
     if (raw.category !== undefined) {
@@ -162,13 +179,107 @@ class StaffService extends KnexService {
   }
 
   async create(data, params) {
-    const sanitized = this._sanitizeStaffData(data, true)
+    const raw = { ...data }
+    const db = this.getModel(params)
+
+    if (raw.create_user_account) {
+      const emailToUse = (raw.email_personal || raw.email || '').trim()
+      if (!emailToUse) {
+        throw new BadRequest('Para crear una cuenta de acceso al sistema, el correo electrónico es obligatorio.')
+      }
+
+      // Check if user already exists with that email
+      const existingUser = await db('school.users')
+        .whereRaw('LOWER(email) = ?', [emailToUse.toLowerCase()])
+        .where('is_deleted', false)
+        .first()
+
+      if (existingUser) {
+        raw.user_id = existingUser.id
+      } else {
+        const emailPrefix = emailToUse.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '')
+        const generatedUsername = `${emailPrefix}_${Math.floor(1000 + Math.random() * 9000)}`
+        const userPayload = {
+          email: emailToUse.toLowerCase(),
+          username: generatedUsername,
+          password: raw.user_account_password || 'Staff2026!*',
+          role: 'staff',
+          institution_id: raw.institution_id || 1,
+          phone: raw.phone_mobile || raw.phone || null,
+          avatar_url: raw.photo_url || null,
+          preferences: {
+            full_name: `${raw.first_name || ''} ${raw.last_name || ''}`.trim(),
+            sub_role: raw.category || raw.staff_type || 'administrativo'
+          },
+          status: 'active',
+          is_active: true
+        }
+        const createdUser = await this.app.service('users').create(userPayload, { provider: undefined })
+        raw.user_id = createdUser.id
+      }
+    }
+
+    const sanitized = this._sanitizeStaffData(raw, true)
     const created = await super.create(sanitized, params)
     return _enrichStaff(created)
   }
 
   async patch(id, data, params) {
-    const sanitized = this._sanitizeStaffData(data, false)
+    const raw = { ...data }
+    const db = this.getModel(params)
+
+    if (raw.create_user_account) {
+      const current = await db('school.staff').where({ id, is_deleted: false }).first()
+      if (current) {
+        if (current.user_id) {
+          if (raw.user_account_password) {
+            await this.app.service('users').patch(current.user_id, {
+              password: raw.user_account_password
+            }, { provider: undefined })
+          }
+        } else {
+          const emailToUse = (raw.email_personal || raw.email || current.email_personal || '').trim()
+          if (!emailToUse) {
+            throw new BadRequest('Para crear una cuenta de acceso al sistema, el correo electrónico es obligatorio.')
+          }
+
+          const existingUser = await db('school.users')
+            .whereRaw('LOWER(email) = ?', [emailToUse.toLowerCase()])
+            .where('is_deleted', false)
+            .first()
+
+          if (existingUser) {
+            raw.user_id = existingUser.id
+          } else {
+            const emailPrefix = emailToUse.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '')
+            const generatedUsername = `${emailPrefix}_${Math.floor(1000 + Math.random() * 9000)}`
+            const userPayload = {
+              email: emailToUse.toLowerCase(),
+              username: generatedUsername,
+              password: raw.user_account_password || 'Staff2026!*',
+              role: 'staff',
+              institution_id: current.institution_id || 1,
+              phone: raw.phone_mobile || raw.phone || current.phone_mobile || null,
+              avatar_url: raw.photo_url || current.photo_url || null,
+              preferences: {
+                full_name: `${raw.first_name || current.first_name || ''} ${raw.last_name || current.last_name || ''}`.trim(),
+                sub_role: raw.category || raw.staff_type || current.category || 'administrativo'
+              },
+              status: 'active',
+              is_active: true
+            }
+            const createdUser = await this.app.service('users').create(userPayload, { provider: undefined })
+            raw.user_id = createdUser.id
+          }
+        }
+      }
+    }
+
+    if (raw.unlink_user_account) {
+      raw.user_id = null
+    }
+
+    const sanitized = this._sanitizeStaffData(raw, false)
     sanitized.updated_at = new Date()
     const patched = await super.patch(id, sanitized, params)
     return _enrichStaff(patched)
@@ -198,11 +309,11 @@ module.exports = function (app) {
   service.hooks({
     before: {
       all: [authenticateHook],
-      find: [restrictToRoles('admin', 'teacher', 'staff')],
-      get: [restrictToRoles('admin', 'teacher', 'staff')],
-      create: [restrictToAdmin],
-      update: [restrictToAdmin],
-      patch: [restrictToAdmin],
+      find: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'staff')],
+      get: [restrictToRoles('admin', 'control_estudio', 'coordinator', 'staff')],
+      create: [restrictToRoles('admin', 'control_estudio', 'coordinator')],
+      update: [restrictToRoles('admin', 'control_estudio', 'coordinator')],
+      patch: [restrictToRoles('admin', 'control_estudio', 'coordinator')],
       remove: [restrictToAdmin]
     }
   })

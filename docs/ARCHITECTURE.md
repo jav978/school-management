@@ -160,3 +160,73 @@ flowchart TB
        ↓
 [PostgreSQL] (Devuelve datos al cliente)
 ```
+
+---
+
+## 6. Diagrama de Infraestructura y Servicios Docker (Docker Topology)
+
+```mermaid
+flowchart TB
+    subgraph CLIENTS ["🌐 Clientes & Dispositivos de Usuario"]
+        Browser["🖥️ Navegador Web (Admin, Docentes, Estudiantes, Padres)"]
+        MobileAuth["📱 App Autenticadora TOTP (Google Auth / Aegis)"]
+        OAuthGoogle["☁️ Google Identity Provider (OAuth 2.0)"]
+    end
+
+    subgraph DOCKER_HOST ["🐳 Entorno Host / Docker Engine (Red: school_network)"]
+
+        subgraph FRONTEND_SVC ["🎨 Capa Frontend (school_frontend)"]
+            NuxtApp["<b>Nuxt 4.4.8 (Vue 3.5)</b><br/>• Puerto Container: 3000 (Host: 3000 / Dev: 3001)<br/>• Engine: Nitro + H3<br/>• Pinia 3 + Tailwind CSS + Nuxt UI + DaisyUI"]
+            NuxtProxy["<b>Nitro Proxy Route</b><br/><code>/server/routes/uploads/[...slug].ts</code>"]
+            NuxtApp --> NuxtProxy
+        end
+
+        subgraph BACKEND_SVC ["⚙️ Capa Backend (school_backend)"]
+            FeathersCore["<b>FeathersJS 5 (Dove) Core</b><br/>• Puerto Container: 3030 (Host: 3030 / Dev: 3031)<br/>• Node.js 20 Alpine<br/>• REST APIs + WebSockets (Socket.IO)<br/>• 31 Servicios Escolares Modulares"]
+            SecurityStack["<b>Seguridad</b>: Helmet, CORS, Rate Limiters, Sanitizer"]
+            AuthStack["<b>Auth</b>: JWT (HS256) + otplib TOTP 2FA + Bcrypt"]
+            FeathersCore --- SecurityStack
+            FeathersCore --- AuthStack
+        end
+
+        subgraph DATA_SVC ["🗄️ Capa de Datos (school_db)"]
+            PostgreSQL["<b>PostgreSQL 15 Alpine</b><br/>• Puerto Container: 5432 (Host: 5433 / Dev: 5432)<br/>• Esquema: school / public<br/>• 20+ Tablas, vistas e índices<br/>• Knex.js Query Builder v3.3"]
+        end
+
+        subgraph ADMIN_SVC ["🛠️ Administración & Data Platform"]
+            PgAdmin["<b>pgAdmin 4 (school_pgadmin)</b><br/>• Puerto: 5050:80<br/>• Consola Web DBA"]
+            Directus["<b>Directus CMS (school_directus)</b><br/>• Puerto: 8055:8055<br/>• Headless CMS & Data Platform"]
+        end
+
+        subgraph STORAGE ["💾 Almacenamiento Persistente"]
+            PGDataVol[("Volumen Docker<br/><b>postgres_data</b>")]
+            LocalUploads["📁 Archivos Locales<br/><b>backend/public/uploads/</b>"]
+        end
+    end
+
+    %% Enlaces
+    Browser -->|HTTP:3000/3001| NuxtApp
+    NuxtApp -->|REST API HTTP:3030/3031| FeathersCore
+    NuxtApp <-->|WebSockets WS| FeathersCore
+    NuxtProxy -->|Proxy /uploads| FeathersCore
+    FeathersCore -->|TCP:5432 Knex Pool| PostgreSQL
+    FeathersCore -->|Lee/Escribe| LocalUploads
+    PgAdmin -->|TCP:5432| PostgreSQL
+    Directus -->|TCP:5432| PostgreSQL
+    PostgreSQL --> PGDataVol
+
+    MobileAuth -.->|Código 6 dígitos| Browser
+    Browser -.->|OAuth Redir| OAuthGoogle
+    FeathersCore -.->|Valida Token| OAuthGoogle
+```
+
+### Matriz de Puertos y Servicios
+
+| Servicio | Contenedor | Imagen / Stack | Puerto Interno | Puerto Host (Docker) | Puerto Local (Dev) |
+|---|---|---|---|---|---|
+| **Frontend** | `school_frontend` | `node:20-alpine` (Nuxt 4 / Vue 3) | 3000 | 3000 | 3001 |
+| **Backend** | `school_backend` | `node:20-alpine` (FeathersJS 5 / Node.js) | 3030 | 3030 | 3031 |
+| **Base de Datos** | `school_db` | `postgres:15-alpine` | 5432 | 5433 | 5432 |
+| **pgAdmin 4** | `school_pgadmin` | `dpage/pgadmin4` | 80 | 5050 | 5050 |
+| **Directus CMS** | `school_directus` | `directus/directus:latest` | 8055 | 8055 | 8055 |
+

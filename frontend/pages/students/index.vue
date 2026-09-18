@@ -218,7 +218,7 @@
               <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 border border-brand-primary/20 dark:border-brand-secondary/30 flex items-center justify-center text-brand-primary dark:text-brand-secondary font-bold text-sm flex-shrink-0 shadow-inner">
                 <img 
                   v-if="student.photo_url" 
-                  :src="student.photo_url" 
+                  :src="resolvePhotoUrl(student.photo_url)" 
                   :alt="student.full_name"
                   class="w-full h-full object-cover rounded-2xl"
                   @error="student.photo_url = null"

@@ -55,10 +55,27 @@ require('./src/services/announcements')(app)
 require('./src/services/notifications')(app)
 
 // Settings, Uploads & PDF Documents
+require('./src/services/institutions')(app)
 require('./src/services/settings')(app)
 require('./src/services/uploads')(app)
 require('./src/services/enrollment-pdf')(app)
 
-app.listen(PORT).then(() => {
+let server = null
+app.listen(PORT).then((srv) => {
+  server = srv
   console.log(`Feathers application started on http://localhost:${PORT}`)
 })
+
+const shutdown = () => {
+  if (server) {
+    server.close(() => {
+      process.exit(0)
+    })
+  } else {
+    process.exit(0)
+  }
+}
+
+process.once('SIGUSR2', shutdown)
+process.on('SIGINT', shutdown)
+process.on('SIGTERM', shutdown)

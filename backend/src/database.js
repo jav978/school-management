@@ -1,11 +1,16 @@
 const knex = require('knex')
-require('dotenv').config()
+const path = require('path')
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 
 const buildConnection = () => {
   if (process.env.DATABASE_URL) {
+    const isSsl = process.env.DATABASE_URL.includes('sslmode=require') || 
+                  process.env.DATABASE_URL.includes('ssl=true') || 
+                  process.env.DB_SSL === 'true'
     return {
       connectionString: process.env.DATABASE_URL,
-      searchPath: ['school', 'public']
+      searchPath: ['school', 'public'],
+      ...(isSsl ? { ssl: { rejectUnauthorized: false } } : {})
     }
   }
   return {

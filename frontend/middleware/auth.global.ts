@@ -48,8 +48,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const userRole = authStore.userRole || 'student'
 
     const restrictedRoutes: Record<string, string[]> = {
-      '/teachers': ['admin', 'coordinator'],
-      '/staff': ['admin', 'coordinator'],
+      '/teachers': ['admin', 'coordinator', 'control_estudio'],
+      '/staff': ['admin', 'coordinator', 'control_estudio'],
       '/reports': ['admin', 'coordinator', 'control_estudio'],
       '/academic-planning': ['admin', 'coordinator', 'teacher'],
       '/classes': ['admin', 'coordinator', 'control_estudio', 'teacher'],

@@ -15,7 +15,7 @@
           </svg>
         </button>
         <div class="lg:hidden w-8 h-8 rounded-lg bg-white dark:bg-white/10 p-0.5 border border-slate-200 dark:border-white/15 flex items-center justify-center flex-shrink-0 shadow-xs">
-          <img src="/logocolegio.png" alt="U.E Santa Luisa" class="w-full h-full object-contain" />
+          <img :src="resolvePhotoUrl(institution.logo_url) || '/logocolegio.png'" :alt="institution.name || 'U.E Santa Luisa'" class="w-full h-full object-contain" />
         </div>
       </div>
 
@@ -30,7 +30,7 @@
           <input 
             v-model="searchQuery" 
             type="text" 
-            placeholder="Buscar estudiantes, materias, cédulas..." 
+            :placeholder="t('searchPlaceholder', 'Buscar estudiantes, materias, cédulas...')" 
             class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-100/80 dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 transition-all shadow-xs"
           />
         </div>
@@ -50,7 +50,7 @@
             <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
             </svg>
-            <span class="uppercase font-extrabold text-[11px]">{{ currentLang }}</span>
+            <span class="uppercase font-extrabold text-[11px]">{{ (currentLang || 'es').toUpperCase() }}</span>
             <svg class="w-3 h-3 text-slate-400 transition-transform" :class="{ 'rotate-180': isLangOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
             </svg>
@@ -108,7 +108,10 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-amber-500 text-slate-950 font-black text-[9px] rounded-full flex items-center justify-center border-2 border-white dark:border-[#0f0a1e] animate-pulse">
+            <span 
+              data-testid="header-mail-badge"
+              class="absolute -top-1.5 -right-1.5 min-w-[19px] h-[19px] px-1 bg-amber-500 text-slate-950 font-black text-[10.5px] rounded-full flex items-center justify-center border-2 border-white dark:border-[#120b29] shadow-xs animate-pulse leading-none"
+            >
               1
             </span>
           </button>
@@ -120,11 +123,11 @@
           >
             <div class="flex items-center justify-between px-4 pb-2 border-b border-slate-100 dark:border-white/10">
               <div class="flex items-center gap-2">
-                <span class="font-bold text-slate-900 dark:text-white text-xs font-display">Mensajes Recientes</span>
-                <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-brand-gold">1 nuevo</span>
+                <span class="font-bold text-slate-900 dark:text-white text-xs font-display">{{ t('recentMessages', 'Mensajes Recientes') }}</span>
+                <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-brand-gold">1 {{ t('newMessages', 'nuevo') }}</span>
               </div>
               <NuxtLink to="/communication" @click="isMessagesOpen = false" class="text-[11px] font-bold text-amber-600 dark:text-brand-gold hover:underline">
-                Ver todos
+                {{ t('viewAll', 'Ver todos') }}
               </NuxtLink>
             </div>
 
@@ -154,7 +157,7 @@
                 @click="isMessagesOpen = false"
                 class="inline-block w-full py-1.5 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-amber-500 hover:text-slate-950 dark:hover:bg-brand-gold dark:hover:text-slate-950 text-slate-700 dark:text-white text-xs font-bold transition-all text-center"
               >
-                Ir al Buzón Escolar
+                {{ t('mailbox', 'Ir al Buzón Escolar') }}
               </NuxtLink>
             </div>
           </div>
@@ -171,7 +174,10 @@
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
             </svg>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white font-black text-[9px] rounded-full flex items-center justify-center border-2 border-white dark:border-[#0f0a1e] animate-pulse">
+            <span 
+              data-testid="header-bell-badge"
+              class="absolute -top-1.5 -right-1.5 min-w-[19px] h-[19px] px-1 bg-rose-500 text-white font-black text-[10.5px] rounded-full flex items-center justify-center border-2 border-white dark:border-[#120b29] shadow-xs animate-pulse leading-none"
+            >
               3
             </span>
           </button>
@@ -183,11 +189,11 @@
           >
             <div class="flex items-center justify-between px-4 pb-2 border-b border-slate-100 dark:border-white/10">
               <div class="flex items-center gap-2">
-                <span class="font-bold text-slate-900 dark:text-white text-xs font-display">Alertas Institucionales</span>
-                <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400">3 pendientes</span>
+                <span class="font-bold text-slate-900 dark:text-white text-xs font-display">{{ t('institutionalAlerts', 'Alertas Institucionales') }}</span>
+                <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-400">3 {{ t('pendingAlerts', 'pendientes') }}</span>
               </div>
               <button class="text-[11px] font-bold text-amber-600 dark:text-brand-gold hover:underline cursor-pointer">
-                Marcar leídas
+                {{ t('markAsRead', 'Marcar leídas') }}
               </button>
             </div>
 
@@ -342,7 +348,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span>Configuración</span>
+                <span>{{ t('settings', 'Configuración') }}</span>
               </NuxtLink>
 
               <NuxtLink 
@@ -353,7 +359,7 @@
                 <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
-                <span>Documentación del Sistema</span>
+                <span>{{ t('documentation', 'Documentación del Sistema') }}</span>
               </NuxtLink>
             </div>
 
@@ -369,7 +375,7 @@
                 <svg class="w-4 h-4 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
-                <span>Cerrar sesión</span>
+                <span>{{ t('logout', 'Cerrar sesión') }}</span>
               </button>
             </div>
           </div>
@@ -386,11 +392,14 @@ import { useLanguage } from '~/composables/useLanguage'
 import { useAuthStore } from '~/stores/auth'
 import { useColorMode } from '#imports'
 import { useActiveStudent } from '~/composables/useActiveStudent'
+import { useInstitution } from '~/composables/useInstitution'
+import { resolvePhotoUrl } from '~/composables/usePhotoUrl'
 
 const { currentLang, setLanguage, t } = useLanguage()
 const authStore = useAuthStore()
 const colorMode = useColorMode()
 const { representedStudents, activeStudentKey, setActiveStudent } = useActiveStudent()
+const { institution } = useInstitution()
 
 const searchQuery = ref('')
 const isLangOpen = ref(false)
@@ -412,10 +421,12 @@ const applyThemeToDom = (theme) => {
     document.documentElement.classList.add('dark')
     document.documentElement.classList.remove('light')
     document.documentElement.setAttribute('data-theme', 'dark')
+    document.documentElement.style.colorScheme = 'dark'
   } else {
     document.documentElement.classList.remove('dark')
     document.documentElement.classList.add('light')
     document.documentElement.setAttribute('data-theme', 'light')
+    document.documentElement.style.colorScheme = 'light'
   }
 }
 

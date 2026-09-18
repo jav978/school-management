@@ -8,7 +8,7 @@
             👥
           </div>
           <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight">
-            Personal y Colaboradores (Staff)
+            {{ $t('staffTitle', 'Personal y Colaboradores (Staff)') }}
           </h1>
         </div>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
@@ -26,7 +26,7 @@
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
           </svg>
-          <span>Nuevo Miembro de Personal</span>
+          <span>{{ $t('new', 'Nuevo') }} {{ $t('staff', 'Personal') }}</span>
         </button>
       </div>
     </div>
@@ -107,6 +107,15 @@
         <!-- Filter Selects -->
         <div class="flex flex-wrap items-center gap-2.5">
           <select 
+            v-model="selectedDepartment" 
+            data-testid="staff-department-filter"
+            class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
+          >
+            <option value="">Todos los Departamentos</option>
+            <option v-for="dept in departmentsList" :key="dept" :value="dept">{{ dept }}</option>
+          </select>
+
+          <select 
             v-model="selectedType" 
             data-testid="staff-type-filter"
             class="text-xs px-3 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple cursor-pointer"
@@ -160,7 +169,7 @@
               <div class="w-12 h-12 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 overflow-hidden border border-brand-primary/20 dark:border-brand-purple/30 flex-shrink-0 flex items-center justify-center shadow-inner">
                 <img 
                   v-if="person.photo_url" 
-                  :src="person.photo_url" 
+                  :src="resolvePhotoUrl(person.photo_url)" 
                   :alt="person.first_name" 
                   class="w-full h-full object-cover"
                 />
@@ -177,13 +186,42 @@
                 </p>
               </div>
             </div>
+            
+            <!-- Badges Column -->
+            <div class="flex flex-col items-end gap-1.5 flex-shrink-0">
+              <span 
+                :class="getStatusBadgeClass(person.status)"
+                class="px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize border"
+              >
+                {{ person.status === 'inactivo' ? 'Inactivo' : (person.status === 'licencia' ? 'En Licencia' : 'Activo') }}
+              </span>
 
-            <span 
-              :class="getStatusBadgeClass(person.status)"
-              class="px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize flex-shrink-0 border"
-            >
-              {{ person.status === 'inactivo' ? 'Inactivo' : (person.status === 'licencia' ? 'En Licencia' : 'Activo') }}
-            </span>
+              <!-- User Account Badge -->
+              <span 
+                data-testid="staff-account-badge"
+                class="px-2 py-0.5 rounded-full text-[9px] font-bold border flex items-center gap-1 shadow-2xs"
+                :class="person.has_user_account || person.user_id 
+                  ? 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30' 
+                  : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-white/10'"
+                :title="person.has_user_account || person.user_id ? 'Cuenta de usuario activa en el sistema' : 'Sin cuenta de acceso al sistema'"
+              >
+                <span>{{ person.has_user_account || person.user_id ? '👤' : '📄' }}</span>
+                <span>{{ person.has_user_account || person.user_id ? 'Cuenta Activa' : 'Sin Usuario' }}</span>
+              </span>
+
+              <!-- Carnet Badge -->
+              <span 
+                data-testid="staff-carnet-badge"
+                class="px-2 py-0.5 rounded-full text-[9px] font-bold border flex items-center gap-1 shadow-2xs"
+                :class="person.photo_url 
+                  ? 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30' 
+                  : 'bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20'"
+                :title="person.photo_url ? 'Fotografía registrada, carnet listo para emitir' : 'Fotografía pendiente para carnet escolar'"
+              >
+                <span>{{ person.photo_url ? '🪪' : '📷' }}</span>
+                <span>{{ person.photo_url ? 'Carnet Listo' : 'Foto Pendiente' }}</span>
+              </span>
+            </div>
           </div>
 
           <!-- Identification & Type -->
@@ -195,6 +233,16 @@
             <div class="flex justify-between items-center">
               <span class="text-slate-400">Tipo / Depto:</span>
               <span class="font-semibold capitalize text-slate-700 dark:text-slate-300">{{ person.staff_type }} ({{ person.department || 'General' }})</span>
+            </div>
+            <div v-if="person.hire_date" class="flex justify-between items-center">
+              <span class="text-slate-400">Fecha de Ingreso:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300 font-mono">{{ person.hire_date }}</span>
+            </div>
+            <div v-if="person.date_of_birth || person.gender" class="flex justify-between items-center">
+              <span class="text-slate-400">Nacimiento / Género:</span>
+              <span class="font-medium text-slate-700 dark:text-slate-300 capitalize">
+                {{ person.date_of_birth || '' }} {{ person.gender ? `(${person.gender === 'femenino' ? 'F' : 'M'})` : '' }}
+              </span>
             </div>
             <div v-if="person.blood_type" class="flex justify-between items-center">
               <span class="text-slate-400">Tipo de Sangre:</span>
@@ -217,15 +265,23 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center justify-between gap-2 mt-5 pt-3 border-t border-slate-100 dark:border-white/10">
-          <div class="text-[10px] text-slate-400 font-medium">
-            U.E Santa Luisa
-          </div>
+          <!-- Carnet Direct Navigation Link -->
+          <NuxtLink 
+            :to="'/idcards?type=' + (person.staff_type === 'obrero' ? 'obrero' : 'administrativo')"
+            data-testid="staff-carnet-link"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/30 hover:bg-sky-100 dark:hover:bg-sky-900/50 rounded-xl transition-all border border-sky-200 dark:border-sky-800/40 cursor-pointer shadow-2xs active:scale-[0.98]"
+            title="Ir al módulo de Carnets Escolares para emitir o imprimir credencial"
+          >
+            <span>🪪</span>
+            <span>Carnet</span>
+          </NuxtLink>
+
           <div class="flex items-center gap-1.5">
             <button 
               v-if="person.status === 'inactivo'"
               @click="reactivatePerson(person)"
               data-testid="reactivate-staff-btn"
-              class="px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-xl transition-all flex items-center gap-1"
+              class="px-2.5 py-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/30 rounded-xl transition-all flex items-center gap-1 cursor-pointer"
               title="Reactivar Colaborador"
             >
               <span>↺</span>
@@ -304,7 +360,7 @@
                   <span>1. Identificación y Clasificación Laboral</span>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <!-- Staff ID -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
@@ -359,6 +415,19 @@
                       <option value="profesional">Profesional</option>
                       <option value="obrero">Obrero / Servicios</option>
                     </select>
+                  </div>
+
+                  <!-- Hire Date -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Fecha de Ingreso
+                    </label>
+                    <input 
+                      v-model="form.hire_date" 
+                      data-testid="staff-hire-date-input"
+                      type="date" 
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all font-sans"
+                    />
                   </div>
                 </div>
 
@@ -463,6 +532,36 @@
                   </div>
                 </div>
 
+                <!-- Date of Birth & Gender -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Fecha de Nacimiento
+                    </label>
+                    <input 
+                      v-model="form.date_of_birth" 
+                      data-testid="staff-dob-input"
+                      type="date" 
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all font-sans"
+                    />
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Género
+                    </label>
+                    <select 
+                      v-model="form.gender" 
+                      data-testid="staff-gender-select"
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
+                    >
+                      <option value="">No especificado</option>
+                      <option value="femenino">Femenino</option>
+                      <option value="masculino">Masculino</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <!-- Position / Role -->
                   <div>
@@ -484,18 +583,35 @@
                     </p>
                   </div>
 
-                  <!-- Department -->
+                  <!-- Department with Institutional Datalist -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Departamento / Área Operativa
+                      Departamento / Área Institucional
                     </label>
-                    <input 
-                      v-model="form.department" 
-                      data-testid="staff-department-input"
-                      type="text" 
-                      placeholder="Ej. Administración, Mantenimiento, Orientación"
-                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
-                    />
+                    <div class="relative">
+                      <input 
+                        v-model="form.department" 
+                        list="institutional-departments"
+                        data-testid="staff-department-input"
+                        type="text" 
+                        placeholder="Ej. Control de Estudios, Mantenimiento..."
+                        class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+                      />
+                      <datalist id="institutional-departments">
+                        <option value="Control de Estudios y Evaluación" />
+                        <option value="Dirección y Subdirección" />
+                        <option value="Administración y Finanzas" />
+                        <option value="Orientación y Psicología (DOBE)" />
+                        <option value="Servicios Generales y Mantenimiento" />
+                        <option value="Seguridad y Vigilancia" />
+                        <option value="Tecnología y Soporte Técnico" />
+                        <option value="Biblioteca y Archivo" />
+                        <option value="Bienestar Estudiantil" />
+                        <option value="Coordinación Pedagógica" />
+                        <option value="Servicio Médico / Enfermería" />
+                        <option value="General / Operativo" />
+                      </datalist>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -599,6 +715,129 @@
                 </div>
               </div>
 
+              <!-- Section 4: Cuenta de Usuario y Carnetización -->
+              <div class="space-y-4">
+                <div class="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-brand-primary dark:text-brand-gold border-b border-slate-100 dark:border-white/10 pb-1.5">
+                  <span class="w-2 h-2 rounded-full bg-brand-primary dark:bg-brand-gold"></span>
+                  <span>4. Cuenta de Usuario y Carnetización Escolar</span>
+                </div>
+
+                <!-- User Account Toggle Box -->
+                <div 
+                  class="p-4 rounded-2xl border transition-all"
+                  :class="form.create_user_account 
+                    ? 'bg-purple-500/5 dark:bg-purple-950/20 border-purple-500/30' 
+                    : 'bg-slate-50 dark:bg-[#110926] border-slate-200 dark:border-white/10'"
+                >
+                  <div class="flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                      <div 
+                        class="w-9 h-9 rounded-xl flex items-center justify-center text-base"
+                        :class="form.create_user_account ? 'bg-purple-500/20 text-purple-600 dark:text-purple-300' : 'bg-slate-200 dark:bg-white/10 text-slate-400'"
+                      >
+                        🔐
+                      </div>
+                      <div>
+                        <p class="text-xs font-bold text-slate-800 dark:text-slate-100">
+                          Habilitar Cuenta de Acceso Web al Sistema
+                        </p>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                          Permite al personal iniciar sesión en el portal con rol Staff / Colaborador
+                        </p>
+                      </div>
+                    </div>
+
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        v-model="form.create_user_account" 
+                        data-testid="staff-create-user-toggle"
+                        class="sr-only peer"
+                      />
+                      <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-purple"></div>
+                    </label>
+                  </div>
+
+                  <!-- Expanded Account Options -->
+                  <div v-if="form.create_user_account" class="mt-4 pt-4 border-t border-purple-500/20 space-y-3">
+                    <!-- Status message if existing user account linked -->
+                    <div v-if="form.user_id" class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-xs text-emerald-700 dark:text-emerald-300 flex items-center justify-between gap-2">
+                      <div class="flex items-center gap-2">
+                        <span>✓</span>
+                        <span>Colaborador vinculado a la cuenta de usuario <strong>#{{ form.user_id }}</strong> ({{ form.email || 'Email institucional' }}).</span>
+                      </div>
+                      <button 
+                        type="button" 
+                        @click="unlinkUserAccount" 
+                        class="text-[11px] font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
+                      >
+                        Desvincular
+                      </button>
+                    </div>
+
+                    <div v-else class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-xs text-purple-700 dark:text-purple-300">
+                      ℹ️ Se creará automáticamente un usuario en <strong>school.users</strong> con el correo <strong>{{ form.email || '(ingresa el correo en la Sección 3)' }}</strong> y rol <strong>Staff</strong>.
+                    </div>
+
+                    <!-- Password field -->
+                    <div>
+                      <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300">
+                          {{ form.user_id ? 'Restablecer Contraseña (opcional)' : 'Contraseña de Acceso inicial' }}
+                        </label>
+                        <button 
+                          type="button" 
+                          @click="generatePassword" 
+                          class="text-[11px] font-bold text-brand-purple hover:underline cursor-pointer flex items-center gap-1"
+                        >
+                          <span>🎲</span>
+                          <span>Generar Segura</span>
+                        </button>
+                      </div>
+                      <div class="relative">
+                        <input 
+                          v-model="form.user_account_password" 
+                          data-testid="staff-user-password-input"
+                          :type="showPassword ? 'text' : 'password'" 
+                          :placeholder="form.user_id ? 'Dejar en blanco para conservar contraseña actual' : 'Ej. SantaLuisa.2026!*'"
+                          class="w-full pl-3.5 pr-10 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-mono transition-all"
+                        />
+                        <button 
+                          type="button" 
+                          @click="showPassword = !showPassword" 
+                          class="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs cursor-pointer"
+                        >
+                          {{ showPassword ? '🙈' : '👁️' }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Carnet Status Info Box -->
+                <div class="p-3.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-2xl flex items-center justify-between gap-3 text-xs">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-xl">🪪</span>
+                    <div>
+                      <p class="font-bold text-slate-800 dark:text-slate-200">Integración con Carnets Escolares</p>
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400">
+                        {{ form.photo_url 
+                          ? 'Foto cargada: El carnet institucional está listo para emitir e imprimir.' 
+                          : 'Pendiente fotografía: Sube una foto en la Sección 2 para habilitar el carnet con fotografía.' }}
+                      </p>
+                    </div>
+                  </div>
+                  <NuxtLink 
+                    to="/idcards?type=administrativo"
+                    target="_blank"
+                    class="text-[11px] font-bold text-sky-600 dark:text-sky-400 hover:underline flex-shrink-0 flex items-center gap-1"
+                  >
+                    <span>Ver Carnets</span>
+                    <span>↗</span>
+                  </NuxtLink>
+                </div>
+              </div>
+
             </div>
 
             <!-- Sticky Fixed Modal Footer -->
@@ -694,6 +933,7 @@ const saving = ref(false)
 const searchQuery = ref('')
 const selectedType = ref('')
 const selectedStatus = ref('')
+const selectedDepartment = ref('')
 
 const isModalOpen = ref(false)
 const isEditing = ref(false)
@@ -710,6 +950,9 @@ const form = ref({
   staff_type: 'administrativo',
   position: '',
   department: '',
+  date_of_birth: '',
+  hire_date: '',
+  gender: '',
   phone: '',
   email: '',
   address_line1: '',
@@ -717,8 +960,32 @@ const form = ref({
   blood_type: 'O+',
   emergency_contact: '',
   emergency_phone: '',
-  status: 'activo'
+  status: 'activo',
+  create_user_account: false,
+  user_account_password: '',
+  unlink_user_account: false,
+  user_id: null
 })
+
+const showPassword = ref(false)
+
+const generatePassword = () => {
+  const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$'
+  let pass = 'Staff26!'
+  for (let i = 0; i < 6; i++) {
+    pass += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  form.value.user_account_password = pass
+  showPassword.value = true
+  toast.info('Contraseña segura generada: ' + pass)
+}
+
+const unlinkUserAccount = () => {
+  form.value.user_id = null
+  form.value.create_user_account = false
+  form.value.unlink_user_account = true
+  toast.warning('Se desvinculará la cuenta de usuario al guardar los cambios.')
+}
 
 const formErrors = ref({})
 
@@ -762,6 +1029,11 @@ const stats = computed(() => {
   return { total, administrativos, profesionales, obreros, activos }
 })
 
+const departmentsList = computed(() => {
+  const depts = new Set(staff.value.map(s => s.department).filter(Boolean))
+  return Array.from(depts).sort()
+})
+
 const filteredStaff = computed(() => {
   return staff.value.filter(s => {
     const q = searchQuery.value.toLowerCase()
@@ -772,15 +1044,17 @@ const filteredStaff = computed(() => {
       (s.staff_id && s.staff_id.toLowerCase().includes(q)) ||
       (s.employee_id && s.employee_id.toLowerCase().includes(q)) ||
       (s.position && s.position.toLowerCase().includes(q)) ||
-      (s.position_title && s.position_title.toLowerCase().includes(q))
+      (s.position_title && s.position_title.toLowerCase().includes(q)) ||
+      (s.department && s.department.toLowerCase().includes(q))
 
     const typeNormalized = s.staff_type || (s.category === 'administrative' ? 'administrativo' : s.category)
     const statusNormalized = (s.status === 'active' || s.status === 'activo') ? 'activo' : ((s.status === 'inactive' || s.status === 'inactivo') ? 'inactivo' : s.status)
 
     const matchesType = !selectedType.value || typeNormalized === selectedType.value
     const matchesStatus = !selectedStatus.value || statusNormalized === selectedStatus.value
+    const matchesDept = !selectedDepartment.value || s.department === selectedDepartment.value
 
-    return matchesSearch && matchesType && matchesStatus
+    return matchesSearch && matchesType && matchesStatus && matchesDept
   })
 })
 
@@ -801,6 +1075,7 @@ const openModal = () => {
   isEditing.value = false
   currentId.value = null
   formErrors.value = {}
+  showPassword.value = false
   form.value = {
     staff_id: `STF-00${staff.value.length + 1}`,
     first_name: '',
@@ -808,7 +1083,10 @@ const openModal = () => {
     id_card: '',
     staff_type: 'administrativo',
     position: '',
-    department: '',
+    department: 'Control de Estudios y Evaluación',
+    date_of_birth: '',
+    hire_date: new Date().toISOString().split('T')[0],
+    gender: '',
     phone: '',
     email: '',
     address_line1: '',
@@ -816,7 +1094,11 @@ const openModal = () => {
     blood_type: 'O+',
     emergency_contact: '',
     emergency_phone: '',
-    status: 'activo'
+    status: 'activo',
+    create_user_account: false,
+    user_account_password: '',
+    unlink_user_account: false,
+    user_id: null
   }
   isModalOpen.value = true
 }
@@ -825,16 +1107,25 @@ const editPerson = (person) => {
   isEditing.value = true
   currentId.value = person.id
   formErrors.value = {}
+  showPassword.value = false
   form.value = {
     ...person,
     position: person.position || person.position_title || '',
     staff_type: person.staff_type || (person.category === 'administrative' ? 'administrativo' : person.category) || 'administrativo',
     staff_id: person.staff_id || person.employee_id || '',
     id_card: person.id_card || person.national_id || '',
+    department: person.department || '',
+    date_of_birth: person.date_of_birth || '',
+    hire_date: person.hire_date || '',
+    gender: person.gender || '',
     phone: person.phone || person.phone_mobile || '',
     email: person.email || person.email_personal || '',
     emergency_contact: person.emergency_contact || person.emergency_contact_name || '',
-    emergency_phone: person.emergency_phone || person.emergency_contact_phone || ''
+    emergency_phone: person.emergency_phone || person.emergency_contact_phone || '',
+    create_user_account: Boolean(person.has_user_account || person.user_id),
+    user_account_password: '',
+    unlink_user_account: false,
+    user_id: person.user_id || null
   }
   isModalOpen.value = true
 }
@@ -850,6 +1141,11 @@ const savePerson = async () => {
     return
   }
 
+  if (form.value.create_user_account && !form.value.user_id && !form.value.email?.trim()) {
+    toast.warning('Para habilitar la cuenta de acceso web, el correo electrónico es obligatorio')
+    return
+  }
+
   saving.value = true
   try {
     const payload = {
@@ -861,7 +1157,13 @@ const savePerson = async () => {
       phone_mobile: form.value.phone,
       email_personal: form.value.email,
       emergency_contact_name: form.value.emergency_contact,
-      emergency_contact_phone: form.value.emergency_phone
+      emergency_contact_phone: form.value.emergency_phone,
+      hire_date: form.value.hire_date || null,
+      date_of_birth: form.value.date_of_birth || null,
+      gender: form.value.gender || null,
+      create_user_account: Boolean(form.value.create_user_account),
+      user_account_password: form.value.user_account_password || null,
+      unlink_user_account: Boolean(form.value.unlink_user_account)
     }
 
     if (isEditing.value) {

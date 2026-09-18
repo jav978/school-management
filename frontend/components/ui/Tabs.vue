@@ -1,10 +1,13 @@
 <template>
   <div>
     <div class="border-b border-slate-200 dark:border-white/10 mb-6">
-      <nav class="-mb-px flex space-x-6">
+      <nav class="-mb-px flex space-x-6" role="tablist">
         <button
           v-for="tab in tabs"
           :key="tab.id"
+          role="tab"
+          :data-testid="'tab-' + tab.id"
+          :aria-selected="activeTab === tab.id"
           @click="activeTab = tab.id"
           :class="[
             'py-3 px-2 border-b-2 font-bold text-sm transition-all cursor-pointer',

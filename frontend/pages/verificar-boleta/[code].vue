@@ -147,13 +147,28 @@ const verifyCode = async () => {
     const certRes = await $fetch(`${apiBase}/certificates?verification_code=${code}`)
     const certificate = certRes.data?.[0] || certRes?.[0]
     if (certificate) {
+      const typeLabel = {
+        excelencia_academica: 'Certificado de Excelencia Académica',
+        mejor_promedio: 'Diploma de Honor al Mejor Promedio',
+        conducta_excelente: 'Reconocimiento a la Conducta Intachable',
+        participacion_destacada: 'Mención de Participación Destacada',
+        reconocimiento_docente: 'Reconocimiento al Mérito Docente',
+        merito_personal: 'Reconocimiento Institucional al Personal'
+      }[certificate.certificate_type] || 'Diploma de Honor'
+
+      const modalityLabel = {
+        estudiante: 'Estudiante',
+        docente: 'Personal Docente',
+        personal: 'Personal Administrativo / Obrero'
+      }[certificate.recipient_type] || 'Estudiante'
+
       verifiedDoc.value = {
-        docType: `Certificado de Honor (${certificate.certificate_type})`,
+        docType: `${typeLabel} (${modalityLabel})`,
         recipient: certificate.recipient_name,
-        details: certificate.description,
+        details: certificate.description || `${certificate.grade_level || certificate.position || 'Educación Media'} • Año Escolar ${certificate.academic_year || '2025-2026'}`,
         average: certificate.average_grade,
         date: certificate.issue_date,
-        status: certificate.status || 'Emitido'
+        status: certificate.status === 'anulado' ? 'Anulado / Revocado' : 'Auténtico y Vigente'
       }
       return
     }

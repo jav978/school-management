@@ -54,3 +54,6 @@ test-results/
 playwright-report/
 .auth/
 
+# Scratch & temporary
+scratch/
+

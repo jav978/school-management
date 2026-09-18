@@ -4,7 +4,7 @@
     <div 
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed inset-y-0 left-0 z-50 w-64 lg:static lg:translate-x-0 transition-transform duration-300 ease-in-out h-full flex-shrink-0 print:hidden'
+        'fixed inset-y-0 left-0 z-50 w-[280px] lg:static lg:translate-x-0 transition-transform duration-300 ease-in-out h-full flex-shrink-0 print:hidden'
       ]"
     >
       <layout-sidebar @close="isSidebarOpen = false" />

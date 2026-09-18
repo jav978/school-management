@@ -194,6 +194,15 @@ const syncProfileTables = async (context) => {
           .where('user_id', user.id)
           .update({ ...teacherUpdate, updated_at: db.fn.now() })
       }
+    } else if (user.role === 'staff') {
+      const staffUpdate = {}
+      if (phone !== undefined) staffUpdate.phone_mobile = phone
+      if (avatarUrl !== undefined) staffUpdate.photo_url = avatarUrl
+      if (Object.keys(staffUpdate).length > 0) {
+        await db('school.staff')
+          .where('user_id', user.id)
+          .update({ ...staffUpdate, updated_at: db.fn.now() })
+      }
     }
   } catch (err) {
     console.error('Error syncing profile tables:', err.message)

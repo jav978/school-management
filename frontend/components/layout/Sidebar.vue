@@ -1,23 +1,30 @@
 <template>
-  <aside class="h-full w-64 bg-white dark:bg-[#120b29] text-slate-700 dark:text-slate-200 border-r border-slate-200/80 dark:border-white/10 flex flex-col justify-between transition-colors duration-200 shadow-sm dark:shadow-2xl">
+  <aside class="h-full w-[280px] bg-white dark:bg-[#120b29] text-slate-700 dark:text-slate-200 border-r border-slate-200/80 dark:border-white/10 flex flex-col justify-between transition-colors duration-200 shadow-sm dark:shadow-2xl">
     <div class="flex-1 flex flex-col min-h-0">
-      <!-- Brand Header: U.E Santa Luisa -->
-      <div class="px-5 py-4 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between flex-shrink-0">
-        <div class="flex items-center gap-3 min-w-0">
+      <!-- Brand Header: Dynamic School Branding -->
+      <div class="px-4 py-3.5 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
           <!-- School Logo Image -->
           <div class="w-10 h-10 rounded-xl bg-white dark:bg-white/10 p-1 flex items-center justify-center flex-shrink-0 shadow-xs border border-slate-200/70 dark:border-white/15 overflow-hidden">
             <img 
-              src="/logocolegio.png" 
-              alt="Logo U.E Santa Luisa" 
+              :src="resolvePhotoUrl(institution.logo_url) || '/logocolegio.png'" 
+              :alt="institution.name || 'Logo U.E Santa Luisa'" 
+              data-testid="sidebar-logo"
               class="w-full h-full object-contain" 
             />
           </div>
-          <div class="flex flex-col min-w-0">
-            <h1 class="text-base font-black font-display text-brand-primary dark:text-white tracking-tight leading-tight truncate">
-              U.E Santa Luisa
+          <div class="flex flex-col min-w-0 flex-1">
+            <h1 
+              data-testid="sidebar-school-name"
+              class="text-sm font-black font-display text-brand-primary dark:text-white tracking-tight leading-snug break-words"
+            >
+              {{ institution.name || 'U.E Colegio "Santa Luisa"' }}
             </h1>
-            <span class="text-[10px] font-bold text-slate-400 dark:text-brand-gold uppercase tracking-wider">
-              Gestión Escolar
+            <span 
+              data-testid="sidebar-system-subtitle"
+              class="text-[10px] font-bold text-slate-400 dark:text-brand-gold uppercase tracking-wider truncate mt-0.5"
+            >
+              {{ institution.system_subtitle || 'Gestión Escolar' }}
             </span>
           </div>
         </div>
@@ -34,20 +41,20 @@
       </div>
 
       <!-- Navigation Menu (Expanded height, clean scrollbar) -->
-      <nav class="mt-3 px-3 space-y-1 overflow-y-auto flex-1 pb-4">
+      <nav class="mt-2.5 px-2.5 space-y-1 overflow-y-auto flex-1 pb-4">
         <NuxtLink
           v-for="item in menuItems"
           :key="item.path"
           :to="item.path"
-          class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-brand-primary dark:hover:text-white transition-all group font-medium text-sm cursor-pointer"
-          active-class="bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-brand-gold font-bold shadow-xs border-l-4 border-amber-500 dark:border-brand-gold"
+          class="flex items-center justify-between pl-3 pr-2.5 py-2.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-white/5 hover:text-brand-primary dark:hover:text-white transition-all group font-medium text-sm cursor-pointer border-l-4 border-transparent"
+          active-class="bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-brand-gold font-bold shadow-xs !border-l-4 !border-amber-500 dark:!border-brand-gold"
         >
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-3 min-w-0">
             <!-- Icon -->
-            <span class="text-slate-400 group-hover:text-amber-600 dark:group-hover:text-brand-gold group-[.router-link-active]:text-amber-600 dark:group-[.router-link-active]:text-brand-gold transition-colors">
+            <span class="text-slate-400 group-hover:text-amber-600 dark:group-hover:text-brand-gold group-[.router-link-active]:text-amber-600 dark:group-[.router-link-active]:text-brand-gold transition-colors flex-shrink-0">
               <component :is="item.icon" class="w-5 h-5" />
             </span>
-            <span>{{ t(item.key) }}</span>
+            <span class="truncate">{{ t(item.key) }}</span>
           </div>
 
           <!-- Active dot indicator -->
@@ -70,14 +77,21 @@
 </template>
 
 <script setup>
-import { h, computed } from 'vue'
+import { h, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuthStore } from '~/stores/auth'
 import { useLanguage } from '~/composables/useLanguage'
+import { useInstitution } from '~/composables/useInstitution'
+import { resolvePhotoUrl } from '~/composables/usePhotoUrl'
 
 const route = useRoute()
 const authStore = useAuthStore()
 const { t } = useLanguage()
+const { institution, fetchInstitution } = useInstitution()
+
+onMounted(() => {
+  fetchInstitution()
+})
 
 // SVG icon helpers
 const createSvgIcon = (d) => ({
