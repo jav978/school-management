@@ -9,16 +9,11 @@ echo "🚀 Sistema de Gestión Escolar - Inicio"
 echo "============================================="
 echo ""
 
-# Ejecutar migraciones en el backend
-echo "🔄 Ejecutando migraciones..."
-cd "$DIR_RAIZ/backend" && npm run migrate
-
-# Iniciar desarrollo
-echo ""
-echo "✅ ¡Todo listo! Iniciando servidores..."
-echo ""
-echo "Frontend: http://localhost:3001"
-echo "Backend:  http://localhost:3031"
+echo "Elige cómo deseas levantar el sistema:"
+echo "1) Híbrido (BD y utilidades en Docker + Frontend y Backend locales)"
+echo "2) Todo en Docker (Frontend, Backend, BD y utilidades)"
+echo "3) Frontend y Backend locales (BD InsForge Cloud / local configurada)"
+echo "4) Salir"
 echo ""
 read -p "Selecciona una opción (1-4): " OPCION
 
@@ -45,8 +40,8 @@ case $OPCION in
         
         echo ""
         echo "✅ ¡Todo listo! Iniciando servidores Frontend y Backend localmente..."
-        echo "Frontend: http://localhost:3000"
-        echo "Backend: http://localhost:3030"
+        echo "Frontend: http://localhost:3001"
+        echo "Backend:  http://localhost:3031"
         echo ""
         cd "$DIR_RAIZ" && npm run dev
         ;;
@@ -61,20 +56,24 @@ case $OPCION in
         ;;
     3)
         echo ""
-        echo "🔍 Verificando base de datos local..."
-        if command -v psql &> /dev/null; then
-            # Intentar crear la base de datos si no existe
-            if ! psql -U postgres -lqt | cut -d \| -f 1 | grep -qw school_management; then
-                echo "⚠️  La base de datos 'school_management' no existe. Intentando crearla..."
-                psql -U postgres -c "CREATE DATABASE school_management;" &>/dev/null
-                if [ $? -eq 0 ]; then
-                    echo "✅ Base de datos 'school_management' creada con éxito."
-                else
-                    echo "❌ No se pudo crear la base de datos. Asegúrate de tener permisos o de que PostgreSQL local esté activo."
-                fi
-            else
-                echo "✅ Base de datos local detectada."
-            fi
-        fi
+        echo "🔄 Ejecutando migraciones..."
+        cd "$DIR_RAIZ/backend" && npm run migrate
+        
+        echo ""
+        echo "✅ ¡Todo listo! Iniciando servidores Frontend y Backend localmente..."
+        echo "Frontend: http://localhost:3001"
+        echo "Backend:  http://localhost:3031"
+        echo ""
+        cd "$DIR_RAIZ" && npm run dev
+        ;;
+    4)
+        echo "👋 Salida."
+        exit 0
+        ;;
+    *)
+        echo "❌ Opción no válida."
+        exit 1
+        ;;
+esac
 
 

@@ -1,6 +1,7 @@
 exports.up = async function(knex) {
   const tableExists = await knex.schema.withSchema('school').hasTable('certificates')
-  if (tableExists) {
+  const hasRecipientType = await knex.schema.withSchema('school').hasColumn('certificates', 'recipient_type')
+  if (tableExists && !hasRecipientType) {
     await knex.schema.withSchema('school').alterTable('certificates', table => {
       table.string('recipient_type', 50).defaultTo('estudiante')
       table.string('template_id', 50).defaultTo('classic')

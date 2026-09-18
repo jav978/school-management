@@ -31,16 +31,15 @@ exports.up = async function(knex) {
   }
 
   // 2. Extender tabla school.students con historial de fotos y datos socioeconómicos
-  await knex.schema.withSchema('school').alterTable('students', table => {
-    table.jsonb('photo_history').defaultTo('[]')
-    table.jsonb('socioeconomic_data').defaultTo('{}')
-    table.jsonb('authorized_pickup').defaultTo('{}')
-    table.jsonb('medical_data').defaultTo('{}')
-  }).catch(err => {
-    // Si ya existen las columnas, ignorar
-    if (err.message && err.message.includes('already exists')) return
-    throw err
-  })
+  const hasPhotoHistory = await knex.schema.withSchema('school').hasColumn('students', 'photo_history')
+  if (!hasPhotoHistory) {
+    await knex.schema.withSchema('school').alterTable('students', table => {
+      table.jsonb('photo_history').defaultTo('[]')
+      table.jsonb('socioeconomic_data').defaultTo('{}')
+      table.jsonb('authorized_pickup').defaultTo('{}')
+      table.jsonb('medical_data').defaultTo('{}')
+    })
+  }
 
   // 3. Extender tabla school.parents con photo_url y blood_type si no existen
   const parentHasPhoto = await knex.schema.withSchema('school').hasColumn('parents', 'photo_url')

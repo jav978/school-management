@@ -1,4 +1,10 @@
-exports.up = function(knex) {
+exports.up = async function(knex) {
+  const schoolUsersExists = await knex.schema.withSchema('school').hasTable('users')
+  const publicUsersExists = await knex.schema.hasTable('users')
+  if (schoolUsersExists || publicUsersExists) {
+    return
+  }
+
   return knex.schema
     .createTable('users', table => {
       table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'))

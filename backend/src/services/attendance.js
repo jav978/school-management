@@ -123,7 +123,6 @@ class AttendanceService extends KnexService {
   }
 }
 
-const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 const { validateData } = require('../hooks/validation')
 
 const attendanceSchema = {

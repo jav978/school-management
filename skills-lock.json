@@ -115,6 +115,12 @@
       "skillPath": "skills/database-testing/SKILL.md",
       "computedHash": "9c7f61c9ccffc7f16c329890b4a8e0e56ba0eb6fec42bda669f77038bcc44db8"
     },
+    "deploy-to-vercel": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/deploy-to-vercel/SKILL.md",
+      "computedHash": "d2b5bcc7c09fdb649129ffc7dd7b647ec1b155736974b974292675afd588cb39"
+    },
     "design-taste-frontend": {
       "source": "Leonxlnx/taste-skill",
       "sourceType": "github",
