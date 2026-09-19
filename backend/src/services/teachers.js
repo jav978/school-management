@@ -62,14 +62,21 @@ class TeachersService extends KnexService {
       if (existingUser) {
         userId = existingUser.id
       } else {
-        const hash = await bcrypt.hash('Teacher123!', 10)
+        const rawInitialPass = data.national_id || employee_id || 'SantaLuisa2026*'
+        const cleanInitialPass = String(rawInitialPass).replace(/[^0-9a-zA-Z]/g, '').toUpperCase()
+        const initialPass = cleanInitialPass.length >= 4 ? cleanInitialPass : 'SantaLuisa2026*'
+        const hash = await bcrypt.hash(initialPass, 10)
         const newUser = await db('school.users').insert({
           institution_id: data.institution_id || 1,
           username,
           email,
+          first_name,
+          last_name,
+          phone: data.phone_mobile || null,
           password_hash: hash,
           role: 'teacher',
-          status: 'active'
+          status: 'active',
+          is_active: true
         }).returning('id')
         userId = newUser[0]?.id || newUser[0]
       }

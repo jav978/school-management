@@ -332,6 +332,17 @@
               </button>
 
               <button 
+                @click="resetTeacherPassword(teacher)"
+                type="button"
+                class="p-2 rounded-xl text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-all cursor-pointer active:scale-95"
+                title="Restablecer contraseña a Cédula"
+              >
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+              </button>
+
+              <button 
                 v-if="teacher.status !== 'inactive'"
                 @click="promptDeleteTeacher(teacher, $event)"
                 data-testid="delete-teacher-btn"
@@ -1546,6 +1557,32 @@ const reactivateTeacher = async (teacher) => {
     await fetchTeachers()
   } catch (error) {
     toast.error(error.message || 'Error al reactivar el docente')
+  }
+}
+
+// Reset Teacher Password to Cedula
+const resetTeacherPassword = async (teacher) => {
+  if (!confirm(`¿Deseas restablecer la contraseña institucional del profesor(a) ${teacher.first_name} ${teacher.last_name}? Se asignará su número de cédula o código como nueva clave.`)) {
+    return
+  }
+
+  try {
+    const config = useRuntimeConfig()
+    const res = await $fetch(`${config.public.apiBase}/password-reset`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`
+      },
+      body: {
+        action: 'admin_reset_to_id',
+        user_id: teacher.user_id,
+        email: teacher.email_personal,
+        national_id: teacher.national_id || teacher.employee_id
+      }
+    })
+    toast.success(res.message || 'Contraseña restablecida exitosamente.')
+  } catch (error) {
+    toast.error(error.data?.message || error.message || 'Error al restablecer la contraseña')
   }
 }
 </script>

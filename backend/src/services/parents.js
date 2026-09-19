@@ -1,6 +1,7 @@
 const { KnexService } = require('@feathersjs/knex')
 const { BadRequest } = require('@feathersjs/errors')
 const crypto = require('crypto')
+const bcrypt = require('bcryptjs')
 const { authenticateHook, restrictToRoles } = require('../hooks/auth')
 
 const ALLOWED_PARENT_COLUMNS = new Set([
@@ -181,16 +182,49 @@ class ParentsService extends KnexService {
       emergency_contact: emergencyContact
     }
 
+    let userId = data.user_id
+    const email = data.email_primary ? data.email_primary.trim().toLowerCase() : null
+
+    if (email && !userId) {
+      const existingUser = await db('school.users').where({ email, is_deleted: false }).first().catch(() => null)
+      if (existingUser) {
+        userId = existingUser.id
+      } else {
+        const rawInitialPass = idNumber || nationalId || 'SantaLuisa2026*'
+        const cleanInitialPass = String(rawInitialPass).replace(/[^0-9a-zA-Z]/g, '').toUpperCase()
+        const initialPass = cleanInitialPass.length >= 4 ? cleanInitialPass : 'SantaLuisa2026*'
+        const hash = await bcrypt.hash(initialPass, 10)
+
+        const [newUser] = await db('school.users').insert({
+          institution_id: 1,
+          username: email,
+          email,
+          first_name: data.first_name.trim(),
+          last_name: data.last_name.trim(),
+          phone: data.phone_mobile || null,
+          password_hash: hash,
+          role: 'parent',
+          status: 'active',
+          is_active: true,
+          created_at: new Date(),
+          updated_at: new Date()
+        }).returning('*')
+
+        userId = newUser?.id
+      }
+    }
+
     const payload = {
       uuid: crypto.randomUUID(),
       institution_id: 1,
+      user_id: userId,
       first_name: data.first_name.trim(),
       last_name: data.last_name.trim(),
       id_type: idType,
       id_number: idNumber,
       national_id: nationalId,
       occupation: data.occupation || null,
-      email_primary: data.email_primary ? data.email_primary.trim().toLowerCase() : null,
+      email_primary: email,
       phone_mobile: data.phone_mobile || null,
       whatsapp: data.whatsapp || data.phone_mobile || null,
       notes: JSON.stringify(meta),

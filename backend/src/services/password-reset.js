@@ -7,15 +7,102 @@ class PasswordResetService {
     this.app = app
   }
 
-  // Solicitud de restablecimiento (envío de token por correo / generación)
+  // Solicitud de restablecimiento (envío de token por correo / generación / reset administrativo)
   async create(data, params) {
+    const db = this.app.get('knexClient')
+
+    // Acción administrativa: Restablecer contraseña a la cédula de un usuario
+    if (data.action === 'admin_reset_to_id') {
+      let currentUser = params.user
+      if (!currentUser && params.headers && params.headers.authorization) {
+        try {
+          const token = params.headers.authorization.replace(/^Bearer\s+/i, '').trim()
+          const payload = await this.app.service('authentication').verifyAccessToken(token)
+          currentUser = await db('school.users').where({ id: payload.sub, is_deleted: false }).first()
+        } catch (_) {}
+      }
+
+      const allowedRoles = ['admin', 'coordinator', 'control_estudio']
+      if (!currentUser || !allowedRoles.includes(currentUser.role)) {
+        throw new BadRequest('No tiene permisos para restablecer contraseñas de usuarios.')
+      }
+
+      const { user_id, email, national_id } = data
+      let targetUser = null
+
+      if (user_id) {
+        targetUser = await db('school.users').where({ id: user_id, is_deleted: false }).first()
+      } else if (email) {
+        targetUser = await db('school.users').where({ email: String(email).toLowerCase().trim(), is_deleted: false }).first()
+      }
+
+      if (!targetUser) {
+        throw new BadRequest('No se encontró el usuario a restablecer.')
+      }
+
+      // Determinar la cédula a asignar
+      let idToUse = national_id
+      if (!idToUse) {
+        if (targetUser.role === 'teacher') {
+          const t = await db('school.teachers').where(function() {
+            this.where({ user_id: targetUser.id }).orWhere({ email: targetUser.email })
+          }).first()
+          idToUse = t?.national_id || t?.employee_id
+        } else if (targetUser.role === 'parent') {
+          const p = await db('school.parents').where(function() {
+            this.where({ user_id: targetUser.id }).orWhere({ email_primary: targetUser.email })
+          }).first()
+          idToUse = p?.id_number || p?.national_id
+        } else if (targetUser.role === 'staff') {
+          const s = await db('school.staff').where(function() {
+            this.where({ user_id: targetUser.id }).orWhere({ email: targetUser.email })
+          }).first()
+          idToUse = s?.national_id || s?.employee_id
+        }
+      }
+
+      // Normalizar cédula o clave por defecto
+      let cleanId = String(idToUse || '').replace(/[^0-9a-zA-Z]/g, '').toUpperCase()
+      if (!cleanId || cleanId.length < 4) {
+        cleanId = 'SantaLuisa2026*'
+      }
+
+      const passwordHash = await bcrypt.hash(cleanId, 10)
+
+      await db('school.users')
+        .where({ id: targetUser.id })
+        .update({
+          password_hash: passwordHash,
+          password_changed_at: db.fn.now(),
+          reset_token: null,
+          reset_token_exp: null,
+          login_attempts: 0,
+          locked_until: null,
+          updated_at: db.fn.now()
+        })
+
+      await db('school.user_sessions')
+        .where({ user_id: targetUser.id, is_active: true })
+        .update({
+          is_active: false,
+          ended_at: db.fn.now()
+        })
+
+      return {
+        success: true,
+        message: `Contraseña restablecida exitosamente para ${targetUser.email}. La nueva clave es: ${cleanId}`,
+        temporary_password: cleanId,
+        user_id: targetUser.id,
+        email: targetUser.email
+      }
+    }
+
     const { email } = data
     if (!email || !email.includes('@')) {
       throw new BadRequest('Debe proporcionar un correo electrónico válido.')
     }
 
     const cleanEmail = String(email).toLowerCase().trim()
-    const db = this.app.get('knexClient')
 
     const user = await db('school.users')
       .where({ email: cleanEmail, is_deleted: false })

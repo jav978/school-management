@@ -276,6 +276,16 @@
               </svg>
             </button>
             <button
+              @click="promptResetPassword(parent, $event)"
+              type="button"
+              class="p-2 text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl transition-all cursor-pointer border border-transparent hover:border-amber-500/30"
+              title="Restablecer contraseña a Cédula"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+              </svg>
+            </button>
+            <button
               @click="promptDeleteParent(parent, $event)"
               type="button"
               data-testid="delete-parent-btn"
@@ -381,6 +391,16 @@
                   >
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                  <button
+                    @click="promptResetPassword(p, $event)"
+                    type="button"
+                    class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition-colors cursor-pointer"
+                    title="Restablecer contraseña a Cédula"
+                  >
+                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                     </svg>
                   </button>
                   <button
@@ -1080,6 +1100,33 @@ const confirmDeleteParent = async () => {
   } finally {
     isDeleteModalOpen.value = false
     parentToDelete.value = null
+  }
+}
+
+// Reset Parent Password to Cedula
+const promptResetPassword = async (parent, event) => {
+  if (event) event.stopPropagation()
+  if (!confirm(`¿Deseas restablecer la contraseña institucional del representante ${parent.first_name} ${parent.last_name}? Se asignará su número de cédula como nueva clave.`)) {
+    return
+  }
+
+  try {
+    const config = useRuntimeConfig()
+    const res = await $fetch(`${config.public.apiBase}/password-reset`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`
+      },
+      body: {
+        action: 'admin_reset_to_id',
+        user_id: parent.user_id,
+        email: parent.email_primary,
+        national_id: parent.id_number || parent.national_id
+      }
+    })
+    toast.success(res.message || 'Contraseña restablecida exitosamente.')
+  } catch (error) {
+    toast.error(error.data?.message || error.message || 'Error al restablecer la contraseña')
   }
 }
 

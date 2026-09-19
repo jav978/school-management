@@ -199,10 +199,13 @@ class StaffService extends KnexService {
       } else {
         const emailPrefix = emailToUse.split('@')[0].replace(/[^a-zA-Z0-9_]/g, '')
         const generatedUsername = `${emailPrefix}_${Math.floor(1000 + Math.random() * 9000)}`
+        const rawInitialPass = raw.national_id || raw.id_card || raw.employee_id || 'SantaLuisa2026*'
+        const cleanInitialPass = String(rawInitialPass).replace(/[^0-9a-zA-Z]/g, '').toUpperCase()
+        const initialPass = cleanInitialPass.length >= 4 ? cleanInitialPass : 'SantaLuisa2026*'
         const userPayload = {
           email: emailToUse.toLowerCase(),
           username: generatedUsername,
-          password: raw.user_account_password || 'Staff2026!*',
+          password: raw.user_account_password || initialPass,
           role: 'staff',
           institution_id: raw.institution_id || 1,
           phone: raw.phone_mobile || raw.phone || null,
