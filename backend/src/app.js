@@ -27,6 +27,11 @@ app.use(helmet({
 }))
 
 // Configuration
+const host = process.env.BACKEND_HOST || process.env.HOST || 'school-backend-9e07b02c-badb-4ddd-94ca-afd4d8aca2bd.fly.dev'
+const port = process.env.PORT || 3030
+app.set('host', host)
+app.set('port', port)
+
 app.set('authentication', {
   secret: process.env.JWT_SECRET || 'school-management-secret-key',
   service: 'users',
@@ -45,6 +50,9 @@ app.set('authentication', {
   },
   oauth: {
     redirect: process.env.OAUTH_REDIRECT || 'https://gestionescolarcolegiosantaluisa.vercel.app/auth/callback',
+    defaults: {
+      origin: process.env.APP_ORIGIN || `https://${host}`
+    },
     google: {
       key: process.env.GOOGLE_CLIENT_ID || '',
       secret: process.env.GOOGLE_CLIENT_SECRET || '',

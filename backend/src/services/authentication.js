@@ -219,6 +219,73 @@ class CustomAuthenticationService extends AuthenticationService {
   }
 }
 
+class CustomGoogleStrategy extends OAuthStrategy {
+  async getEntityQuery(profile, _params) {
+    const email = (profile.email || (profile._json && profile._json.email) || '').toLowerCase().trim()
+    return { email, is_deleted: false }
+  }
+
+  async findEntity(profile, params) {
+    const db = this.app.get('knexClient') || defaultDb
+    const email = (profile.email || (profile._json && profile._json.email) || '').toLowerCase().trim()
+    if (!email) return null
+    const user = await db('school.users')
+      .where({ email, is_deleted: false })
+      .first()
+    return user || null
+  }
+
+  async createEntity(profile, params) {
+    const db = this.app.get('knexClient') || defaultDb
+    const email = (profile.email || (profile._json && profile._json.email) || '').toLowerCase().trim()
+    const name = profile.name || profile.displayName || ''
+    const parts = name.trim().split(' ')
+    const firstName = parts[0] || 'Usuario'
+    const lastName = parts.slice(1).join(' ') || 'Google'
+    const avatar = profile.picture || profile.avatar_url || null
+
+    const [newUser] = await db('school.users').insert({
+      email,
+      username: email,
+      role: 'parent',
+      status: 'active',
+      is_active: true,
+      avatar_url: avatar,
+      first_name: firstName,
+      last_name: lastName,
+      preferences: JSON.stringify({
+        google_id: profile.sub || profile.id,
+        onboarding_completed: false
+      }),
+      created_at: db.fn.now(),
+      updated_at: db.fn.now()
+    }).returning('*')
+
+    return newUser
+  }
+
+  async updateEntity(entity, profile, params) {
+    const db = this.app.get('knexClient') || defaultDb
+    let prefs = {}
+    try {
+      prefs = typeof entity.preferences === 'string' ? JSON.parse(entity.preferences) : (entity.preferences || {})
+    } catch (_) {}
+
+    prefs.google_id = profile.sub || profile.id
+
+    const [updatedUser] = await db('school.users')
+      .where({ id: entity.id })
+      .update({
+        avatar_url: entity.avatar_url || profile.picture || null,
+        preferences: JSON.stringify(prefs),
+        updated_at: db.fn.now()
+      })
+      .returning('*')
+
+    return updatedUser || entity
+  }
+}
+
 module.exports = function (app) {
   const authentication = new CustomAuthenticationService(app)
 
@@ -229,7 +296,7 @@ module.exports = function (app) {
 
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     app.configure(oauth())
-    authentication.register('google', new OAuthStrategy())
+    authentication.register('google', new CustomGoogleStrategy())
   }
 
   const service = app.service('authentication')
