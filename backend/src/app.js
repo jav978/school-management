@@ -12,6 +12,20 @@ dotenv.config()
 
 const app = express(feathers())
 
+// Security Headers & CORS (Must be first to apply to all routes and preflight OPTIONS)
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin']
+}))
+app.options('*', cors())
+
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: false
+}))
+
 // Configuration
 app.set('authentication', {
   secret: process.env.JWT_SECRET || 'school-management-secret-key',
@@ -45,13 +59,6 @@ app.get('/oauth/status', (req, res) => {
     google: Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET)
   })
 })
-
-// Security Headers & CORS
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' },
-  contentSecurityPolicy: false
-}))
-app.use(cors())
 
 // Concurrency & Brute-Force Protection (Rate Limiters)
 app.use('/authentication', authLimiter)
