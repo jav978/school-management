@@ -58,6 +58,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       '/reports': ['admin', 'coordinator', 'control_estudio'],
       '/academic-planning': ['admin', 'coordinator', 'teacher'],
       '/classes': ['admin', 'coordinator', 'control_estudio', 'teacher'],
+      '/feedback': ['admin', 'coordinator', 'control_estudio'],
       '/settings': ['admin']
     }
 
