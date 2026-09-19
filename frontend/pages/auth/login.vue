@@ -193,7 +193,11 @@ const handleGoogleLogin = async () => {
   try {
     const status = await $fetch(`${config.public.apiBase}/oauth/status`).catch(() => ({ google: false }))
     if (status && status.google) {
-      window.location.href = `${config.public.apiBase}/oauth/google`
+      if (window.top && window.top !== window) {
+        window.top.location.href = `${config.public.apiBase}/oauth/google`
+      } else {
+        window.location.href = `${config.public.apiBase}/oauth/google`
+      }
     } else {
       showGoogleModal.value = true
     }

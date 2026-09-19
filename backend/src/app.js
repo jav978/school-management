@@ -56,7 +56,7 @@ app.set('authentication', {
     google: {
       key: process.env.GOOGLE_CLIENT_ID || '',
       secret: process.env.GOOGLE_CLIENT_SECRET || '',
-      scope: ['email', 'profile']
+      scope: ['openid', 'email', 'profile']
     }
   }
 })
