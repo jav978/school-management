@@ -10,6 +10,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   const isPublicRoute = 
     to.path === '/auth/login' || 
+    to.path === '/auth/forgot-password' ||
+    to.path === '/auth/reset-password' ||
+    to.path === '/auth/onboarding' ||
+    to.path === '/auth/callback' ||
     to.path === '/auth/2fa-challenge' || 
     to.path === '/404' || 
     to.path.startsWith('/verificar-boleta')

@@ -44,7 +44,7 @@ app.set('authentication', {
     passwordField: 'password'
   },
   oauth: {
-    redirect: process.env.OAUTH_REDIRECT || 'http://localhost:3001/dashboard',
+    redirect: process.env.OAUTH_REDIRECT || 'https://gestionescolarcolegiosantaluisa.vercel.app/auth/callback',
     google: {
       key: process.env.GOOGLE_CLIENT_ID || '',
       secret: process.env.GOOGLE_CLIENT_SECRET || '',
