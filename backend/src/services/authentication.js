@@ -225,12 +225,12 @@ module.exports = function (app) {
   authentication.register('jwt', new JWTStrategy())
   authentication.register('local', new CustomLocalStrategy())
 
+  app.use('authentication', authentication)
+
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     app.configure(oauth())
     authentication.register('google', new OAuthStrategy())
   }
-
-  app.use('authentication', authentication)
 
   const service = app.service('authentication')
 
