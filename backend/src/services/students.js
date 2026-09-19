@@ -188,6 +188,13 @@ module.exports = function (app) {
           const enrich = s => {
             if (!s || typeof s !== 'object') return s
             s.full_name = `${s.first_name || ''} ${s.last_name || ''}`.trim()
+            if (!s.grade && s.notes) {
+              const match = s.notes.match(/([^|]+(?:grado|año))\s*-\s*Sección\s*([A-Za-z])/i)
+              if (match) {
+                s.grade = match[1].trim()
+                s.section = match[2].trim().toUpperCase()
+              }
+            }
             return s
           }
           if (Array.isArray(context.result?.data)) {
