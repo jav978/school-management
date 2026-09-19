@@ -69,31 +69,19 @@
           <div class="flex-grow border-t border-slate-200 dark:border-slate-800"></div>
         </div>
 
-        <!-- Google Notice Banner if Not Configured -->
-        <div v-if="googleNotice" class="mb-5 p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/40 text-amber-800 dark:text-amber-300 text-xs flex items-start gap-2.5">
-          <svg class="w-4 h-4 flex-shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <div class="flex-1">
-            <span class="font-bold">Google OAuth en Modo Configurable:</span>
-            <p class="mt-0.5 text-[11px] text-amber-700/90 dark:text-amber-300/80">
-              Para vincular con Google Workspace, configure <code class="font-mono font-semibold">GOOGLE_CLIENT_ID</code> y <code class="font-mono font-semibold">GOOGLE_CLIENT_SECRET</code> en el archivo <code class="font-mono font-semibold">.env</code> del backend. Puede continuar accediendo con el Administrador local.
-            </p>
-          </div>
-          <button @click="googleNotice = false" class="text-amber-500 hover:text-amber-700 text-sm font-bold">✕</button>
-        </div>
-
         <form @submit.prevent="handleLogin" onsubmit="return false;" class="space-y-5">
           <!-- Username / Email Field -->
           <div>
-            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-2">Correo Institucional</label>
+            <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-2">
+              Correo Institucional
+            </label>
             <div class="relative">
               <input
                 v-model="email"
                 type="email"
                 required
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-sm transition-all"
-                placeholder="admin@santaluisa.edu.ve"
+                placeholder="ejemplo@santaluisa.edu.ve"
               />
             </div>
           </div>
@@ -101,7 +89,15 @@
           <!-- Password Field -->
           <div>
             <div class="flex justify-between items-center mb-2">
-              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">Contraseña</label>
+              <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider">
+                Contraseña
+              </label>
+              <NuxtLink 
+                to="/auth/forgot-password" 
+                class="text-xs text-orange-600 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 font-semibold transition-colors"
+              >
+                ¿Olvidaste tu contraseña?
+              </NuxtLink>
             </div>
             <div class="relative">
               <input
@@ -145,34 +141,29 @@
           </div>
         </form>
 
-        <!-- Quick Fill Helper Buttons for Testing (Clean-Slate Environment) -->
-        <div class="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 text-center">
-          <div class="flex items-center justify-between mb-3">
-            <p class="text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-              Entorno en Frío (Test)
-            </p>
-            <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              0 Alumnos | 1 Admin
-            </span>
-          </div>
-          
-          <button
-            type="button"
-            @click="quickLogin('admin@santaluisa.edu.ve', 'admin123')"
-            class="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/90 hover:bg-orange-50 dark:hover:bg-orange-950/30 text-slate-700 dark:text-slate-200 hover:text-orange-600 text-xs font-semibold border border-slate-200/70 dark:border-slate-700/60 transition-all flex items-center justify-between cursor-pointer"
-          >
-            <span class="flex items-center gap-2">
-              <span>👑</span>
-              <span class="font-bold">Administrador General</span>
-              <span class="text-slate-400 dark:text-slate-500 font-normal">admin@santaluisa.edu.ve</span>
-            </span>
-            <span class="text-[10px] text-orange-600 dark:text-orange-400 font-bold uppercase tracking-wider">Cargar</span>
-          </button>
-        </div>
-
       </div>
     </div>
+
+    <!-- Modal Informativo Institucional Google OAuth -->
+    <div v-if="showGoogleModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 max-w-sm w-full border border-slate-200 dark:border-slate-800 shadow-2xl text-center space-y-4">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 flex items-center justify-center text-2xl shadow-inner">
+          🏫
+        </div>
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Acceso con Google Institucional</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+          El enlace con Google Workspace se encuentra en proceso de sincronización para el dominio escolar. Puede acceder de forma inmediata con las credenciales emitidas por Administración.
+        </p>
+        <button
+          type="button"
+          @click="showGoogleModal = false"
+          class="w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs rounded-xl shadow-md transition-all cursor-pointer"
+        >
+          Entendido, acceder con credenciales
+        </button>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -187,34 +178,27 @@ definePageMeta({
 const config = useRuntimeConfig()
 const authStore = useAuthStore()
 
-const email = ref('admin@santaluisa.edu.ve')
-const password = ref('admin123')
+const email = ref('')
+const password = ref('')
 const showPassword = ref(false)
 const error = ref('')
 const loading = ref(false)
 const googleLoading = ref(false)
-const googleNotice = ref(false)
-
-const quickLogin = (userEmail, userPass) => {
-  email.value = userEmail
-  password.value = userPass
-}
+const showGoogleModal = ref(false)
 
 const handleGoogleLogin = async () => {
   googleLoading.value = true
-  googleNotice.value = false
   error.value = ''
 
   try {
     const status = await $fetch(`${config.public.apiBase}/oauth/status`).catch(() => ({ google: false }))
     if (status && status.google) {
-      // Redirect to Feathers Google OAuth strategy
       window.location.href = `${config.public.apiBase}/oauth/google`
     } else {
-      googleNotice.value = true
+      showGoogleModal.value = true
     }
   } catch (err) {
-    googleNotice.value = true
+    showGoogleModal.value = true
   } finally {
     googleLoading.value = false
   }
@@ -229,7 +213,12 @@ const handleLogin = async () => {
     if (res && res.two_factor_required) {
       navigateTo('/auth/2fa-challenge')
     } else {
-      navigateTo('/dashboard')
+      const user = authStore.user || res.user
+      if (user && user.status === 'pending') {
+        error.value = 'Su cuenta ha sido registrada y está en proceso de verificación por la Dirección del Plantel.'
+      } else {
+        navigateTo('/dashboard')
+      }
     }
   } catch (err) {
     if (err.statusCode === 429 || err.status === 429 || err.data?.code === 429) {

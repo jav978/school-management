@@ -19,6 +19,8 @@ process.on('unhandledRejection', (reason, promise) => {
 // Core & Personnel services
 require('./src/services/authentication')(app)
 require('./src/services/two-factor')(app)
+require('./src/services/password-reset')(app)
+require('./src/services/oauth-onboarding')(app)
 require('./src/services/users')(app)
 require('./src/services/students')(app)
 require('./src/services/teachers')(app)

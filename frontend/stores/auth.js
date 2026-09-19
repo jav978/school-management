@@ -258,6 +258,39 @@ export const useAuthStore = defineStore('auth', {
         await this.logout()
         return false
       }
+    },
+
+    async requestPasswordReset(email) {
+      const config = useRuntimeConfig()
+      return await $fetch(`${config.public.apiBase}/password-reset`, {
+        method: 'POST',
+        body: { email }
+      })
+    },
+
+    async verifyResetToken(token) {
+      const config = useRuntimeConfig()
+      return await $fetch(`${config.public.apiBase}/password-reset/${token}`, {
+        method: 'GET'
+      })
+    },
+
+    async resetPassword(token, password) {
+      const config = useRuntimeConfig()
+      return await $fetch(`${config.public.apiBase}/password-reset/${token}`, {
+        method: 'PATCH',
+        body: { token, password }
+      })
+    },
+
+    async completeOAuthOnboarding(payload) {
+      const config = useRuntimeConfig()
+      const currentToken = this.token || (import.meta.client ? sessionStorage.getItem('token') : null)
+      return await $fetch(`${config.public.apiBase}/oauth-onboarding`, {
+        method: 'POST',
+        headers: currentToken ? { Authorization: `Bearer ${currentToken}` } : {},
+        body: payload
+      })
     }
   }
 })
