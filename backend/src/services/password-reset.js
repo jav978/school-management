@@ -32,8 +32,88 @@ class PasswordResetService {
 
       if (user_id) {
         targetUser = await db('school.users').where({ id: user_id, is_deleted: false }).first()
-      } else if (email) {
+      }
+      if (!targetUser && email) {
         targetUser = await db('school.users').where({ email: String(email).toLowerCase().trim(), is_deleted: false }).first()
+      }
+
+      // Si no existe el usuario en school.users aún, verificar si existe el docente o representante para autoprovisionarlo
+      let teacherRecord = null
+      let parentRecord = null
+
+      if (!targetUser) {
+        // Buscar en teachers
+        if (user_id) {
+          teacherRecord = await db('school.teachers').where({ id: user_id, is_deleted: false }).orWhere({ user_id, is_deleted: false }).first()
+        }
+        if (!teacherRecord && email) {
+          teacherRecord = await db('school.teachers').where({ email_personal: String(email).toLowerCase().trim(), is_deleted: false }).first()
+        }
+        if (!teacherRecord && national_id) {
+          teacherRecord = await db('school.teachers').where({ national_id: String(national_id).trim(), is_deleted: false }).first()
+        }
+
+        // Buscar en parents
+        if (!teacherRecord) {
+          if (user_id) {
+            parentRecord = await db('school.parents').where({ id: user_id, is_deleted: false }).orWhere({ user_id, is_deleted: false }).first()
+          }
+          if (!parentRecord && email) {
+            parentRecord = await db('school.parents').where({ email_primary: String(email).toLowerCase().trim(), is_deleted: false }).first()
+          }
+          if (!parentRecord && national_id) {
+            parentRecord = await db('school.parents').where(function() {
+              this.where({ id_number: String(national_id).trim() }).orWhere({ national_id: String(national_id).trim() })
+            }).andWhere({ is_deleted: false }).first()
+          }
+        }
+
+        // Provisionar cuenta institucional si se localizó la ficha
+        if (teacherRecord) {
+          const userEmail = teacherRecord.email_personal || `${(teacherRecord.employee_id || 'prof').toLowerCase()}@santaluisa.edu.ve`
+          const cleanId = String(teacherRecord.national_id || national_id || teacherRecord.employee_id || 'SantaLuisa2026*').replace(/[^0-9a-zA-Z]/g, '').toUpperCase()
+          const initialPass = cleanId.length >= 4 ? cleanId : 'SantaLuisa2026*'
+          const hash = await bcrypt.hash(initialPass, 10)
+
+          const [created] = await db('school.users').insert({
+            institution_id: teacherRecord.institution_id || 1,
+            username: userEmail,
+            email: userEmail,
+            first_name: teacherRecord.first_name,
+            last_name: teacherRecord.last_name,
+            password_hash: hash,
+            role: 'teacher',
+            status: 'active',
+            is_active: true,
+            created_at: db.fn.now(),
+            updated_at: db.fn.now()
+          }).returning('*')
+
+          targetUser = created
+          await db('school.teachers').where({ id: teacherRecord.id }).update({ user_id: created.id, updated_at: db.fn.now() })
+        } else if (parentRecord) {
+          const userEmail = parentRecord.email_primary || `rep_${(parentRecord.id_number || parentRecord.national_id || 'padre').replace(/[^0-9a-zA-Z]/g, '')}@santaluisa.edu.ve`
+          const cleanId = String(parentRecord.id_number || parentRecord.national_id || national_id || 'SantaLuisa2026*').replace(/[^0-9a-zA-Z]/g, '').toUpperCase()
+          const initialPass = cleanId.length >= 4 ? cleanId : 'SantaLuisa2026*'
+          const hash = await bcrypt.hash(initialPass, 10)
+
+          const [created] = await db('school.users').insert({
+            institution_id: parentRecord.institution_id || 1,
+            username: userEmail,
+            email: userEmail,
+            first_name: parentRecord.first_name,
+            last_name: parentRecord.last_name,
+            password_hash: hash,
+            role: 'parent',
+            status: 'active',
+            is_active: true,
+            created_at: db.fn.now(),
+            updated_at: db.fn.now()
+          }).returning('*')
+
+          targetUser = created
+          await db('school.parents').where({ id: parentRecord.id }).update({ user_id: created.id, updated_at: db.fn.now() })
+        }
       }
 
       if (!targetUser) {
