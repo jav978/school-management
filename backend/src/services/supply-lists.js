@@ -28,9 +28,11 @@ class SupplyListsService extends KnexService {
 
     const lists = await q
 
-    // Fetch items for all matching lists
+    // Fetch items and pending suggestions count for all matching lists
     const listIds = lists.map(l => l.id)
     let itemsByListId = {}
+    let suggestionsCountByListId = {}
+
     if (listIds.length > 0) {
       const items = await db('school.supply_items')
         .whereIn('list_id', listIds)
@@ -43,11 +45,29 @@ class SupplyListsService extends KnexService {
         }
         itemsByListId[item.list_id].push(item)
       }
+
+      // Count pending suggestions for each list
+      const suggestionCounts = await db('school.supply_suggestions')
+        .whereIn('list_id', listIds)
+        .where({ is_deleted: false })
+        .groupBy('list_id')
+        .select('list_id')
+        .count('* as total')
+        .select(db.raw("COUNT(*) FILTER (WHERE status = 'pending') as pending"))
+
+      for (const sc of suggestionCounts) {
+        suggestionsCountByListId[sc.list_id] = {
+          total: parseInt(sc.total, 10) || 0,
+          pending: parseInt(sc.pending, 10) || 0
+        }
+      }
     }
 
     return lists.map(l => ({
       ...l,
-      items: itemsByListId[l.id] || []
+      allow_suggestions: l.allow_suggestions !== undefined ? Boolean(l.allow_suggestions) : true,
+      items: itemsByListId[l.id] || [],
+      suggestions_meta: suggestionsCountByListId[l.id] || { total: 0, pending: 0 }
     }))
   }
 
@@ -176,12 +196,14 @@ class SupplyListsService extends KnexService {
     const updatePayload = {}
     const allowedFields = [
       'academic_year_name', 'grade_level', 'grade_name', 'education_level',
-      'title', 'general_notes', 'delivery_instructions', 'is_published'
+      'title', 'general_notes', 'delivery_instructions', 'is_published', 'allow_suggestions'
     ]
 
     for (const field of allowedFields) {
       if (data[field] !== undefined) {
-        updatePayload[field] = data[field]
+        updatePayload[field] = field === 'allow_suggestions' || field === 'is_published' 
+          ? Boolean(data[field]) 
+          : data[field]
       }
     }
 

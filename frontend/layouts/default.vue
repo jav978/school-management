@@ -41,6 +41,9 @@
 
     <!-- Global Institutional Toast Notifications -->
     <ui-toast />
+
+    <!-- Global System Feedback Modal -->
+    <feedback-system-feedback-modal />
   </div>
 </template>
 

@@ -56,12 +56,14 @@ require('./src/services/events')(app)
 require('./src/services/announcements')(app)
 require('./src/services/notifications')(app)
 
-// Settings, Uploads & PDF Documents
+// Settings, Uploads, Supplies & Feedback
 require('./src/services/institutions')(app)
 require('./src/services/settings')(app)
 require('./src/services/uploads')(app)
 require('./src/services/enrollment-pdf')(app)
 require('./src/services/supply-lists')(app)
+require('./src/services/supply-suggestions')(app)
+require('./src/services/system-feedback')(app)
 
 let server = null
 app.listen(PORT).then((srv) => {

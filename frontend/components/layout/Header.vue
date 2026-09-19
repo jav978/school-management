@@ -97,6 +97,17 @@
           </svg>
         </button>
 
+        <!-- System Feedback Button -->
+        <button 
+          @click="openFeedback('general')"
+          type="button" 
+          class="p-2 sm:px-2.5 sm:py-2 rounded-xl text-amber-600 dark:text-brand-gold bg-amber-500/10 hover:bg-amber-500/20 active:scale-95 transition-all border border-amber-500/20 shadow-xs flex items-center gap-1.5 cursor-pointer font-bold text-xs"
+          title="Calificar la plataforma y enviar sugerencias"
+        >
+          <span class="text-xs">⭐</span>
+          <span class="hidden md:inline text-[11px] font-bold">Feedback</span>
+        </button>
+
         <!-- Messages Button & Dropdown -->
         <div class="relative" ref="messagesDropdownRef">
           <button 
@@ -394,12 +405,14 @@ import { useColorMode } from '#imports'
 import { useActiveStudent } from '~/composables/useActiveStudent'
 import { useInstitution } from '~/composables/useInstitution'
 import { resolvePhotoUrl } from '~/composables/usePhotoUrl'
+import { useFeedback } from '~/composables/useFeedback'
 
 const { currentLang, setLanguage, t } = useLanguage()
 const authStore = useAuthStore()
 const colorMode = useColorMode()
 const { representedStudents, activeStudentKey, setActiveStudent } = useActiveStudent()
 const { institution } = useInstitution()
+const { openFeedback } = useFeedback()
 
 const searchQuery = ref('')
 const isLangOpen = ref(false)

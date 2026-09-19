@@ -38,6 +38,37 @@
 
           <!-- Admin Actions -->
           <template v-if="canManage">
+            <!-- Toggle Allow Suggestions switch -->
+            <button
+              v-if="activeList"
+              @click="toggleAllowSuggestions"
+              type="button"
+              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer"
+              :class="activeList.allow_suggestions
+                ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+                : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 border-slate-300 dark:border-white/10 hover:bg-slate-200'"
+              :title="activeList.allow_suggestions ? 'Buzón abierto para representantes. Clic para cerrarlo.' : 'Buzón cerrado. Clic para abrirlo.'"
+            >
+              <span class="w-2 h-2 rounded-full" :class="activeList.allow_suggestions ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'"></span>
+              <span>{{ activeList.allow_suggestions ? 'Buzón Abierto' : 'Buzón Cerrado' }}</span>
+            </button>
+
+            <!-- View Suggestions with pending badge -->
+            <button
+              @click="openSuggestionsModal"
+              type="button"
+              class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-500/10 text-amber-700 dark:text-brand-gold border border-amber-500/30 hover:bg-amber-500/20 font-bold text-xs transition-all cursor-pointer relative"
+              title="Ver sugerencias enviadas por representantes"
+            >
+              <span>💡 Sugerencias</span>
+              <span
+                v-if="pendingSuggestionsCount > 0"
+                class="px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-mono text-[10px] font-black"
+              >
+                {{ pendingSuggestionsCount }}
+              </span>
+            </button>
+
             <button
               @click="openEditModal"
               type="button"
@@ -472,6 +503,124 @@
           </div>
         </div>
       </div>
+
+      <!-- REPRESENTATIVE OBSERVER SUGGESTIONS BOX (Screen Only) -->
+      <div class="mt-8 print:hidden">
+        <!-- If suggestions are allowed for this list -->
+        <div
+          v-if="activeList?.allow_suggestions"
+          class="p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#140c2b] border border-amber-500/30 shadow-sm transition-all"
+        >
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 dark:border-white/10 pb-4 mb-5">
+            <div>
+              <div class="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-brand-gold uppercase tracking-wider mb-1">
+                <span>💡 Buzón de Observaciones</span>
+                <span>•</span>
+                <span>Canal Institucional de Representantes</span>
+              </div>
+              <h3 class="text-lg font-black font-display text-slate-900 dark:text-white tracking-tight">
+                ¿Deseas proponer alguna sugerencia sobre esta lista?
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl">
+                Los textos y útiles se rigen por directrices pedagógicas del MPPE y la Dirección. Si tienes dudas sobre disponibilidad de libros o sugerencias de materiales alternativos, compártela aquí con la Coordinación.
+              </p>
+            </div>
+            
+            <div class="flex-shrink-0">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-bold border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                <span>Recepción Abierta</span>
+              </span>
+            </div>
+          </div>
+
+          <!-- Success Alert when sent -->
+          <div
+            v-if="suggestionSentSuccess"
+            class="p-4 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-800 dark:text-emerald-300 text-xs flex items-center justify-between gap-3 mb-4"
+          >
+            <div class="flex items-center gap-2">
+              <span class="text-base">✓</span>
+              <span><strong>¡Sugerencia registrada con éxito!</strong> La Coordinación revisará tu aporte para tomar decisiones informadas.</span>
+            </div>
+            <button @click="suggestionSentSuccess = false" class="text-xs font-bold hover:underline cursor-pointer">
+              Enviar otra
+            </button>
+          </div>
+
+          <!-- Suggestion Form -->
+          <form v-else @submit.prevent="submitSuggestion" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Artículo o Texto en Cuestión (Opcional)
+                </label>
+                <input
+                  v-model="suggestionForm.suggested_item_name"
+                  type="text"
+                  placeholder="ej. Libro de Física 3er Año o Libreta Cuadriculada"
+                  class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40"
+                />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Categoría del Útil
+                </label>
+                <select
+                  v-model="suggestionForm.suggested_category"
+                  class="w-full px-3.5 py-2 text-xs rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white cursor-pointer"
+                >
+                  <option value="textbook">Texto Sugerido / Libro</option>
+                  <option value="notebook">Libreta / Cuaderno</option>
+                  <option value="stationery">Útil Escolar / Papelería</option>
+                  <option value="hygiene">Aseo / Higiene Personal</option>
+                  <option value="other">Otro Material</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                Detalle de tu Sugerencia u Observación *
+              </label>
+              <textarea
+                v-model="suggestionForm.suggestion_text"
+                required
+                rows="3"
+                placeholder="Indícanos si se encuentra agotado en librerías, si sugieres una edición alternativa o cualquier consulta para los docentes..."
+                class="w-full px-3.5 py-2.5 text-xs rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500/40 resize-none"
+              ></textarea>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+              <span class="text-[11px] text-slate-500 dark:text-slate-400">
+                Se enviará identificado como <strong class="text-slate-800 dark:text-slate-200">{{ currentUserName }}</strong> ({{ currentUserRoleLabel }}).
+              </span>
+
+              <button
+                type="submit"
+                :disabled="sendingSuggestion || !suggestionForm.suggestion_text.trim()"
+                class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 active:scale-95 text-slate-950 font-bold text-xs shadow-md shadow-amber-500/20 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+              >
+                <span v-if="sendingSuggestion" class="w-3.5 h-3.5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></span>
+                <span>Enviar Sugerencia a Coordinación</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- If suggestions are disabled for this list -->
+        <div
+          v-else
+          class="p-5 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-center"
+        >
+          <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 flex items-center justify-center gap-2">
+            <span>🔒</span>
+            <span>El buzón de sugerencias para esta lista de grado se encuentra cerrado por la Dirección. La lista es definitiva.</span>
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- MODAL: EDIT / CREATE SUPPLY LIST -->
@@ -533,6 +682,19 @@
                 class="w-full px-3 py-2 text-xs rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white"
                 placeholder="ej. TODOS LOS ÚTILES DEBEN ESTAR DEBIDAMENTE FORRADOS E IDENTIFICADOS"
               ></textarea>
+            </div>
+
+            <!-- Allow Suggestions toggle in modalForm -->
+            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+              <div>
+                <p class="text-xs font-bold text-slate-900 dark:text-white">Buzón de Sugerencias para Representantes</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400">Permite que los padres envíen observaciones sobre textos o materiales de este grado</p>
+              </div>
+              <input
+                type="checkbox"
+                v-model="modalForm.allow_suggestions"
+                class="w-4 h-4 rounded border-slate-300 text-amber-500 focus:ring-amber-500 cursor-pointer"
+              />
             </div>
 
             <!-- Items Editor Table -->
@@ -662,6 +824,143 @@
         </div>
       </div>
     </Teleport>
+
+    <!-- MODAL: ADMIN SUGGESTIONS REVIEW & 1-CLICK INCORPORATION -->
+    <Teleport to="body">
+      <div
+        v-if="isSuggestionsModalOpen"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        @click.self="isSuggestionsModalOpen = false"
+      >
+        <div class="bg-white dark:bg-[#150d30] border border-slate-200 dark:border-white/10 rounded-3xl w-full max-w-3xl overflow-hidden shadow-2xl p-6">
+          <div class="flex items-center justify-between border-b border-slate-200/80 dark:border-white/10 pb-4 mb-4">
+            <div>
+              <div class="flex items-center gap-2 text-xs font-bold text-amber-600 dark:text-brand-gold uppercase tracking-wider">
+                <span>Gestión de Sugerencias</span>
+                <span>•</span>
+                <span>{{ activeList?.grade_name }}</span>
+              </div>
+              <h3 class="text-lg font-black font-display text-slate-900 dark:text-white">
+                Sugerencias y Observaciones Recibidas
+              </h3>
+            </div>
+            <button @click="isSuggestionsModalOpen = false" class="p-1.5 text-slate-400 hover:text-slate-800 dark:hover:text-white rounded-lg cursor-pointer">✕</button>
+          </div>
+
+          <!-- Filter tabs -->
+          <div class="flex items-center gap-2 mb-4 border-b border-slate-200/60 dark:border-white/10 pb-3">
+            <button
+              v-for="st in [
+                { id: 'all', label: 'Todas' },
+                { id: 'pending', label: 'Pendientes' },
+                { id: 'accepted', label: 'Aceptadas' },
+                { id: 'discarded', label: 'Descartadas' }
+              ]"
+              :key="st.id"
+              @click="suggestionsFilter = st.id"
+              :class="suggestionsFilter === st.id ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
+              class="px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer"
+            >
+              {{ st.label }}
+            </button>
+          </div>
+
+          <!-- Loading state -->
+          <div v-if="loadingSuggestions" class="py-12 text-center text-xs text-slate-400">
+            Cargando sugerencias...
+          </div>
+
+          <!-- Empty state -->
+          <div v-else-if="filteredSuggestions.length === 0" class="py-12 text-center text-xs text-slate-400">
+            No hay sugerencias en esta categoría para la lista actual.
+          </div>
+
+          <!-- Suggestions List -->
+          <div v-else class="max-h-[60vh] overflow-y-auto space-y-3 pr-1">
+            <div
+              v-for="sug in filteredSuggestions"
+              :key="sug.id"
+              class="p-4 rounded-2xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-3"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-900 dark:text-white">{{ sug.user_name }}</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200 dark:bg-white/10 font-mono text-slate-600 dark:text-slate-300">
+                      {{ sug.user_role }}
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-slate-400 mt-0.5">{{ sug.user_email }} • {{ formatDate(sug.created_at) }}</p>
+                </div>
+
+                <!-- Status Badge -->
+                <span
+                  class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase"
+                  :class="[
+                    sug.status === 'pending' ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20' :
+                    sug.status === 'accepted' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20' :
+                    sug.status === 'reviewed' ? 'bg-sky-500/10 text-sky-600 border border-sky-500/20' :
+                    'bg-slate-200 dark:bg-white/10 text-slate-500'
+                  ]"
+                >
+                  {{ sug.status === 'pending' ? '🟡 Pendiente' : sug.status === 'accepted' ? '🟢 Aceptada' : sug.status === 'reviewed' ? '🔵 Revisada' : '⚪ Descartada' }}
+                </span>
+              </div>
+
+              <!-- Item info & suggestion text -->
+              <div class="bg-white dark:bg-white/5 p-3 rounded-xl border border-slate-100 dark:border-white/5 text-xs">
+                <div v-if="sug.suggested_item_name" class="font-bold text-slate-900 dark:text-white mb-1 flex items-center gap-2">
+                  <span>📌 Artículo:</span>
+                  <span class="text-amber-600 dark:text-brand-gold">{{ sug.suggested_item_name }}</span>
+                  <span class="text-[10px] text-slate-400 font-normal">({{ sug.suggested_category }})</span>
+                </div>
+                <p class="text-slate-700 dark:text-slate-300 italic leading-relaxed">
+                  "{{ sug.suggestion_text }}"
+                </p>
+                <p v-if="sug.admin_notes" class="text-[11px] text-emerald-600 dark:text-emerald-400 mt-2 font-medium">
+                  ✓ Nota de Coordinación: {{ sug.admin_notes }}
+                </p>
+              </div>
+
+              <!-- Action buttons -->
+              <div class="flex items-center justify-end gap-2 pt-1">
+                <!-- 1-Click Incorporation Button -->
+                <button
+                  v-if="sug.status !== 'accepted'"
+                  @click="incorporateSuggestion(sug)"
+                  :disabled="incorporatingId === sug.id"
+                  type="button"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs active:scale-95 transition-all cursor-pointer"
+                  title="Crea automáticamente el ítem en la lista oficial de útiles y marca como aceptada"
+                >
+                  <span v-if="incorporatingId === sug.id" class="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <span v-else>➕</span>
+                  <span>Incorporar a Lista Oficial</span>
+                </button>
+
+                <button
+                  v-if="sug.status === 'pending'"
+                  @click="updateSuggestionStatus(sug.id, 'reviewed')"
+                  type="button"
+                  class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-white/10 cursor-pointer"
+                >
+                  Marcar Revisada
+                </button>
+
+                <button
+                  v-if="sug.status !== 'discarded'"
+                  @click="updateSuggestionStatus(sug.id, 'discarded')"
+                  type="button"
+                  class="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-rose-500 hover:bg-rose-500/10 cursor-pointer"
+                >
+                  Descartar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -686,9 +985,23 @@ const boughtItemIds = ref({})
 // Modals
 const isEditModalOpen = ref(false)
 const isCloneModalOpen = ref(false)
+const isSuggestionsModalOpen = ref(false)
 const saving = ref(false)
 const cloning = ref(false)
 const cloneTargetYear = ref('2027-2028')
+
+// Suggestions state
+const suggestionsList = ref([])
+const suggestionsFilter = ref('all')
+const loadingSuggestions = ref(false)
+const suggestionForm = ref({
+  suggested_item_name: '',
+  suggested_category: 'stationery',
+  suggestion_text: ''
+})
+const sendingSuggestion = ref(false)
+const suggestionSentSuccess = ref(false)
+const incorporatingId = ref(null)
 
 const modalForm = ref({
   id: null,
@@ -700,6 +1013,7 @@ const modalForm = ref({
   general_notes: '',
   delivery_instructions: '',
   is_published: true,
+  allow_suggestions: true,
   items: []
 })
 
@@ -712,6 +1026,35 @@ const levels = [
 const canManage = computed(() => {
   const role = authStore.userRole || authStore.user?.role
   return ['admin', 'coordinator', 'control_estudio', 'teacher'].includes(role)
+})
+
+const pendingSuggestionsCount = computed(() => {
+  return activeList.value?.suggestions_meta?.pending || 0
+})
+
+const currentUserName = computed(() => {
+  if (authStore?.user) {
+    const u = authStore.user
+    return u.first_name ? `${u.first_name} ${u.last_name || ''}`.trim() : (u.name || u.email)
+  }
+  return 'Representante'
+})
+
+const currentUserRole = computed(() => {
+  return authStore?.user?.role || 'parent'
+})
+
+const currentUserRoleLabel = computed(() => {
+  const roles = {
+    admin: 'Administrador',
+    director: 'Director',
+    coordinator: 'Coordinador',
+    teacher: 'Docente',
+    parent: 'Representante',
+    student: 'Estudiante',
+    staff: 'Personal Administrativo'
+  }
+  return roles[currentUserRole.value] || 'Representante'
 })
 
 // Fetch all supply lists from backend
@@ -841,6 +1184,7 @@ const openCreateModal = () => {
     general_notes: 'TODOS LOS ÚTILES DEBEN ESTAR DEBIDAMENTE FORRADOS E IDENTIFICADOS CON NOMBRE, APELLIDO Y AÑO.',
     delivery_instructions: '',
     is_published: true,
+    allow_suggestions: true,
     items: [
       { category: 'stationery', quantity: '1', item_name: 'Caja de lápices', specification: 'Grafito HB' },
       { category: 'notebook', quantity: '1', item_name: 'Cuaderno empastado', specification: 'Una línea' }
@@ -861,6 +1205,7 @@ const openEditModal = () => {
     general_notes: activeList.value.general_notes,
     delivery_instructions: activeList.value.delivery_instructions,
     is_published: activeList.value.is_published,
+    allow_suggestions: activeList.value.allow_suggestions !== false,
     items: JSON.parse(JSON.stringify(activeList.value.items || []))
   }
   isEditModalOpen.value = true
@@ -940,6 +1285,153 @@ const executeClone = async () => {
     toast.error('Error al clonar lista', err.data?.message || err.message)
   } finally {
     cloning.value = false
+  }
+}
+
+// Admin Toggle: Allow Suggestions
+const toggleAllowSuggestions = async () => {
+  if (!activeList.value) return
+  const currentVal = activeList.value.allow_suggestions !== false
+  const newVal = !currentVal
+  try {
+    await $fetch(`${config.public.apiBase}/supply-lists/${activeList.value.id}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`
+      },
+      body: {
+        allow_suggestions: newVal
+      }
+    })
+    activeList.value.allow_suggestions = newVal
+    toast.success(newVal ? 'Buzón de sugerencias abierto para esta lista' : 'Buzón de sugerencias cerrado para esta lista')
+  } catch (err) {
+    console.error('Error toggling suggestions:', err)
+    toast.error('Error', 'No se pudo actualizar el estado del buzón')
+  }
+}
+
+// Open Suggestions Management Modal
+const openSuggestionsModal = async () => {
+  isSuggestionsModalOpen.value = true
+  await fetchSuggestions()
+}
+
+const fetchSuggestions = async () => {
+  if (!activeList.value) return
+  loadingSuggestions.value = true
+  try {
+    const data = await $fetch(`${config.public.apiBase}/supply-suggestions`, {
+      params: {
+        list_id: activeList.value.id
+      }
+    })
+    suggestionsList.value = Array.isArray(data) ? data : (data.data || [])
+  } catch (err) {
+    console.error('Error fetching suggestions:', err)
+  } finally {
+    loadingSuggestions.value = false
+  }
+}
+
+const filteredSuggestions = computed(() => {
+  if (suggestionsFilter.value === 'all') return suggestionsList.value
+  return suggestionsList.value.filter(s => s.status === suggestionsFilter.value)
+})
+
+// Submit Suggestion as Parent
+const submitSuggestion = async () => {
+  if (!activeList.value || !suggestionForm.value.suggestion_text.trim()) return
+  sendingSuggestion.value = true
+  try {
+    await $fetch(`${config.public.apiBase}/supply-suggestions`, {
+      method: 'POST',
+      headers: authStore?.token ? { Authorization: `Bearer ${authStore.token}` } : {},
+      body: {
+        list_id: activeList.value.id,
+        suggested_item_name: suggestionForm.value.suggested_item_name,
+        suggested_category: suggestionForm.value.suggested_category,
+        suggestion_text: suggestionForm.value.suggestion_text,
+        user_name: currentUserName.value,
+        user_email: authStore?.user?.email || null,
+        user_role: currentUserRole.value,
+        user_id: authStore?.user?.id || null
+      }
+    })
+    suggestionSentSuccess.value = true
+    suggestionForm.value = {
+      suggested_item_name: '',
+      suggested_category: 'stationery',
+      suggestion_text: ''
+    }
+    if (activeList.value.suggestions_meta) {
+      activeList.value.suggestions_meta.pending++
+      activeList.value.suggestions_meta.total++
+    }
+  } catch (err) {
+    console.error('Error enviando sugerencia:', err)
+    toast.error('Error al enviar sugerencia', err.data?.message || err.message)
+  } finally {
+    sendingSuggestion.value = false
+  }
+}
+
+// 1-Click Incorporation into Official Supply List
+const incorporateSuggestion = async (sug) => {
+  incorporatingId.value = sug.id
+  try {
+    await $fetch(`${config.public.apiBase}/supply-suggestions/${sug.id}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`
+      },
+      body: {
+        action: 'incorporate'
+      }
+    })
+    toast.success('¡Artículo incorporado exitosamente a la lista oficial!')
+    await fetchSupplyLists()
+    await fetchSuggestions()
+  } catch (err) {
+    console.error('Error incorporando sugerencia:', err)
+    toast.error('Error', err.data?.message || 'No se pudo incorporar el artículo')
+  } finally {
+    incorporatingId.value = null
+  }
+}
+
+// Update Status
+const updateSuggestionStatus = async (sugId, newStatus) => {
+  try {
+    await $fetch(`${config.public.apiBase}/supply-suggestions/${sugId}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${authStore.token}`
+      },
+      body: {
+        status: newStatus
+      }
+    })
+    toast.success(`Estado actualizado a ${newStatus}`)
+    await fetchSuggestions()
+    await fetchSupplyLists()
+  } catch (err) {
+    console.error('Error actualizando estado:', err)
+    toast.error('Error al actualizar estado')
+  }
+}
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return ''
+  try {
+    const d = new Date(dateStr)
+    return d.toLocaleDateString('es-VE', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
+  } catch (_) {
+    return dateStr
   }
 }
 </script>
