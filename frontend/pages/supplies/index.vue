@@ -1024,8 +1024,8 @@ const levels = [
 ]
 
 const canManage = computed(() => {
-  const role = authStore.userRole || authStore.user?.role
-  return ['admin', 'coordinator', 'control_estudio', 'teacher'].includes(role)
+  const role = String(authStore.userRole || authStore.user?.role || '').toLowerCase().trim()
+  return ['admin', 'coordinator', 'control_estudio', 'teacher', 'director'].includes(role)
 })
 
 const pendingSuggestionsCount = computed(() => {
@@ -1041,7 +1041,7 @@ const currentUserName = computed(() => {
 })
 
 const currentUserRole = computed(() => {
-  return authStore?.user?.role || 'parent'
+  return String(authStore?.user?.role || authStore?.userRole || 'parent').toLowerCase().trim()
 })
 
 const currentUserRoleLabel = computed(() => {
