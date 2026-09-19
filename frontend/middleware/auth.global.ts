@@ -16,7 +16,8 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     to.path === '/auth/callback' ||
     to.path === '/auth/2fa-challenge' || 
     to.path === '/404' || 
-    to.path.startsWith('/verificar-boleta')
+    to.path.startsWith('/verificar-boleta') ||
+    to.path.startsWith('/supplies')
 
   // Root redirect: '/' -> '/dashboard' if logged in, else '/auth/login'
   if (to.path === '/') {
