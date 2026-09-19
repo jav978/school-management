@@ -2,7 +2,7 @@ require('dotenv').config()
 const app = require('./src/app')
 const db = require('./src/database')
 
-const PORT = process.env.BACKEND_PORT || 3031
+const PORT = process.env.PORT || process.env.BACKEND_PORT || 3031
 
 
 app.set('knexClient', db)
