@@ -61,6 +61,7 @@ require('./src/services/institutions')(app)
 require('./src/services/settings')(app)
 require('./src/services/uploads')(app)
 require('./src/services/enrollment-pdf')(app)
+require('./src/services/supply-lists')(app)
 
 let server = null
 app.listen(PORT).then((srv) => {
