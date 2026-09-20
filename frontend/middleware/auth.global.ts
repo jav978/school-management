@@ -3,6 +3,11 @@ import { useAuthStore } from '~/stores/auth'
 export default defineNuxtRouteMiddleware(async (to, from) => {
   const authStore = useAuthStore()
 
+  // Bypass middleware for server API routes and uploads
+  if (to.path.startsWith('/api') || to.path.startsWith('/uploads')) {
+    return
+  }
+
   // Ensure state is restored and verified against backend on both SSR and client
   if (!authStore.isLoggedIn || !authStore.user) {
     await authStore.checkAuth()
