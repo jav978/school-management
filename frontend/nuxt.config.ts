@@ -30,7 +30,7 @@ export default defineNuxtConfig({
       title: 'U.E Santa Luisa - Sistema de Gestión Escolar',
       meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' }
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/logocolegio.png' },

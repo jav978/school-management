@@ -19,8 +19,8 @@
         </div>
       </div>
 
-      <!-- Center-Left: Aligned Search Bar -->
-      <div class="flex-1 max-w-md mr-auto">
+      <!-- Center-Left: Aligned Search Bar (Desktop / Tablet) -->
+      <div class="hidden sm:block flex-1 max-w-md mr-auto">
         <div class="relative w-full">
           <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -37,7 +37,19 @@
       </div>
 
       <!-- Right: Actions, Language, Messages, Notifications, Profile (Perfect Horizontal Alignment) -->
-      <div class="flex items-center space-x-2 sm:space-x-3">
+      <div class="flex items-center space-x-1 sm:space-x-3">
+        
+        <!-- Mobile Search Toggle Button -->
+        <button 
+          @click="isSearchMobileOpen = !isSearchMobileOpen"
+          type="button" 
+          class="sm:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
+          title="Buscar en el sistema"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
         
         <!-- Language Switcher (EN / ES) -->
         <div class="relative" ref="langDropdownRef">
@@ -130,7 +142,7 @@
           <!-- Messages Dropdown -->
           <div 
             v-if="isMessagesOpen" 
-            class="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#1a1238] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 py-3 z-50 animate-fade-in"
+            class="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-sm sm:w-96 bg-white dark:bg-[#1a1238] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 py-3 z-50 animate-fade-in"
           >
             <div class="flex items-center justify-between px-4 pb-2 border-b border-slate-100 dark:border-white/10">
               <div class="flex items-center gap-2">
@@ -196,7 +208,7 @@
           <!-- Notifications Dropdown -->
           <div 
             v-if="isNotificationsOpen" 
-            class="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-[#1a1238] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 py-3 z-50 animate-fade-in"
+            class="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-sm sm:w-96 bg-white dark:bg-[#1a1238] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 py-3 z-50 animate-fade-in"
           >
             <div class="flex items-center justify-between px-4 pb-2 border-b border-slate-100 dark:border-white/10">
               <div class="flex items-center gap-2">
@@ -394,6 +406,36 @@
 
       </div>
     </div>
+
+    <!-- Expandable Mobile Search Row -->
+    <div 
+      v-if="isSearchMobileOpen" 
+      class="sm:hidden px-3 pb-2.5 pt-1 border-t border-slate-100 dark:border-white/10 bg-white/95 dark:bg-[#120b29]/95 animate-fade-in"
+    >
+      <div class="relative w-full">
+        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <input 
+          v-model="searchQuery" 
+          type="text" 
+          autofocus
+          :placeholder="t('searchPlaceholder', 'Buscar estudiantes, materias, cédulas...')" 
+          class="w-full pl-9 pr-8 py-2 text-xs bg-slate-100 dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 text-slate-800 dark:text-white placeholder-slate-400 shadow-inner"
+        />
+        <button 
+          @click="isSearchMobileOpen = false" 
+          type="button" 
+          class="absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-white cursor-pointer"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
   </header>
 </template>
 
@@ -415,6 +457,7 @@ const { institution } = useInstitution()
 const { openFeedback } = useFeedback()
 
 const searchQuery = ref('')
+const isSearchMobileOpen = ref(false)
 const isLangOpen = ref(false)
 const isMessagesOpen = ref(false)
 const isNotificationsOpen = ref(false)

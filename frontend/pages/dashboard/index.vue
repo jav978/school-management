@@ -2,7 +2,7 @@
   <div class="space-y-6">
 
     <!-- Role Welcome Banner -->
-    <div class="glass-card rounded-3xl p-6 relative overflow-hidden border border-brand-primary/15 dark:border-slate-800 shadow-sm">
+    <div class="glass-card rounded-3xl p-6 relative overflow-hidden border border-brand-primary/15 dark:border-white/10 shadow-sm">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
         <div class="flex items-center gap-4">
           <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-purple flex items-center justify-center text-white text-2xl font-black shadow-md border-2 border-brand-gold/40">
@@ -54,7 +54,7 @@
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Solvente para 1er Lapso</span>
           </div>
-          <div v-else-if="currentRole === 'parent'" class="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl">
+          <div v-else-if="currentRole === 'parent'" class="flex items-center gap-1.5 p-1 bg-slate-100 dark:bg-[#170f33] rounded-2xl">
             <button 
               v-for="child in representedStudents"
               :key="child.key"
@@ -103,7 +103,7 @@
               </svg>
             </NuxtLink>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-bold">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold">
             <span class="text-emerald-600 dark:text-emerald-400">Rendimiento Sobresaliente</span>
             <span class="text-slate-400">1er Lapso</span>
           </div>
@@ -130,7 +130,7 @@
               </svg>
             </NuxtLink>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
             <span class="text-brand-purple dark:text-brand-secondary">Plan Media General</span>
             <span>3er Año U</span>
           </div>
@@ -157,7 +157,7 @@
               </svg>
             </NuxtLink>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-bold">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold">
             <span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 45 Asistencias
             </span>
@@ -186,7 +186,7 @@
               </svg>
             </NuxtLink>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
             <span class="text-amber-700 dark:text-brand-gold">Jueves 18 Sep • 07:30 AM</span>
             <span>20% (4 pts)</span>
           </div>
@@ -222,12 +222,12 @@
                 class="p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 :class="cls.isCurrent 
                   ? 'bg-brand-primary/5 dark:bg-brand-purple/15 border-brand-primary/30 dark:border-brand-secondary/40 shadow-xs' 
-                  : 'bg-slate-50/60 dark:bg-slate-800/40 border-slate-100 dark:border-slate-800/80'"
+                  : 'bg-slate-50/60 dark:bg-[#110926] border-slate-100 dark:border-white/10'"
               >
                 <div class="flex items-center gap-3.5">
                   <div 
                     class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0"
-                    :class="cls.isCurrent ? 'bg-brand-primary text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200'"
+                    :class="cls.isCurrent ? 'bg-brand-primary text-white' : 'bg-slate-200 dark:bg-white/10 text-slate-700 dark:text-slate-200'"
                   >
                     {{ cls.icon }}
                   </div>
@@ -245,7 +245,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 self-start sm:self-center">
-                  <span class="px-3 py-1 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                  <span class="px-3 py-1 rounded-xl text-xs font-bold bg-white dark:bg-[#110926] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-white/10">
                     ⏰ {{ cls.time }}
                   </span>
                 </div>
@@ -270,7 +270,7 @@
             <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead>
-                  <tr class="border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  <tr class="border-b border-slate-100 dark:border-white/10 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                     <th class="pb-3 pl-2">Asignatura</th>
                     <th class="pb-3">Docente Especialista</th>
                     <th class="pb-3">Evaluación</th>
@@ -345,7 +345,7 @@
             
             <NuxtLink 
               to="/boletas" 
-              class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-brand-primary/10 transition-all border border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200"
+              class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#110926] hover:bg-brand-primary/10 transition-all border border-slate-100 dark:border-white/10 text-xs font-bold text-slate-800 dark:text-slate-200"
             >
               <span class="flex items-center gap-2">📄 Mi Boleta del Lapso</span>
               <span>→</span>
@@ -353,7 +353,7 @@
 
             <NuxtLink 
               to="/schedules" 
-              class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-brand-primary/10 transition-all border border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200"
+              class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#110926] hover:bg-brand-primary/10 transition-all border border-slate-100 dark:border-white/10 text-xs font-bold text-slate-800 dark:text-slate-200"
             >
               <span class="flex items-center gap-2">👨‍🏫 Horarios de Profesores</span>
               <span>→</span>
@@ -361,7 +361,7 @@
 
             <NuxtLink 
               to="/subjects" 
-              class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 hover:bg-brand-primary/10 transition-all border border-slate-100 dark:border-slate-800 text-xs font-bold text-slate-800 dark:text-slate-200"
+              class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-[#110926] hover:bg-brand-primary/10 transition-all border border-slate-100 dark:border-white/10 text-xs font-bold text-slate-800 dark:text-slate-200"
             >
               <span class="flex items-center gap-2">📚 Mis 11 Asignaturas</span>
               <span>→</span>
@@ -384,7 +384,7 @@
             <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Mis Cátedras</p>
             <h3 class="text-3xl font-black text-brand-primary dark:text-white mt-1 font-display">4</h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-brand-purple dark:text-brand-secondary">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex justify-between text-[11px] font-bold text-brand-purple dark:text-brand-secondary">
             <span>Física & Cs. Naturales</span>
             <span>3er, 4to y 5to Año</span>
           </div>
@@ -395,7 +395,7 @@
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Alumnos Atendidos</p>
             <h3 class="text-3xl font-black text-brand-primary dark:text-white mt-1 font-display">142</h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-slate-500">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex justify-between text-[11px] font-bold text-slate-500">
             <span>Sección Única por año</span>
             <span class="text-emerald-500">100% Asistencia</span>
           </div>
@@ -406,7 +406,7 @@
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Planillas por Asentar</p>
             <h3 class="text-3xl font-black text-amber-600 dark:text-brand-gold mt-1 font-display">2</h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-amber-700 dark:text-brand-gold">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex justify-between text-[11px] font-bold text-amber-700 dark:text-brand-gold">
             <span>Física 3er Año (Taller 1)</span>
             <span>Vence 22 Sep</span>
           </div>
@@ -417,7 +417,7 @@
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Horas Semanales</p>
             <h3 class="text-3xl font-black text-sky-600 dark:text-sky-400 mt-1 font-display">28h</h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-slate-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex justify-between text-[11px] font-bold text-slate-400">
             <span>20h Aula • 8h Preparación</span>
           </div>
         </div>
@@ -437,7 +437,7 @@
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Estado Administrativo</p>
             <h3 class="text-2xl font-black text-emerald-600 dark:text-emerald-400 mt-1 font-display">Solvente</h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex justify-between text-[11px] font-bold">
             <span class="text-emerald-600 dark:text-emerald-400">1er Lapso Habilitado</span>
             <span class="text-slate-400">Septiembre Pagado</span>
           </div>
@@ -451,7 +451,7 @@
               {{ activeStudent?.key === 'maria' ? '19.1' : '18.4' }} <span class="text-xs font-bold text-slate-400">/ 20</span>
             </h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-emerald-600">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex justify-between text-[11px] font-bold text-emerald-600">
             <span>{{ activeStudent ? `${activeStudent.grade} Sección ${activeStudent.section}` : (activeStudentKey === 'maria' ? '1er Grado Sección U' : '3er Año Sección U') }}</span>
             <span>Sobresaliente</span>
           </div>
@@ -465,7 +465,7 @@
               {{ activeStudent?.key === 'maria' ? '100%' : '97.8%' }}
             </h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-between text-[11px] font-bold text-slate-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex justify-between text-[11px] font-bold text-slate-400">
             <span>{{ activeStudent?.key === 'maria' ? 'Sin inasistencias' : '1 falta justificada' }}</span>
           </div>
         </div>
@@ -476,7 +476,7 @@
             <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Boleta de Calificaciones</p>
             <h3 class="text-xl font-black text-brand-primary dark:text-white mt-1 font-display">1er Lapso</h3>
           </div>
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10">
             <NuxtLink to="/boletas" class="text-xs font-black text-brand-primary dark:text-brand-secondary hover:underline flex items-center justify-between">
               <span>Descargar Boleta Oficial</span>
               <span>↓</span>
@@ -518,7 +518,7 @@
           </div>
 
           <!-- Gender Breakdown Submetrics -->
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10">
             <div class="flex items-center justify-between text-[11px] font-bold mb-1.5">
               <span class="text-sky-600 dark:text-brand-secondary flex items-center gap-1">
                 <span>♂</span> Masc: 693 (55%)
@@ -527,7 +527,7 @@
                 <span>♀</span> Fem: 567 (45%)
               </span>
             </div>
-            <div class="w-full h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex">
+            <div class="w-full h-1.5 bg-slate-100 dark:bg-[#170f33] rounded-full overflow-hidden flex">
               <div class="h-full bg-brand-secondary" style="width: 55%" title="Masculino: 55%"></div>
               <div class="h-full bg-brand-gold" style="width: 45%" title="Femenino: 45%"></div>
             </div>
@@ -556,7 +556,7 @@
             </NuxtLink>
           </div>
 
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
             <span class="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
               <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 100% Cátedras activas
             </span>
@@ -586,7 +586,7 @@
             </NuxtLink>
           </div>
 
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
             <span class="text-brand-purple dark:text-brand-secondary">Familias activas</span>
             <span>Año 2025-2026</span>
           </div>
@@ -614,7 +614,7 @@
             </NuxtLink>
           </div>
 
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
             <span class="text-emerald-600 dark:text-emerald-400 font-extrabold">+8.4% vs mes anterior</span>
             <span class="text-slate-400">94.2% meta</span>
           </div>
@@ -685,12 +685,12 @@
 
               <!-- Bars & Grid -->
               <div class="flex-1 flex flex-col justify-between relative">
-                <div class="absolute inset-x-0 top-0 border-b border-slate-100 dark:border-slate-800/60"></div>
-                <div class="absolute inset-x-0 top-[20%] border-b border-slate-100 dark:border-slate-800/60"></div>
-                <div class="absolute inset-x-0 top-[40%] border-b border-slate-100 dark:border-slate-800/60"></div>
-                <div class="absolute inset-x-0 top-[60%] border-b border-slate-100 dark:border-slate-800/60"></div>
-                <div class="absolute inset-x-0 top-[80%] border-b border-slate-100 dark:border-slate-800/60"></div>
-                <div class="absolute inset-x-0 bottom-6 border-b-2 border-slate-200 dark:border-slate-700"></div>
+                <div class="absolute inset-x-0 top-0 border-b border-slate-100 dark:border-white/10/60"></div>
+                <div class="absolute inset-x-0 top-[20%] border-b border-slate-100 dark:border-white/10/60"></div>
+                <div class="absolute inset-x-0 top-[40%] border-b border-slate-100 dark:border-white/10/60"></div>
+                <div class="absolute inset-x-0 top-[60%] border-b border-slate-100 dark:border-white/10/60"></div>
+                <div class="absolute inset-x-0 top-[80%] border-b border-slate-100 dark:border-white/10/60"></div>
+                <div class="absolute inset-x-0 bottom-6 border-b-2 border-slate-200 dark:border-white/10"></div>
 
                 <!-- Bars Area -->
                 <div class="flex-1 flex items-end justify-between px-1 sm:px-2 pb-6 z-10">
@@ -722,7 +722,7 @@
             </div>
           </div>
 
-          <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+          <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-100 dark:border-white/10/60">
             <span>Promedio mensual: <strong class="text-slate-900 dark:text-white">$45,200</strong></span>
             <span class="text-brand-purple dark:text-brand-secondary font-bold">Balance positivo en curso</span>
           </div>
@@ -780,7 +780,7 @@
             </div>
           </div>
 
-          <div class="pt-3 border-t border-slate-100 dark:border-slate-800/60 space-y-2">
+          <div class="pt-3 border-t border-slate-100 dark:border-white/10/60 space-y-2">
             <div class="flex items-center justify-between text-xs font-bold">
               <span class="flex items-center gap-2 text-slate-700 dark:text-slate-300">
                 <span class="w-3 h-3 rounded-full bg-brand-secondary shadow-xs"></span>
@@ -836,7 +836,7 @@
                 <img 
                   :src="item.image" 
                   :alt="item.title" 
-                  class="w-12 h-12 rounded-xl object-cover shadow-xs flex-shrink-0 border border-slate-200 dark:border-slate-700"
+                  class="w-12 h-12 rounded-xl object-cover shadow-xs flex-shrink-0 border border-slate-200 dark:border-white/10"
                 />
                 <div class="min-w-0">
                   <h4 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 truncate hover:text-brand-primary dark:hover:text-brand-gold cursor-pointer transition-colors">
@@ -865,7 +865,7 @@
           </div>
         </div>
 
-        <div class="pt-4 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs text-slate-400">
+        <div class="pt-4 border-t border-slate-100 dark:border-white/10/60 flex items-center justify-between text-xs text-slate-400">
           <span>Actualizado en tiempo real por Secretaría General</span>
           <span class="font-bold text-brand-primary dark:text-brand-secondary">4 comunicados activos</span>
         </div>
@@ -885,7 +885,7 @@
             </div>
 
             <!-- Tab Switcher -->
-            <div class="mt-4 p-1 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center gap-1">
+            <div class="mt-4 p-1 bg-slate-100 dark:bg-[#170f33] rounded-2xl flex items-center gap-1">
               <button 
                 @click="calendarTab = 'dayToDay'"
                 :class="calendarTab === 'dayToDay' ? 'bg-brand-primary text-white font-bold shadow-xs' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'"
@@ -967,7 +967,7 @@
             </div>
           </div>
 
-          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-brand-gold">
+          <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10/60 flex items-center justify-between text-[11px] font-bold text-amber-700 dark:text-brand-gold">
             <span>⭐ 15 Sep: Inicio del 1er Lapso</span>
           </div>
         </div>

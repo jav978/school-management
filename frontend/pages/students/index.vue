@@ -19,7 +19,7 @@
         <button 
           @click="navigateTo('/students/enrollment-form')" 
           type="button"
-          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm shadow-xs border border-slate-200 dark:border-slate-700 active:scale-[0.98] transition-all cursor-pointer"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white dark:bg-[#170f33] hover:bg-slate-50 dark:hover:bg-white/10 text-slate-800 dark:text-slate-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm shadow-xs border border-slate-200 dark:border-white/10 active:scale-[0.98] transition-all cursor-pointer"
         >
           <span>📄</span>
           <span>Planilla de Matrícula</span>
@@ -114,15 +114,15 @@
           v-model="search"
           type="text" 
           placeholder="Buscar por nombre, cédula o matrícula..." 
-          class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
+          class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-[#110926] border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
         />
       </div>
 
-      <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+      <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
         <!-- Grade Filter -->
         <select 
           v-model="filterGrade"
-          class="px-3 py-2 bg-slate-100 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+          class="w-full sm:w-auto px-3 py-2 bg-slate-100 dark:bg-[#110926] border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
         >
           <option value="">Todos los Grados</option>
           <option v-for="g in availableGrades" :key="g" :value="g">{{ g }}</option>
@@ -131,7 +131,7 @@
         <!-- Status Filter -->
         <select 
           v-model="filterStatus"
-          class="px-3 py-2 bg-slate-100 dark:bg-slate-900/60 border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
+          class="w-full sm:w-auto px-3 py-2 bg-slate-100 dark:bg-[#110926] border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
         >
           <option value="">Todos los Estados</option>
           <option value="active">Activos</option>
@@ -139,10 +139,10 @@
         </select>
 
         <!-- View Switcher -->
-        <div class="flex items-center bg-slate-100 dark:bg-slate-900/60 p-1 rounded-xl border border-slate-200/80 dark:border-white/10">
+        <div class="col-span-2 sm:col-span-1 flex items-center justify-center sm:justify-start bg-slate-100 dark:bg-[#110926] p-1 rounded-xl border border-slate-200/80 dark:border-white/10">
           <button 
             @click="viewMode = 'grid'" 
-            :class="[viewMode === 'grid' ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-white shadow-xs font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all']"
+            :class="[viewMode === 'grid' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold shadow-xs font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all cursor-pointer flex-1 sm:flex-none flex items-center justify-center']"
             title="Vista en tarjetas"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -151,7 +151,7 @@
           </button>
           <button 
             @click="viewMode = 'table'" 
-            :class="[viewMode === 'table' ? 'bg-white dark:bg-slate-800 text-brand-primary dark:text-white shadow-xs font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all']"
+            :class="[viewMode === 'table' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold shadow-xs font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all cursor-pointer flex-1 sm:flex-none flex items-center justify-center']"
             title="Vista en tabla"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,7 +169,7 @@
     </div>
 
     <!-- Empty State Editorial (Sin datos o filtros sin coincidencias) -->
-    <div v-else-if="filteredStudents.length === 0" class="glass-card rounded-3xl p-12 sm:p-16 text-center max-w-2xl mx-auto border border-dashed border-slate-300 dark:border-slate-800">
+    <div v-else-if="filteredStudents.length === 0" class="glass-card rounded-3xl p-12 sm:p-16 text-center max-w-2xl mx-auto border border-dashed border-slate-300 dark:border-white/10">
       <div class="w-16 h-16 rounded-2xl bg-brand-primary/10 dark:bg-brand-purple/20 flex items-center justify-center mx-auto text-3xl mb-4 border border-brand-primary/20 dark:border-brand-purple/40 shadow-inner">
         🎓
       </div>
@@ -187,7 +187,7 @@
           v-if="students.length > 0"
           @click="search = ''; filterGrade = ''; filterStatus = ''" 
           type="button"
-          class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all"
+          class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all"
         >
           Limpiar Filtros
         </button>
@@ -329,7 +329,7 @@
         </div>
 
         <!-- Card Footer: Status chip & Age -->
-        <div class="mt-5 pt-3.5 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between h-9">
+        <div class="mt-5 pt-3.5 border-t border-slate-100 dark:border-white/10 flex items-center justify-between h-9">
           <span 
             :class="[
               student.status === 'active' 
@@ -353,7 +353,7 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+            <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-[#110926] text-slate-400 text-[10px] font-bold uppercase tracking-wider">
               <th class="py-3.5 pl-5">Estudiante</th>
               <th class="py-3.5 px-4">Matrícula ID</th>
               <th class="py-3.5 px-4">Grado & Sección</th>
@@ -363,8 +363,8 @@
               <th class="py-3.5 pr-5 text-right">Acciones</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
-            <tr v-for="student in filteredStudents" :key="student.id" class="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors">
+          <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-xs sm:text-sm">
+            <tr v-for="student in filteredStudents" :key="student.id" class="hover:bg-slate-50/60 dark:hover:bg-white/5 transition-colors">
               <td class="py-3.5 pl-5">
                 <div class="flex items-center gap-3">
                   <div class="w-8 h-8 rounded-full bg-brand-primary/10 dark:bg-brand-purple/20 flex items-center justify-center font-bold text-xs text-brand-primary dark:text-brand-secondary border border-brand-primary/20">
@@ -403,7 +403,7 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
                   </button>
-                  <button @click="openEditDrawer(student)" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-primary dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800" title="Editar">
+                  <button @click="openEditDrawer(student)" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-primary dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/10" title="Editar">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                     </svg>
@@ -440,7 +440,7 @@
     <Teleport to="body">
       <div 
         v-if="showDrawer" 
-        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-xs overflow-y-auto"
+        class="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-[#0c081e]/80 backdrop-blur-xs overflow-y-auto"
         @click.self="closeDrawer"
       >
         <!-- Modal Container: Centered with bounded max-height -->
@@ -474,7 +474,7 @@
           </div>
 
           <!-- Drawer Navigation Tabs -->
-          <div class="px-6 py-2.5 bg-slate-50 dark:bg-slate-900/60 border-b border-slate-200/80 dark:border-white/10 flex items-center gap-1.5 overflow-x-auto flex-shrink-0 scrollbar-none">
+          <div class="px-6 py-2.5 bg-slate-50 dark:bg-[#110926] border-b border-slate-200/80 dark:border-white/10 flex items-center gap-1.5 overflow-x-auto flex-shrink-0 scrollbar-none">
             <button 
               v-for="tab in drawerTabs" 
               :key="tab.id"
@@ -509,8 +509,8 @@
                       type="text" 
                       placeholder="Ej: EST-2026-1001" 
                       :class="[
-                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all',
-                        errors.student_id ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-slate-800'
+                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all',
+                        errors.student_id ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10'
                       ]"
                     />
                     <p v-if="errors.student_id" class="text-[10px] text-rose-500 font-bold mt-1">Este campo es obligatorio</p>
@@ -524,7 +524,7 @@
                     <input 
                       v-model="form.admission_date" 
                       type="date" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
                     />
                   </div>
 
@@ -536,8 +536,8 @@
                     <select 
                       v-model="form.grade" 
                       :class="[
-                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer',
-                        errors.grade ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-slate-800'
+                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer',
+                        errors.grade ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10'
                       ]"
                     >
                       <option v-for="g in availableGrades" :key="g" :value="g">{{ g }}</option>
@@ -552,7 +552,7 @@
                     </label>
                     <select 
                       v-model="form.section" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
                     >
                       <option value="A">Sección A</option>
                       <option value="B">Sección B</option>
@@ -568,7 +568,7 @@
                     </label>
                     <select 
                       v-model="form.status" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
                     >
                       <option value="active">Activo (Cursante)</option>
                       <option value="inactive">Inactivo / En Reserva</option>
@@ -582,7 +582,7 @@
                     </label>
                     <select 
                       v-model="form.scholarship" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
                     >
                       <option :value="false">Sin beca (Regular)</option>
                       <option :value="true">Becado</option>
@@ -599,7 +599,7 @@
                     v-model="form.notes" 
                     rows="2"
                     placeholder="Detalles sobre historial previo, colegios anteriores, etc."
-                    class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                    class="w-full px-3.5 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                   ></textarea>
                 </div>
               </div>
@@ -617,8 +617,8 @@
                       type="text" 
                       placeholder="Ej: Alejandro" 
                       :class="[
-                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all',
-                        errors.first_name ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-slate-800'
+                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all',
+                        errors.first_name ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10'
                       ]"
                     />
                     <p v-if="errors.first_name" class="text-[10px] text-rose-500 font-bold mt-1">El nombre es obligatorio</p>
@@ -633,7 +633,7 @@
                       v-model="form.middle_name" 
                       type="text" 
                       placeholder="Ej: José" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                     />
                   </div>
 
@@ -647,8 +647,8 @@
                       type="text" 
                       placeholder="Ej: Paredes Mendoza" 
                       :class="[
-                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all',
-                        errors.last_name ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-slate-800'
+                        'w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all',
+                        errors.last_name ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-200 dark:border-white/10'
                       ]"
                     />
                     <p v-if="errors.last_name" class="text-[10px] text-rose-500 font-bold mt-1">El apellido es obligatorio</p>
@@ -663,7 +663,7 @@
                       v-model="form.national_id" 
                       type="text" 
                       placeholder="Ej: V-32.456.789" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                     />
                   </div>
 
@@ -675,7 +675,7 @@
                     <input 
                       v-model="form.date_of_birth" 
                       type="date" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
                     />
                   </div>
 
@@ -686,7 +686,7 @@
                     </label>
                     <select 
                       v-model="form.gender" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
                     >
                       <option value="male">Masculino</option>
                       <option value="female">Femenino</option>
@@ -703,7 +703,7 @@
                       v-model="form.phone_mobile" 
                       type="tel" 
                       placeholder="Ej: 0414-1234567" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                     />
                   </div>
 
@@ -716,7 +716,7 @@
                       v-model="form.email_personal" 
                       type="email" 
                       placeholder="alumno@ejemplo.com" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                     />
                   </div>
                 </div>
@@ -730,7 +730,7 @@
                     v-model="form.address_line1" 
                     type="text" 
                     placeholder="Calle, avenida, edificio o urbanización" 
-                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                   />
                 </div>
               </div>
@@ -745,7 +745,7 @@
                     </label>
                     <select 
                       v-model="form.blood_type" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer font-mono text-xs"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer font-mono text-xs"
                     >
                       <option value="O+">O Positivo (O+)</option>
                       <option value="O-">O Negativo (O-)</option>
@@ -768,7 +768,7 @@
                       v-model="form.doctor_phone" 
                       type="tel" 
                       placeholder="Ej: 0412-5551234" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                     />
                   </div>
                 </div>
@@ -782,7 +782,7 @@
                     v-model="form.allergies" 
                     type="text" 
                     placeholder="Ej: Penicilina, mariscos, polen (o 'Ninguna')" 
-                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                   />
                 </div>
 
@@ -795,7 +795,7 @@
                     v-model="form.medical_conditions" 
                     rows="2"
                     placeholder="Ej: Asma bronquial, rinitis alérgica, etc."
-                    class="w-full px-3.5 py-2 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                    class="w-full px-3.5 py-2 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                   ></textarea>
                 </div>
 
@@ -808,7 +808,7 @@
                     v-model="form.medications" 
                     type="text" 
                     placeholder="Ej: Salbutamol inhalador si presenta crisis" 
-                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                   />
                 </div>
               </div>
@@ -825,7 +825,7 @@
                       v-model="form.emergency_contact_name" 
                       type="text" 
                       placeholder="Ej: María Mendoza" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                     />
                   </div>
 
@@ -836,7 +836,7 @@
                     </label>
                     <select 
                       v-model="form.emergency_contact_rel" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all cursor-pointer"
                     >
                       <option value="Madre">Madre</option>
                       <option value="Padre">Padre</option>
@@ -856,7 +856,7 @@
                       v-model="form.emergency_contact_phone" 
                       type="tel" 
                       placeholder="Ej: 0424-9876543" 
-                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-950/70 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
+                      class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple transition-all"
                     />
                   </div>
                 </div>
@@ -865,7 +865,7 @@
             </div>
 
             <!-- Drawer Fixed Footer with Save / Cancel -->
-            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/90 dark:bg-slate-950/90 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <div class="flex-shrink-0 px-6 py-4 bg-slate-50/90 dark:bg-[#0e0722]/90 border-t border-slate-200 dark:border-white/10 flex items-center justify-between">
               <span class="text-[11px] text-slate-400">
                 Pestaña actual: <strong class="text-slate-700 dark:text-slate-200">{{ drawerTabs.find(t => t.id === activeTab)?.label }}</strong>
               </span>
@@ -874,7 +874,7 @@
                 <button 
                   type="button" 
                   @click="closeDrawer" 
-                  class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer"
+                  class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -896,7 +896,7 @@
 
     <!-- SOFT DELETE / INACTIVATION CONFIRMATION MODAL -->
     <Teleport to="body">
-      <div v-if="studentToDisable" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
+      <div v-if="studentToDisable" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#0c081e]/80 backdrop-blur-xs">
         <div class="relative w-full max-w-md bg-white dark:bg-[#1b1145] border border-amber-400/40 shadow-2xl rounded-3xl p-6 text-center animate-fade-in">
           <div class="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 flex items-center justify-center mx-auto text-2xl mb-4 text-amber-600 dark:text-brand-gold shadow-inner">
             ⚠️
@@ -918,7 +918,7 @@
             <button 
               @click="studentToDisable = null" 
               type="button" 
-              class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all cursor-pointer"
+              class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all cursor-pointer"
             >
               Cancelar
             </button>

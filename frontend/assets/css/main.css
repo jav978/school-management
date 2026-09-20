@@ -148,6 +148,33 @@ html.light,
   .dark .input-field {
     @apply bg-[#110926] border-white/10 text-slate-100 placeholder-slate-400 focus:border-brand-secondary focus:ring-brand-secondary/20;
   }
+
+  /* Safe Area for Mobile Devices (iPhone & Android Nav Bar) */
+  .pb-safe {
+    padding-bottom: max(1.25rem, calc(0.75rem + env(safe-area-inset-bottom, 0px)));
+  }
+  .pt-safe {
+    padding-top: max(0.75rem, env(safe-area-inset-top, 0px));
+  }
+
+  /* Unified Dark Mode Table Surface */
+  html.dark table thead tr,
+  .dark table thead tr {
+    background-color: #110926 !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: #e2e8f0 !important;
+  }
+
+  html.dark table tbody tr:hover,
+  .dark table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.04) !important;
+  }
+
+  /* Touch Optimizations */
+  .touch-tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* Custom Scrollbar */
@@ -162,7 +189,24 @@ html.light,
   @apply bg-slate-200 rounded-full hover:bg-slate-300;
 }
 .dark ::-webkit-scrollbar-thumb {
-  @apply bg-slate-800 hover:bg-slate-700;
+  @apply bg-white/15 rounded-full hover:bg-white/25;
+}
+
+/* Smooth momentum scrolling on mobile */
+@supports (-webkit-touch-callout: none) {
+  .overflow-y-auto,
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Prevent iOS Safari auto-zoom when focusing form fields below 16px */
+@media screen and (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }
 
 

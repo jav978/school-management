@@ -25,6 +25,7 @@ module.exports = {
   development: {
     client: 'pg',
     connection: buildConnection(),
+    searchPath: ['school', 'public'],
     migrations: {
       directory: './migrations'
     },
@@ -35,6 +36,7 @@ module.exports = {
   production: {
     client: 'pg',
     connection: buildConnection(),
+    searchPath: ['school', 'public'],
     migrations: {
       directory: './migrations'
     },

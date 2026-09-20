@@ -1,5 +1,5 @@
 <template>
-  <aside class="h-full w-[280px] bg-white dark:bg-[#120b29] text-slate-700 dark:text-slate-200 border-r border-slate-200/80 dark:border-white/10 flex flex-col justify-between transition-colors duration-200 shadow-sm dark:shadow-2xl">
+  <aside class="h-full w-full bg-white dark:bg-[#120b29] text-slate-700 dark:text-slate-200 border-r border-slate-200/80 dark:border-white/10 flex flex-col justify-between transition-colors duration-200 shadow-sm dark:shadow-2xl">
     <div class="flex-1 flex flex-col min-h-0">
       <!-- Brand Header: Dynamic School Branding -->
       <div class="px-4 py-3.5 border-b border-slate-200/80 dark:border-white/10 flex items-center justify-between flex-shrink-0">

@@ -25,7 +25,8 @@ const buildConnection = () => {
 
 const db = knex({
   client: 'pg',
-  connection: buildConnection()
+  connection: buildConnection(),
+  searchPath: ['school', 'public']
 })
 
 module.exports = db

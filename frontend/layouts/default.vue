@@ -4,7 +4,7 @@
     <div 
       :class="[
         isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'fixed inset-y-0 left-0 z-50 w-[280px] lg:static lg:translate-x-0 transition-transform duration-300 ease-in-out h-full flex-shrink-0 print:hidden'
+        'fixed inset-y-0 left-0 z-50 w-[280px] max-w-[85vw] lg:static lg:translate-x-0 transition-transform duration-300 ease-in-out h-full flex-shrink-0 print:hidden'
       ]"
     >
       <layout-sidebar @close="isSidebarOpen = false" />
@@ -20,13 +20,13 @@
     <!-- Main Content Area -->
     <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden print:h-auto print:overflow-visible">
       <layout-header class="print:hidden" @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
-      <main class="flex-1 overflow-y-auto w-full p-4 sm:p-6 lg:p-8 print:p-0 print:m-0 print:h-auto print:overflow-visible flex flex-col justify-between">
+      <main class="flex-1 overflow-y-auto w-full p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 print:p-0 print:m-0 print:h-auto print:overflow-visible flex flex-col justify-between">
         <div class="max-w-[1720px] mx-auto w-full flex-1 print:max-w-none print:p-0">
           <slot />
         </div>
 
-        <!-- Global Institutional Footer (Captura 2) -->
-        <footer class="mt-10 pt-6 pb-2 border-t border-slate-200/80 dark:border-white/10 text-center text-xs text-slate-500 dark:text-slate-400 print:hidden flex-shrink-0">
+        <!-- Global Institutional Footer -->
+        <footer class="mt-8 sm:mt-10 pt-6 pb-2 border-t border-slate-200/80 dark:border-white/10 text-center text-xs text-slate-500 dark:text-slate-400 print:hidden flex-shrink-0">
           <div class="max-w-[1720px] mx-auto w-full flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
             <p class="font-medium">
               © 2026 <strong class="text-slate-800 dark:text-slate-200">U.E Santa Luisa</strong> • Todos los derechos reservados • <span class="font-mono text-[10px] bg-slate-200/70 dark:bg-white/10 px-2 py-0.5 rounded font-bold">Licencia MIT</span>
@@ -38,6 +38,9 @@
         </footer>
       </main>
     </div>
+
+    <!-- Mobile Bottom Navigation Dock (Quick Thumb Actions) -->
+    <layout-bottom-nav @open-menu="isSidebarOpen = true" />
 
     <!-- Global Institutional Toast Notifications -->
     <ui-toast />

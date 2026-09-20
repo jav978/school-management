@@ -255,8 +255,125 @@
       </template>
     </div>
 
-    <!-- Official Class Timetable Matrix -->
-    <div class="glass-card rounded-2xl overflow-hidden shadow-sm">
+    <!-- ============================================================== -->
+    <!-- MOBILE VIEW (md:hidden): Daily Agenda Feed with Day Tabs         -->
+    <!-- No horizontal panning required on mobile devices                 -->
+    <!-- ============================================================== -->
+    <div class="md:hidden print:hidden space-y-4">
+      <!-- Day Selector Pill Tabs -->
+      <div class="flex items-center gap-1.5 p-1.5 bg-slate-200/60 dark:bg-[#110926] rounded-2xl border border-slate-200 dark:border-white/10 overflow-x-auto scrollbar-none shadow-inner">
+        <button
+          v-for="day in weekDays"
+          :key="day.id"
+          @click="activeMobileDay = day.id"
+          type="button"
+          class="flex-1 min-w-[62px] py-2 px-2 rounded-xl text-xs font-bold transition-all text-center cursor-pointer whitespace-nowrap active:scale-95"
+          :class="activeMobileDay === day.id
+            ? 'bg-brand-primary text-white dark:bg-brand-gold dark:text-slate-950 shadow-md scale-[1.02]'
+            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'"
+        >
+          <span class="block text-[11px] uppercase tracking-wider">{{ day.label.substring(0, 3) }}</span>
+          <span class="text-[9px] opacity-80 font-medium">{{ day.label }}</span>
+        </button>
+      </div>
+
+      <!-- Mobile Daily Agenda Cards -->
+      <div class="space-y-3">
+        <template v-for="(slot, sIndex) in activeTimeSlots" :key="sIndex">
+          <!-- Break Card -->
+          <div 
+            v-if="slot.isBreak"
+            class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-800 dark:text-brand-gold flex items-center justify-between shadow-xs"
+          >
+            <div class="flex items-center gap-2.5">
+              <span class="text-xl">{{ slot.icon }}</span>
+              <div>
+                <p class="text-xs font-black">{{ slot.title }}</p>
+                <p class="text-[10.5px] opacity-80 font-medium">Receso pedagógico institucional</p>
+              </div>
+            </div>
+            <span class="font-mono text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-500/20">
+              {{ slot.start }} - {{ slot.end }}
+            </span>
+          </div>
+
+          <!-- Class Card -->
+          <div 
+            v-else
+            class="glass-card rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-white/10"
+          >
+            <!-- Slot Header -->
+            <div class="flex items-center justify-between mb-2.5">
+              <span class="font-mono text-[11px] font-black text-brand-primary dark:text-brand-gold bg-brand-primary/10 dark:bg-white/10 px-2.5 py-1 rounded-lg">
+                {{ slot.start }} - {{ slot.end }}
+              </span>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                Bloque {{ slot.blockNum }} (45m)
+              </span>
+            </div>
+
+            <!-- Assigned Subject Details -->
+            <div v-if="getScheduleAt(activeMobileDay, slot.start)">
+              <div 
+                :class="getClassCardColor(getScheduleAt(activeMobileDay, slot.start).subject_name)" 
+                class="p-3.5 rounded-xl border shadow-xs"
+              >
+                <div class="flex items-start justify-between gap-2">
+                  <div class="min-w-0 flex-1">
+                    <h4 class="font-display font-black text-sm leading-snug">
+                      {{ getScheduleAt(activeMobileDay, slot.start).subject_name }}
+                    </h4>
+                    <p class="text-xs font-semibold opacity-90 mt-1 flex items-center gap-1.5 truncate">
+                      <span>👨‍🏫</span>
+                      <span>{{ getScheduleAt(activeMobileDay, slot.start).teacher_name || 'Profesor asignado' }}</span>
+                    </p>
+                  </div>
+
+                  <!-- Actions for Coordinators / Admin -->
+                  <div v-if="canManage" class="flex items-center gap-1 flex-shrink-0">
+                    <button
+                      @click="openEditModal(getScheduleAt(activeMobileDay, slot.start))"
+                      class="p-1.5 rounded-lg bg-white/25 hover:bg-white/40 text-xs transition-colors cursor-pointer"
+                      title="Editar bloque"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      @click="openDeleteConfirm(getScheduleAt(activeMobileDay, slot.start))"
+                      class="p-1.5 rounded-lg bg-rose-500/25 hover:bg-rose-500/40 text-rose-700 dark:text-rose-300 text-xs transition-colors cursor-pointer"
+                      title="Eliminar bloque"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+
+                <div class="mt-2.5 pt-2 border-t border-black/10 dark:border-white/10 flex items-center justify-between text-[11px] font-bold">
+                  <span class="truncate">📍 {{ getScheduleAt(activeMobileDay, slot.start).classroom_name || 'Aula Regular' }}</span>
+                  <span class="font-mono text-[10.5px]">{{ getScheduleAt(activeMobileDay, slot.start).grade }} "{{ getScheduleAt(activeMobileDay, slot.start).section }}"</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Unassigned Slot -->
+            <div v-else class="py-3 text-center border border-dashed border-slate-200 dark:border-white/10 rounded-xl bg-slate-50/50 dark:bg-[#110926]/30">
+              <p class="text-xs text-slate-400 font-medium italic">Sin materia asignada en este bloque</p>
+              <button
+                v-if="canManage"
+                @click="openCreateModal(activeMobileDay, slot, $event)"
+                class="mt-2 px-3.5 py-1.5 rounded-xl border border-brand-primary/30 dark:border-brand-gold/40 text-xs font-bold text-brand-purple dark:text-brand-gold hover:bg-brand-primary/10 dark:hover:bg-brand-gold/10 transition-colors cursor-pointer inline-flex items-center gap-1"
+              >
+                <span>+</span>
+                <span>Asignar Materia</span>
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- Official Class Timetable Matrix (Desktop / Tablet & Print) -->
+    <div class="hidden md:block print:block glass-card rounded-2xl overflow-hidden shadow-sm">
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse min-w-[760px]">
           <!-- Day of the Week Columns -->
@@ -723,6 +840,13 @@ const educationLevel = ref('media') // 'primaria' or 'media'
 const selectedGrade = ref('1er Año')
 const selectedSection = ref('U')
 const selectedTeacherId = ref(null)
+
+// Mobile Day Agenda Selector (defaults to today Monday-Friday)
+const todayIdx = new Date().getDay()
+const initialMobileDay = (todayIdx >= 1 && todayIdx <= 5) 
+  ? ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'][todayIdx] 
+  : 'lunes'
+const activeMobileDay = ref(initialMobileDay)
 
 // Auto-lock for student persona
 watch(isStudent, (val) => {
