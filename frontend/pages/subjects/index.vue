@@ -36,7 +36,6 @@
     <!-- 4 KPI Summary Cards - Standardized Glass Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
       <!-- Total Materias -->
-      <!-- Total Materias -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Materias</p>
@@ -49,44 +48,65 @@
         </div>
       </div>
 
-      <!-- Departamentos -->
+      <!-- Oficiales MPPE -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Departamentos</p>
-          <p class="text-3xl font-black font-display text-brand-purple dark:text-purple-300 mt-1 leading-tight tracking-tight">{{ totalDepartments }}</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Oficiales MPPE</p>
+          <p class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 mt-1 leading-tight tracking-tight">{{ mppeSubjectsCount }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-          </svg>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0 text-2xl">
+          🏛️
         </div>
       </div>
 
-      <!-- Profesores Asignados -->
+      <!-- Cátedras Opcionales -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Profesores Asignados</p>
-          <p class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 mt-1 leading-tight tracking-tight">{{ assignedTeachersCount }}</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Cátedras Opcionales</p>
+          <p class="text-3xl font-black font-display text-amber-600 dark:text-brand-gold mt-1 leading-tight tracking-tight">{{ electiveSubjectsCount }}</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-          </svg>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0 text-2xl">
+          ⭐
         </div>
       </div>
 
-      <!-- Niveles Académicos -->
+      <!-- Media General Años -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Niveles Académicos</p>
-          <p class="text-3xl font-black font-display text-amber-600 dark:text-brand-gold mt-1 leading-tight tracking-tight">{{ academicLevelsCount }}</p>
+          <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Media General</p>
+          <p class="text-2xl font-black font-display text-brand-purple dark:text-purple-300 mt-1 leading-tight tracking-tight">1er a 5to Año</p>
         </div>
-        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
+        <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0 text-2xl">
+          🎓
         </div>
       </div>
+    </div>
+
+    <!-- Pestañas de Años de Bachillerato (1er a 5to Año + Electivas) -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <button
+        v-for="tab in gradeTabs"
+        :key="tab.id"
+        @click="activeGradeTab = tab.id"
+        type="button"
+        :class="[
+          activeGradeTab === tab.id
+            ? 'bg-brand-primary text-white font-bold shadow-md shadow-brand-primary/20 border-brand-primary'
+            : 'bg-white dark:bg-[#170f33] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5',
+          'px-4 py-2 rounded-2xl border text-xs flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer font-medium'
+        ]"
+      >
+        <span>{{ tab.icon }}</span>
+        <span>{{ tab.label }}</span>
+        <span 
+          :class="[
+            activeGradeTab === tab.id ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400',
+            'px-2 py-0.5 rounded-full text-[10px] font-bold'
+          ]"
+        >
+          {{ tab.count }}
+        </span>
+      </button>
     </div>
 
     <!-- Filter Bar Card -->
@@ -199,27 +219,29 @@
         :class="!subject.is_active ? 'opacity-85 border-amber-500/30' : ''"
       >
         <div>
-          <!-- Top Row: Subject Code (left) & Department with Outline Icon (right) -->
+          <!-- Top Row: Subject Code (left) & Badges / Department (right) -->
           <div class="flex items-center justify-between gap-2 mb-3">
-            <span class="px-3 py-1 bg-brand-primary/10 dark:bg-brand-purple/20 text-brand-primary dark:text-brand-gold border border-brand-primary/20 dark:border-brand-purple/40 rounded-xl font-black text-xs font-mono">
-              {{ subject.code }}
-            </span>
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <span class="px-3 py-1 bg-brand-primary/10 dark:bg-brand-purple/20 text-brand-primary dark:text-brand-gold border border-brand-primary/20 dark:border-brand-purple/40 rounded-xl font-black text-xs font-mono">
+                {{ subject.code }}
+              </span>
+              <span 
+                v-if="subject.is_elective"
+                class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-amber-500/15 text-amber-700 dark:text-brand-gold border border-amber-500/30 flex items-center gap-1"
+              >
+                <span>⭐ Opcional</span>
+              </span>
+              <span 
+                v-else
+                class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1"
+              >
+                <span>🏛️ Oficial MPPE</span>
+              </span>
+            </div>
 
-            <!-- Department with Clean Outline Icon (No background box, stroke-only SVG) -->
+            <!-- Department with Clean Outline Icon -->
             <div v-if="subject.category_name" class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-              <span class="font-medium truncate max-w-[160px] text-right">{{ subject.category_name }}</span>
-              <svg v-if="isScience(subject.category_name)" class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-              </svg>
-              <svg v-else-if="isMath(subject.category_name)" class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-              <svg v-else-if="isLanguage(subject.category_name)" class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <svg v-else class="w-4 h-4 text-slate-400 dark:text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-              </svg>
+              <span class="font-medium truncate max-w-[150px] text-right">{{ subject.category_name }}</span>
             </div>
             <!-- Fallback if no department -->
             <span 
@@ -251,12 +273,15 @@
 
           <!-- Attributes list -->
           <div class="mt-4 space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
-            <!-- Level -->
-            <div class="flex items-center gap-2.5 h-5">
-              <svg class="w-4 h-4 text-brand-secondary flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-              </svg>
-              <span class="font-medium capitalize truncate text-slate-700 dark:text-slate-300">{{ formatGradeLevel(subject.grade_level) }}</span>
+            <!-- Level / Grade Year -->
+            <div class="flex items-center justify-between gap-2 h-5">
+              <div class="flex items-center gap-2">
+                <span class="text-sm">🎒</span>
+                <span class="font-bold text-slate-800 dark:text-slate-200">{{ formatGradeLevel(subject.grade_level) }}</span>
+              </div>
+              <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+                {{ subject.hours_per_week }} hrs/sem • {{ subject.credits }} CR
+              </span>
             </div>
 
             <!-- Assigned Teacher -->
@@ -316,8 +341,9 @@
           <thead class="bg-slate-50/80 dark:bg-[#110926] text-slate-400 uppercase tracking-wider text-[10px] font-bold border-b border-slate-100 dark:border-white/10">
             <tr>
               <th class="py-3.5 px-4 sm:px-6">Código / Materia</th>
+              <th class="py-3.5 px-4">Tipo Curricular</th>
+              <th class="py-3.5 px-4">Año / Grado</th>
               <th class="py-3.5 px-4">Departamento</th>
-              <th class="py-3.5 px-4">Nivel</th>
               <th class="py-3.5 px-4">Profesor Asignado</th>
               <th class="py-3.5 px-4 text-center">Horas / Créditos</th>
               <th class="py-3.5 px-4 text-center">Estado</th>
@@ -336,16 +362,30 @@
                   <p class="font-mono text-[10px] text-brand-purple dark:text-brand-secondary font-bold">{{ s.code }}</p>
                 </div>
               </td>
+              <td class="py-3.5 px-4">
+                <span 
+                  v-if="s.is_elective"
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-700 dark:text-brand-gold border border-amber-500/30"
+                >
+                  <span>⭐ Opcional</span>
+                </span>
+                <span 
+                  v-else
+                  class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30"
+                >
+                  <span>🏛️ Oficial MPPE</span>
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-xs font-bold text-slate-800 dark:text-slate-200">
+                {{ formatGradeLevel(s.grade_level) }}
+              </td>
               <td class="py-3.5 px-4 text-xs font-medium text-slate-700 dark:text-slate-300">
                 {{ s.category_name || 'General' }}
-              </td>
-              <td class="py-3.5 px-4 text-xs capitalize text-slate-600 dark:text-slate-400">
-                {{ s.grade_level }}
               </td>
               <td class="py-3.5 px-4 text-xs font-medium text-slate-800 dark:text-slate-200">
                 {{ s.teacher_name || 'No asignado' }}
               </td>
-              <td class="py-3.5 px-4 text-center text-xs text-slate-500 dark:text-slate-400">
+              <td class="py-3.5 px-4 text-center text-xs text-slate-500 dark:text-slate-400 font-mono">
                 {{ s.hours_per_week || 4 }}h / {{ s.credits || 0 }} CR
               </td>
               <td class="py-3.5 px-4 text-center">
@@ -472,20 +512,39 @@
                   </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <!-- Grade Level -->
                   <div>
                     <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      Nivel Académico *
+                      Año / Grado Escolar *
                     </label>
                     <select 
                       v-model="form.grade_level" 
                       data-testid="subject-level-select"
                       class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
                     >
-                      <option value="media">Media / Bachillerato</option>
-                      <option value="primaria">Primaria</option>
-                      <option value="inicial">Educación Inicial</option>
+                      <option value="1er Año">1er Año (Media General)</option>
+                      <option value="2do Año">2do Año (Media General)</option>
+                      <option value="3er Año">3er Año (Media General)</option>
+                      <option value="4to Año">4to Año (Media General)</option>
+                      <option value="5to Año">5to Año (Media General)</option>
+                      <option value="Media General">Media General (Transversal)</option>
+                      <option value="Primaria">Primaria</option>
+                      <option value="Inicial">Educación Inicial</option>
+                    </select>
+                  </div>
+
+                  <!-- Curricular Type (Official MPPE vs Elective) -->
+                  <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                      Tipo de Cátedra *
+                    </label>
+                    <select 
+                      v-model="form.is_elective" 
+                      class="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-xl text-slate-800 dark:text-slate-100 cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-purple/30 font-medium"
+                    >
+                      <option :value="false">🏛️ Oficial del MPPE</option>
+                      <option :value="true">⭐ Opcional / Electiva</option>
                     </select>
                   </div>
 
@@ -763,16 +822,20 @@ const showDeleteModal = ref(false)
 const subjectToDelete = ref(null)
 const isDeleting = ref(false)
 
+const activeGradeTab = ref('all') // 'all' | '1er Año' | '2do Año' | '3er Año' | '4to Año' | '5to Año' | 'electives'
+
 const form = ref({
   code: '',
   name: '',
-  grade_level: 'media',
-  credits: 0,
+  short_name: '',
+  grade_level: '1er Año',
+  credits: 4,
   hours_per_week: 4,
   teacher_name: '',
   category_name: 'Ciencias Naturales y Exactas',
   prerequisites: '',
   description: '',
+  is_elective: false,
   is_active: true
 })
 
@@ -788,32 +851,49 @@ const teachersList = [
   'Carmen Domínguez'
 ]
 
-// Departments list
+// Departments list matching MPPE Official Curriculum
 const departmentsList = [
   'Ciencias Naturales y Exactas',
   'Lengua, Humanidades y Arte',
   'Matemática y Lógica',
+  'Ciencias Sociales y Ciudadanía',
+  'Formación Integral y Deportes',
+  'Tecnología e Innovación',
   'Formación Integral y Valores'
 ]
 
 // Computed KPI metrics
 const totalSubjects = computed(() => subjects.value.length)
-const totalDepartments = computed(() => {
-  const depts = new Set(subjects.value.map(s => s.category_name).filter(Boolean))
-  return depts.size > 0 ? depts.size : 4
-})
+const mppeSubjectsCount = computed(() => subjects.value.filter(s => !s.is_elective).length)
+const electiveSubjectsCount = computed(() => subjects.value.filter(s => s.is_elective).length)
+const totalDepartments = computed(() => departmentsList.length)
 const assignedTeachersCount = computed(() => {
   const teachers = new Set(subjects.value.map(s => s.teacher_name).filter(Boolean))
-  return teachers.size > 0 ? teachers.size : 3
+  return teachers.size > 0 ? teachers.size : 5
 })
-const academicLevelsCount = computed(() => {
-  const levels = new Set(subjects.value.map(s => s.grade_level).filter(Boolean))
-  return levels.size > 0 ? levels.size : 2
-})
+const academicLevelsCount = computed(() => 5)
+
+// Grade Tabs definition
+const gradeTabs = computed(() => [
+  { id: 'all', label: 'Todas las Materias', count: subjects.value.length, icon: '📚' },
+  { id: '1er Año', label: '1er Año', count: subjects.value.filter(s => s.grade_level === '1er Año').length, icon: '🎒' },
+  { id: '2do Año', label: '2do Año', count: subjects.value.filter(s => s.grade_level === '2do Año').length, icon: '📖' },
+  { id: '3er Año', label: '3er Año', count: subjects.value.filter(s => s.grade_level === '3er Año').length, icon: '🔬' },
+  { id: '4to Año', label: '4to Año', count: subjects.value.filter(s => s.grade_level === '4to Año').length, icon: '📐' },
+  { id: '5to Año', label: '5to Año', count: subjects.value.filter(s => s.grade_level === '5to Año').length, icon: '🎓' },
+  { id: 'electives', label: 'Opcionales / Electivas', count: subjects.value.filter(s => s.is_elective).length, icon: '⭐' }
+])
 
 // Filtered Subjects
 const filteredSubjects = computed(() => {
   return subjects.value.filter(s => {
+    // Grade tab filter
+    if (activeGradeTab.value === 'electives') {
+      if (!s.is_elective) return false
+    } else if (activeGradeTab.value !== 'all') {
+      if (s.grade_level !== activeGradeTab.value) return false
+    }
+
     const q = search.value.trim().toLowerCase()
     const matchesSearch = !q || 
       (s.name && s.name.toLowerCase().includes(q)) || 
@@ -826,9 +906,13 @@ const filteredSubjects = computed(() => {
     // For student: restrict strictly to media level
     let matchesLevel = true
     if (isStudent.value) {
-      matchesLevel = !s.grade_level || s.grade_level.toLowerCase() === 'media'
-    } else {
-      matchesLevel = !filterLevel.value || (s.grade_level && s.grade_level.toLowerCase() === filterLevel.value.toLowerCase())
+      matchesLevel = !s.grade_level || s.grade_level.includes('3er') || s.grade_level.toLowerCase() === 'media'
+    } else if (filterLevel.value) {
+      if (filterLevel.value === 'media') {
+        matchesLevel = s.grade_level.includes('Año') || s.grade_level.toLowerCase().includes('media')
+      } else {
+        matchesLevel = s.grade_level && s.grade_level.toLowerCase().includes(filterLevel.value.toLowerCase())
+      }
     }
 
     return matchesSearch && matchesDept && matchesTeacher && matchesLevel
@@ -862,8 +946,8 @@ const isLanguage = (dept) => {
 }
 
 const formatGradeLevel = (level) => {
-  if (!level) return 'Media / Bachillerato'
-  if (level.toLowerCase() === 'media') return 'Media / Bachillerato'
+  if (!level) return 'Media General'
+  if (level.toLowerCase() === 'media') return 'Media General'
   if (level.toLowerCase() === 'primaria') return 'Primaria'
   if (level.toLowerCase() === 'inicial') return 'Educación Inicial'
   return level
@@ -874,13 +958,15 @@ const mapSubject = (s) => {
     id: s.id,
     code: s.code || '',
     name: s.name || '',
-    grade_level: s.grade_level || 'media',
+    short_name: s.short_name || '',
+    grade_level: s.grade_level || '1er Año',
     credits: s.credits !== undefined ? s.credits : 0,
     hours_per_week: s.hours_per_week || 4,
     description: s.description || '',
     prerequisites: s.prerequisites || '',
-    category_name: s.category_name || (s.grade_level === 'primaria' ? 'Primaria' : 'Ciencias Naturales y Exactas'),
+    category_name: s.category_name || s.department || 'Ciencias Naturales y Exactas',
     teacher_name: s.teacher_name || '',
+    is_elective: Boolean(s.is_elective),
     is_active: s.is_active !== undefined ? s.is_active : true
   }
 }
@@ -918,13 +1004,15 @@ const openCreateModal = () => {
   form.value = {
     code: '',
     name: '',
-    grade_level: 'media',
-    credits: 0,
+    short_name: '',
+    grade_level: activeGradeTab.value !== 'all' && activeGradeTab.value !== 'electives' ? activeGradeTab.value : '1er Año',
+    credits: 4,
     hours_per_week: 4,
     teacher_name: '',
     category_name: 'Ciencias Naturales y Exactas',
     prerequisites: '',
     description: '',
+    is_elective: activeGradeTab.value === 'electives',
     is_active: true
   }
   showModal.value = true
@@ -936,13 +1024,15 @@ const openEditModal = (subject) => {
   form.value = {
     code: subject.code,
     name: subject.name,
-    grade_level: subject.grade_level || 'media',
+    short_name: subject.short_name || '',
+    grade_level: subject.grade_level || '1er Año',
     credits: subject.credits || 0,
     hours_per_week: subject.hours_per_week || 4,
     teacher_name: subject.teacher_name === 'No asignado' ? '' : (subject.teacher_name || ''),
-    category_name: subject.category_name || '',
+    category_name: subject.category_name || 'Ciencias Naturales y Exactas',
     prerequisites: Array.isArray(subject.prerequisites) ? subject.prerequisites.join(', ') : (subject.prerequisites ? String(subject.prerequisites) : ''),
     description: subject.description || '',
+    is_elective: Boolean(subject.is_elective),
     is_active: subject.is_active !== undefined ? subject.is_active : true
   }
   showModal.value = true
@@ -971,6 +1061,7 @@ const saveSubject = async () => {
   const teacher_name = form.value.teacher_name || 'No asignado'
   const credits = Number(form.value.credits) || 0
   const hours_per_week = Number(form.value.hours_per_week) || 4
+  const is_elective = Boolean(form.value.is_elective)
 
   // Check duplicate code
   const isDuplicate = subjects.value.some(s => 
@@ -993,6 +1084,7 @@ const saveSubject = async () => {
     category_name,
     prerequisites,
     teacher_name,
+    is_elective,
     is_active: form.value.is_active
   }
 

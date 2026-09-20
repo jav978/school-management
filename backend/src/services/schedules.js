@@ -142,8 +142,8 @@ module.exports = function (app) {
     Model: app.get('knexClient'),
     name: 'school.schedules',
     paginate: {
-      default: 50,
-      max: 100
+      default: 250,
+      max: 500
     }
   }
 

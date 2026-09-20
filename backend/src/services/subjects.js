@@ -13,12 +13,22 @@ function _enrichSubject(sub) {
   if (!sub) return sub
   let dept = 'Ciencias Naturales y Exactas'
   const nameLower = (sub.name || '').toLowerCase()
-  if (nameLower.includes('matemática') || nameLower.includes('calculo') || nameLower.includes('álgebra')) {
+  const codeLower = (sub.code || '').toLowerCase()
+
+  if (nameLower.includes('matemática') || nameLower.includes('calculo') || nameLower.includes('álgebra') || codeLower.startsWith('mat')) {
     dept = 'Matemática y Lógica'
-  } else if (nameLower.includes('lengua') || nameLower.includes('literatura') || nameLower.includes('castellano') || nameLower.includes('inglés') || nameLower.includes('historia')) {
+  } else if (nameLower.includes('lengua') || nameLower.includes('literatura') || nameLower.includes('castellano') || nameLower.includes('inglés') || nameLower.includes('arte') || nameLower.includes('francés') || codeLower.startsWith('cas') || codeLower.startsWith('ing') || codeLower.startsWith('ayp') || codeLower.startsWith('fra')) {
     dept = 'Lengua, Humanidades y Arte'
-  } else if (nameLower.includes('educación física') || nameLower.includes('valores') || nameLower.includes('religión') || nameLower.includes('fe')) {
+  } else if (nameLower.includes('educación física') || nameLower.includes('deporte') || codeLower.startsWith('edf')) {
+    dept = 'Formación Integral y Deportes'
+  } else if (nameLower.includes('geografía') || nameLower.includes('historia') || nameLower.includes('ciudadanía') || nameLower.includes('soberanía') || nameLower.includes('fsn') || codeLower.startsWith('ghc') || codeLower.startsWith('fsn')) {
+    dept = 'Ciencias Sociales y Ciudadanía'
+  } else if (nameLower.includes('computación') || nameLower.includes('robótica') || nameLower.includes('tecnología') || nameLower.includes('programación') || codeLower.startsWith('comp') || codeLower.startsWith('rob')) {
+    dept = 'Tecnología e Innovación'
+  } else if (nameLower.includes('orientación') || nameLower.includes('convivencia') || nameLower.includes('valores') || nameLower.includes('religión') || nameLower.includes('fe') || nameLower.includes('proyecto') || codeLower.startsWith('oyc') || codeLower.startsWith('edfe')) {
     dept = 'Formación Integral y Valores'
+  } else if (nameLower.includes('física') || nameLower.includes('química') || nameLower.includes('biología') || nameLower.includes('tierra') || nameLower.includes('ciencias') || codeLower.startsWith('cn') || codeLower.startsWith('fis') || codeLower.startsWith('qui') || codeLower.startsWith('bio') || codeLower.startsWith('ct')) {
+    dept = 'Ciencias Naturales y Exactas'
   }
 
   return {
@@ -37,7 +47,15 @@ class SubjectsService extends KnexService {
     let knexQuery = db('school.subjects').where('is_deleted', false)
 
     if (query.grade_level) {
-      knexQuery = knexQuery.where('grade_level', query.grade_level)
+      if (query.grade_level.toLowerCase() === 'media') {
+        knexQuery = knexQuery.whereIn('grade_level', ['1er Año', '2do Año', '3er Año', '4to Año', '5to Año', 'Media General', 'media'])
+      } else {
+        knexQuery = knexQuery.where('grade_level', query.grade_level)
+      }
+    }
+    if (query.is_elective !== undefined) {
+      const electiveBool = query.is_elective === 'true' || query.is_elective === true
+      knexQuery = knexQuery.where('is_elective', electiveBool)
     }
     if (query.is_active !== undefined) {
       const activeBool = query.is_active === 'true' || query.is_active === true
@@ -52,7 +70,7 @@ class SubjectsService extends KnexService {
 
     return {
       total: enriched.length,
-      limit: 100,
+      limit: 200,
       skip: 0,
       data: enriched
     }

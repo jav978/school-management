@@ -219,14 +219,21 @@
                 <option v-for="g in currentGradesList" :key="g" :value="g">{{ g }}</option>
               </select>
 
-              <!-- Section selector (U.E Santa Luisa Sección Única) -->
+              <!-- Section selector (Sección U y Sección A) -->
               <div class="flex items-center bg-slate-100 dark:bg-[#110926] p-1 rounded-xl border border-slate-200 dark:border-white/10">
                 <button
                   @click="selectedSection = 'U'"
                   :class="selectedSection === 'U' ? 'bg-brand-primary text-white font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
                   class="px-3 py-1 rounded-lg text-xs transition-all font-mono font-bold cursor-pointer"
                 >
-                  Sección U
+                  Sec. U
+                </button>
+                <button
+                  @click="selectedSection = 'A'"
+                  :class="selectedSection === 'A' ? 'bg-brand-primary text-white font-bold shadow-xs' : 'text-slate-500 hover:text-slate-800 dark:text-slate-400'"
+                  class="px-3 py-1 rounded-lg text-xs transition-all font-mono font-bold cursor-pointer"
+                >
+                  Sec. A
                 </button>
               </div>
             </template>
@@ -737,6 +744,15 @@ watch([isParent, activeStudent], ([parent, student]) => {
   }
 }, { immediate: true })
 
+// Auto-sync section when grade changes
+watch(selectedGrade, (val) => {
+  if (val === '5to Año') {
+    selectedSection.value = 'A'
+  } else if (val && val.includes('Año')) {
+    selectedSection.value = 'U'
+  }
+})
+
 const schedules = ref([])
 const subjectsList = ref([])
 const teachersList = ref([])
@@ -838,7 +854,7 @@ const filteredSchedules = computed(() => {
   if (viewMode.value === 'section') {
     return schedules.value.filter(s => {
       const matchGrade = s.grade === selectedGrade.value
-      const matchSection = s.section === selectedSection.value || s.section === 'U' || !s.section
+      const matchSection = !selectedSection.value || s.section === selectedSection.value || (!s.section)
       return matchGrade && matchSection
     })
   } else {
