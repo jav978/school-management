@@ -26,6 +26,7 @@ export const useAuthStore = defineStore('auth', {
         const config = useRuntimeConfig()
         const response = await $fetch(`${config.public.apiBase}/authentication`, {
           method: 'POST',
+          timeout: 12000,
           body: {
             strategy: 'local',
             email,
@@ -54,10 +55,11 @@ export const useAuthStore = defineStore('auth', {
         this.tempUser = null
 
         // Cookie efímera de sesión (se destruye automáticamente al cerrar el navegador)
-        const sessionCookie = useCookie('session_token', { sameSite: 'lax', secure: false })
+        const isSecure = process.env.NODE_ENV === 'production' || (import.meta.client && window.location.protocol === 'https:')
+        const sessionCookie = useCookie('session_token', { sameSite: 'lax', secure: isSecure })
         sessionCookie.value = response.accessToken
 
-        const sessionIdCookie = useCookie('session_id', { sameSite: 'lax', secure: false })
+        const sessionIdCookie = useCookie('session_id', { sameSite: 'lax', secure: isSecure })
         sessionIdCookie.value = response.session_id || ''
 
         if (import.meta.client) {
@@ -230,6 +232,7 @@ export const useAuthStore = defineStore('auth', {
         const config = useRuntimeConfig()
         const response = await $fetch(`${config.public.apiBase}/authentication`, {
           method: 'GET',
+          timeout: 10000,
           headers: {
             Authorization: `Bearer ${token}`
           }

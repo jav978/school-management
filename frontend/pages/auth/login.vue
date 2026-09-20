@@ -121,26 +121,42 @@ const password = ref('')
 const showPassword = ref(false)
 const error = ref('')
 const loading = ref(false)
+const route = useRoute()
 
 const handleLogin = async () => {
+  if (loading.value) return
   loading.value = true
   error.value = ''
 
   try {
     const res = await authStore.login(email.value, password.value)
     if (res && res.two_factor_required) {
-      navigateTo('/auth/2fa-challenge')
+      await navigateTo('/auth/2fa-challenge')
     } else {
       const user = authStore.user || res.user
       if (user && user.status === 'pending') {
         error.value = 'Su cuenta ha sido registrada y está en proceso de verificación por la Dirección del Plantel.'
       } else {
-        navigateTo('/dashboard')
+        const rawRedirect = route.query.redirect ? String(route.query.redirect) : '/dashboard'
+        const redirectPath = rawRedirect.startsWith('/') ? decodeURIComponent(rawRedirect) : '/dashboard'
+        await navigateTo(redirectPath)
       }
     }
   } catch (err) {
+    console.error('Error during login:', err)
     if (err.statusCode === 429 || err.status === 429 || err.data?.code === 429) {
       error.value = 'Demasiados intentos de acceso. Por seguridad, su IP ha sido bloqueada temporalmente.'
+    } else if (
+      err.name === 'AbortError' ||
+      err.name === 'FetchError' ||
+      err.message?.includes('fetch') ||
+      err.message?.includes('Network') ||
+      err.message?.includes('timeout') ||
+      err.statusCode === 502 ||
+      err.statusCode === 504 ||
+      (typeof navigator !== 'undefined' && !navigator.onLine)
+    ) {
+      error.value = 'No se pudo establecer conexión con el servidor. Verifique su conexión a internet e intente nuevamente.'
     } else {
       error.value = err.data?.message || err.message || 'Credenciales inválidas. Por favor verifique sus datos.'
     }

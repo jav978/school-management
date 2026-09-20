@@ -45,7 +45,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || process.env.API_BASE || 'http://localhost:3031'
+      apiBase: process.env.NODE_ENV === 'production' || process.env.USE_API_PROXY === 'true'
+        ? '/api'
+        : (process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3031')
     }
   }
 })
