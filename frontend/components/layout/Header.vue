@@ -19,8 +19,8 @@
         </div>
       </div>
 
-      <!-- Center-Left: Aligned Search Bar (Desktop / Tablet) -->
-      <div class="hidden sm:block flex-1 max-w-md mr-auto">
+      <!-- Center-Left: Aligned Search Bar with Omnisearch (Desktop / Tablet) -->
+      <div class="hidden sm:block flex-1 max-w-md mr-auto relative" ref="searchContainerRef">
         <div class="relative w-full">
           <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -28,22 +28,140 @@
             </svg>
           </div>
           <input 
+            ref="desktopSearchInputRef"
             v-model="searchQuery" 
+            @focus="isDesktopSearchFocused = true"
             type="text" 
-            :placeholder="t('searchPlaceholder', 'Buscar estudiantes, materias, cédulas...')" 
-            class="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-100/80 dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 transition-all shadow-xs"
+            data-testid="header-omnisearch-input"
+            :placeholder="t('searchPlaceholder', 'Buscar alumnos, cédulas, materias, módulos... (Ctrl+K)')" 
+            class="w-full pl-10 pr-12 py-2 text-xs sm:text-sm bg-slate-100/80 dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-full focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-400 transition-all shadow-xs"
           />
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <kbd class="hidden md:inline-block font-mono text-[9px] font-bold text-slate-400 dark:text-slate-500 bg-slate-200/80 dark:bg-white/10 px-1.5 py-0.5 rounded border border-slate-300/50 dark:border-white/10">
+              ⌘K
+            </kbd>
+          </div>
+        </div>
+
+        <!-- Desktop Omnisearch Results Dropdown -->
+        <div 
+          v-if="isDesktopSearchFocused && searchQuery.trim().length >= 1"
+          class="absolute top-full left-0 mt-2 w-full max-w-lg bg-white dark:bg-[#1a1238] rounded-2xl shadow-2xl border border-slate-200 dark:border-white/15 py-3 z-50 animate-fade-in overflow-hidden"
+        >
+          <div class="px-4 pb-2 border-b border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-400">
+            <span class="flex items-center gap-1.5">
+              <span>⚡</span>
+              <span>Búsqueda Inteligente Omnisearch</span>
+            </span>
+            <span class="text-[10px] font-mono bg-amber-500/10 text-amber-700 dark:text-brand-gold px-2 py-0.5 rounded-full font-bold">
+              {{ searchResults.total }} resultado{{ searchResults.total !== 1 ? 's' : '' }}
+            </span>
+          </div>
+
+          <div class="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5 p-1.5">
+            <!-- Módulos del Sistema -->
+            <div v-if="searchResults.modules.length > 0" class="py-1">
+              <p class="px-3 py-1 text-[10px] font-black text-amber-700 dark:text-brand-gold uppercase tracking-wider">
+                Módulos del Sistema
+              </p>
+              <button
+                v-for="item in searchResults.modules"
+                :key="item.id"
+                @mousedown.prevent="handleSelectSearchResult(item)"
+                class="w-full text-left px-3 py-2 rounded-xl flex items-center justify-between hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="text-base flex-shrink-0">{{ item.icon }}</span>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate group-hover:text-amber-600 dark:group-hover:text-brand-gold">
+                      {{ item.title }}
+                    </p>
+                    <p class="text-[10px] text-slate-400 truncate">{{ item.subtitle }}</p>
+                  </div>
+                </div>
+                <span class="text-xs text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">Ir →</span>
+              </button>
+            </div>
+
+            <!-- Estudiantes -->
+            <div v-if="searchResults.students.length > 0" class="py-1">
+              <p class="px-3 py-1 text-[10px] font-black text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+                Estudiantes Matriculados
+              </p>
+              <button
+                v-for="item in searchResults.students"
+                :key="item.id"
+                @mousedown.prevent="handleSelectSearchResult(item)"
+                class="w-full text-left px-3 py-2 rounded-xl flex items-center justify-between hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-xl bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    {{ item.icon }}
+                  </span>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate group-hover:text-sky-600 dark:group-hover:text-sky-400">
+                      {{ item.title }}
+                    </p>
+                    <p class="text-[10px] text-slate-400 truncate font-mono">{{ item.subtitle }}</p>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-sky-600 bg-sky-50 dark:bg-sky-950/50 px-2 py-0.5 rounded-md flex-shrink-0">
+                  Ver Alumno
+                </span>
+              </button>
+            </div>
+
+            <!-- Docentes -->
+            <div v-if="searchResults.teachers.length > 0" class="py-1">
+              <p class="px-3 py-1 text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+                Cuerpo Docente
+              </p>
+              <button
+                v-for="item in searchResults.teachers"
+                :key="item.id"
+                @mousedown.prevent="handleSelectSearchResult(item)"
+                class="w-full text-left px-3 py-2 rounded-xl flex items-center justify-between hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer group"
+              >
+                <div class="flex items-center gap-2.5 min-w-0">
+                  <span class="w-7 h-7 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-xs flex-shrink-0">
+                    {{ item.icon }}
+                  </span>
+                  <div class="min-w-0">
+                    <p class="text-xs font-bold text-slate-800 dark:text-white truncate group-hover:text-emerald-600 dark:group-hover:text-emerald-400">
+                      {{ item.title }}
+                    </p>
+                    <p class="text-[10px] text-slate-400 truncate">{{ item.subtitle }}</p>
+                  </div>
+                </div>
+                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md flex-shrink-0">
+                  Ver Docente
+                </span>
+              </button>
+            </div>
+
+            <!-- Sin resultados -->
+            <div v-if="searchResults.total === 0" class="p-6 text-center text-xs text-slate-400">
+              <p class="text-lg mb-1">🔍</p>
+              <p class="font-bold text-slate-600 dark:text-slate-300">Sin coincidencias para "{{ searchQuery }}"</p>
+              <p class="text-[11px] mt-0.5">Prueba buscando por nombre, cédula (V-...), materia o módulo.</p>
+            </div>
+          </div>
+
+          <div class="px-4 pt-2 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[10px] text-slate-400">
+            <span>Resultados instantáneos de la U.E Santa Luisa</span>
+            <span>Esc para cerrar</span>
+          </div>
         </div>
       </div>
 
-      <!-- Right: Actions, Language, Messages, Notifications, Profile (Perfect Horizontal Alignment) -->
-      <div class="flex items-center space-x-1 sm:space-x-3">
+      <!-- Right: Actions & Profile - Ultra clean on mobile (no overflow) -->
+      <div class="flex items-center space-x-1.5 sm:space-x-3">
         
-        <!-- Mobile Search Toggle Button -->
+        <!-- Mobile Search Toggle Button (Shows on mobile only) -->
         <button 
-          @click="isSearchMobileOpen = !isSearchMobileOpen"
+          @click="isSearchMobileOpen = true"
           type="button" 
-          class="sm:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
+          class="sm:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer touch-tap-target flex items-center justify-center"
           title="Buscar en el sistema"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -51,8 +169,8 @@
           </svg>
         </button>
         
-        <!-- Language Switcher (EN / ES) -->
-        <div class="relative" ref="langDropdownRef">
+        <!-- Language Switcher (EN / ES) - Desktop/Tablet Only -->
+        <div class="hidden md:block relative" ref="langDropdownRef">
           <button 
             @click="toggleLangDropdown"
             type="button" 
@@ -92,11 +210,11 @@
           </div>
         </div>
 
-        <!-- Dark / Light Mode Switcher -->
+        <!-- Dark / Light Mode Switcher - Desktop / Tablet Only -->
         <button 
           @click="toggleTheme" 
           type="button" 
-          class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
+          class="hidden sm:flex p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer items-center justify-center"
           :title="colorMode.value === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
         >
           <!-- Sun icon when dark -->
@@ -109,19 +227,19 @@
           </svg>
         </button>
 
-        <!-- System Feedback Button -->
+        <!-- System Feedback Button - Desktop Only -->
         <button 
           @click="openFeedback('general')"
           type="button" 
-          class="p-2 sm:px-2.5 sm:py-2 rounded-xl text-amber-600 dark:text-brand-gold bg-amber-500/10 hover:bg-amber-500/20 active:scale-95 transition-all border border-amber-500/20 shadow-xs flex items-center gap-1.5 cursor-pointer font-bold text-xs"
+          class="hidden md:flex p-2 sm:px-2.5 sm:py-2 rounded-xl text-amber-600 dark:text-brand-gold bg-amber-500/10 hover:bg-amber-500/20 active:scale-95 transition-all border border-amber-500/20 shadow-xs items-center gap-1.5 cursor-pointer font-bold text-xs"
           title="Calificar la plataforma y enviar sugerencias"
         >
           <span class="text-xs">⭐</span>
-          <span class="hidden md:inline text-[11px] font-bold">Feedback</span>
+          <span class="inline text-[11px] font-bold">Feedback</span>
         </button>
 
-        <!-- Messages Button & Dropdown -->
-        <div class="relative" ref="messagesDropdownRef">
+        <!-- Messages Button & Dropdown - Desktop Only -->
+        <div class="hidden sm:block relative" ref="messagesDropdownRef">
           <button 
             @click="toggleMessagesDropdown"
             type="button" 
@@ -386,6 +504,67 @@
               </NuxtLink>
             </div>
 
+            <!-- Mobile-only Quick Controls (Language, Dark Mode, Feedback, Messages) -->
+            <div class="sm:hidden py-1 border-t border-slate-100 dark:border-white/10">
+              <p class="px-4 py-1 text-[10px] font-black uppercase text-slate-400 tracking-wider">
+                Accesos Rápidos
+              </p>
+
+              <!-- Dark / Light Mode Toggle -->
+              <button 
+                @click="toggleTheme" 
+                type="button" 
+                class="w-full flex items-center justify-between px-4 py-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 font-medium transition-colors cursor-pointer"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base">{{ colorMode.value === 'dark' ? '☀️' : '🌙' }}</span>
+                  <span>{{ colorMode.value === 'dark' ? 'Modo Claro' : 'Modo Oscuro' }}</span>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-slate-300">
+                  {{ colorMode.value === 'dark' ? 'Activo: Oscuro' : 'Activo: Claro' }}
+                </span>
+              </button>
+
+              <!-- Language Switch -->
+              <button 
+                @click="changeLang(currentLang === 'es' ? 'en' : 'es')" 
+                type="button" 
+                class="w-full flex items-center justify-between px-4 py-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 font-medium transition-colors cursor-pointer"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base">🌐</span>
+                  <span>Idioma / Language</span>
+                </div>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-500/10 text-amber-700 dark:text-brand-gold uppercase">
+                  {{ (currentLang || 'es').toUpperCase() }}
+                </span>
+              </button>
+
+              <!-- Feedback -->
+              <button 
+                @click="isProfileOpen = false; openFeedback('mobile')" 
+                type="button" 
+                class="w-full flex items-center gap-3 px-4 py-2.5 text-amber-600 dark:text-brand-gold hover:bg-amber-500/10 font-bold transition-colors cursor-pointer"
+              >
+                <span class="text-base">⭐</span>
+                <span>Calificar y Enviar Feedback</span>
+              </button>
+
+              <!-- Messages Shortcut -->
+              <NuxtLink 
+                to="/communication" 
+                @click="isProfileOpen = false"
+                class="flex items-center justify-between px-4 py-2.5 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/5 font-medium transition-colors"
+              >
+                <div class="flex items-center gap-3">
+                  <span class="text-base">✉️</span>
+                  <span>Mensajes Escolares</span>
+                </div>
+                <span class="min-w-[18px] h-[18px] px-1 bg-amber-500 text-slate-950 font-black text-[10px] rounded-full flex items-center justify-center">
+                  1
+                </span>
+              </NuxtLink>
+            </div>
 
             <!-- Logout Link -->
             <div class="py-1 border-t border-slate-100 dark:border-white/10">
@@ -407,10 +586,10 @@
       </div>
     </div>
 
-    <!-- Expandable Mobile Search Row -->
+    <!-- Expandable Mobile Search Row with Live Omnisearch -->
     <div 
       v-if="isSearchMobileOpen" 
-      class="sm:hidden px-3 pb-2.5 pt-1 border-t border-slate-100 dark:border-white/10 bg-white/95 dark:bg-[#120b29]/95 animate-fade-in"
+      class="sm:hidden px-3 pb-3 pt-1 border-t border-slate-100 dark:border-white/10 bg-white/95 dark:bg-[#120b29]/95 animate-fade-in"
     >
       <div class="relative w-full">
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
@@ -422,6 +601,7 @@
           v-model="searchQuery" 
           type="text" 
           autofocus
+          data-testid="header-mobile-omnisearch-input"
           :placeholder="t('searchPlaceholder', 'Buscar estudiantes, materias, cédulas...')" 
           class="w-full pl-9 pr-8 py-2 text-xs bg-slate-100 dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 text-slate-800 dark:text-white placeholder-slate-400 shadow-inner"
         />
@@ -434,6 +614,92 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
+      </div>
+
+      <!-- Live Mobile Omnisearch Results Dropdown -->
+      <div 
+        v-if="searchQuery.trim().length >= 1" 
+        class="mt-2 max-h-72 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5 rounded-2xl bg-white dark:bg-[#1a1238] border border-slate-200 dark:border-white/15 p-1.5 shadow-xl"
+      >
+        <!-- Módulos -->
+        <div v-if="searchResults.modules.length > 0" class="py-1">
+          <p class="px-2.5 py-1 text-[10px] font-black text-amber-700 dark:text-brand-gold uppercase tracking-wider">
+            Módulos del Sistema
+          </p>
+          <button
+            v-for="item in searchResults.modules"
+            :key="item.id"
+            @click="handleSelectSearchResult(item)"
+            class="w-full text-left px-2.5 py-2 rounded-xl flex items-center justify-between hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-base flex-shrink-0">{{ item.icon }}</span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-800 dark:text-white truncate">{{ item.title }}</p>
+                <p class="text-[10px] text-slate-400 truncate">{{ item.subtitle }}</p>
+              </div>
+            </div>
+            <span class="text-xs text-slate-400 flex-shrink-0">Ir →</span>
+          </button>
+        </div>
+
+        <!-- Estudiantes -->
+        <div v-if="searchResults.students.length > 0" class="py-1">
+          <p class="px-2.5 py-1 text-[10px] font-black text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+            Estudiantes Matriculados
+          </p>
+          <button
+            v-for="item in searchResults.students"
+            :key="item.id"
+            @click="handleSelectSearchResult(item)"
+            class="w-full text-left px-2.5 py-2 rounded-xl flex items-center justify-between hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-6 h-6 rounded-lg bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 flex items-center justify-center font-bold text-[10px] flex-shrink-0">
+                {{ item.icon }}
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-800 dark:text-white truncate">{{ item.title }}</p>
+                <p class="text-[10px] text-slate-400 truncate font-mono">{{ item.subtitle }}</p>
+              </div>
+            </div>
+            <span class="text-[9px] font-bold text-sky-600 bg-sky-50 dark:bg-sky-950/50 px-1.5 py-0.5 rounded-md flex-shrink-0">
+              Ver
+            </span>
+          </button>
+        </div>
+
+        <!-- Docentes -->
+        <div v-if="searchResults.teachers.length > 0" class="py-1">
+          <p class="px-2.5 py-1 text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+            Cuerpo Docente
+          </p>
+          <button
+            v-for="item in searchResults.teachers"
+            :key="item.id"
+            @click="handleSelectSearchResult(item)"
+            class="w-full text-left px-2.5 py-2 rounded-xl flex items-center justify-between hover:bg-slate-50 dark:hover:bg-white/5 transition-colors cursor-pointer"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="w-6 h-6 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-bold text-[10px] flex-shrink-0">
+                {{ item.icon }}
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-800 dark:text-white truncate">{{ item.title }}</p>
+                <p class="text-[10px] text-slate-400 truncate">{{ item.subtitle }}</p>
+              </div>
+            </div>
+            <span class="text-[9px] font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/50 px-1.5 py-0.5 rounded-md flex-shrink-0">
+              Ver
+            </span>
+          </button>
+        </div>
+
+        <!-- Sin resultados -->
+        <div v-if="searchResults.total === 0" class="p-4 text-center text-xs text-slate-400">
+          <p class="text-base mb-0.5">🔍</p>
+          <p class="font-bold text-slate-600 dark:text-slate-300">Sin coincidencias para "{{ searchQuery }}"</p>
+        </div>
       </div>
     </div>
   </header>
@@ -448,6 +714,7 @@ import { useActiveStudent } from '~/composables/useActiveStudent'
 import { useInstitution } from '~/composables/useInstitution'
 import { resolvePhotoUrl } from '~/composables/usePhotoUrl'
 import { useFeedback } from '~/composables/useFeedback'
+import { useOmnisearch } from '~/composables/useOmnisearch'
 
 const { currentLang, setLanguage, t } = useLanguage()
 const authStore = useAuthStore()
@@ -455,14 +722,39 @@ const colorMode = useColorMode()
 const { representedStudents, activeStudentKey, setActiveStudent } = useActiveStudent()
 const { institution } = useInstitution()
 const { openFeedback } = useFeedback()
+const { query: searchQuery, searchResults, preloadIndex, selectResult } = useOmnisearch()
 
-const searchQuery = ref('')
+const isDesktopSearchFocused = ref(false)
+const searchContainerRef = ref(null)
+const desktopSearchInputRef = ref(null)
+
 const isSearchMobileOpen = ref(false)
 const isLangOpen = ref(false)
 const isMessagesOpen = ref(false)
 const isNotificationsOpen = ref(false)
 const isProfileOpen = ref(false)
 const avatarError = ref(false)
+
+const handleSelectSearchResult = (item) => {
+  isDesktopSearchFocused.value = false
+  isSearchMobileOpen.value = false
+  selectResult(item)
+}
+
+const handleGlobalKeydown = (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault()
+    if (typeof window !== 'undefined' && window.innerWidth >= 640 && desktopSearchInputRef.value) {
+      desktopSearchInputRef.value.focus()
+      isDesktopSearchFocused.value = true
+    } else {
+      isSearchMobileOpen.value = true
+    }
+  } else if (e.key === 'Escape') {
+    isDesktopSearchFocused.value = false
+    isSearchMobileOpen.value = false
+  }
+}
 
 const langDropdownRef = ref(null)
 const messagesDropdownRef = ref(null)
@@ -664,18 +956,22 @@ const handleGlobalClick = (e) => {
   if (messagesDropdownRef.value && !messagesDropdownRef.value.contains(e.target)) isMessagesOpen.value = false
   if (notificationsDropdownRef.value && !notificationsDropdownRef.value.contains(e.target)) isNotificationsOpen.value = false
   if (profileDropdownRef.value && !profileDropdownRef.value.contains(e.target)) isProfileOpen.value = false
+  if (searchContainerRef.value && !searchContainerRef.value.contains(e.target)) isDesktopSearchFocused.value = false
 }
 
 onMounted(() => {
   applyThemeToDom(colorMode.value)
+  preloadIndex()
   if (typeof window !== 'undefined') {
     window.addEventListener('click', handleGlobalClick)
+    window.addEventListener('keydown', handleGlobalKeydown)
   }
 })
 
 onUnmounted(() => {
   if (typeof window !== 'undefined') {
     window.removeEventListener('click', handleGlobalClick)
+    window.removeEventListener('keydown', handleGlobalKeydown)
   }
 })
 </script>

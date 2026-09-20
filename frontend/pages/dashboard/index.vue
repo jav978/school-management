@@ -626,12 +626,12 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         
         <!-- Earnings Chart Card (8 cols) -->
-        <div class="lg:col-span-8 glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between h-[420px] shadow-sm dark:shadow-xl">
+        <div class="lg:col-span-8 glass-card glass-card-hover rounded-3xl p-5 sm:p-6 flex flex-col justify-between min-h-[420px] h-auto sm:h-[420px] shadow-sm dark:shadow-xl">
           <div>
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <div class="flex items-center gap-2">
-                  <h3 class="text-lg font-bold text-slate-900 dark:text-white font-display">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white font-display">
                     {{ t('earnings') }} & Gastos Operativos
                   </h3>
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-gold/15 text-amber-700 dark:text-brand-gold border border-brand-gold/30">
@@ -651,14 +651,14 @@
               </div>
 
               <!-- Legend & Actions -->
-              <div class="flex items-center gap-4">
+              <div class="flex items-center justify-between sm:justify-end gap-3 sm:gap-4">
                 <div class="flex items-center gap-3 text-xs font-bold">
                   <span class="flex items-center gap-1.5 text-slate-700 dark:text-slate-200">
-                    <span class="w-3 h-3 rounded-full bg-brand-gold shadow-xs"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-brand-gold shadow-xs"></span>
                     {{ t('earnings') }}
                   </span>
                   <span class="flex items-center gap-1.5 text-slate-700 dark:text-slate-200">
-                    <span class="w-3 h-3 rounded-full bg-brand-purple shadow-xs"></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-brand-purple shadow-xs"></span>
                     {{ t('expanse') }}
                   </span>
                 </div>
@@ -671,52 +671,54 @@
               </div>
             </div>
 
-            <!-- Bar Chart SVG Container -->
-            <div class="mt-6 h-60 flex">
-              <!-- Y-Axis Labels -->
-              <div class="flex flex-col justify-between text-[11px] font-bold text-slate-400 dark:text-slate-400 pr-3 pb-6 select-none">
-                <span>$50k</span>
-                <span>$40k</span>
-                <span>$30k</span>
-                <span>$20k</span>
-                <span>$10k</span>
-                <span>$0</span>
-              </div>
-
-              <!-- Bars & Grid -->
-              <div class="flex-1 flex flex-col justify-between relative">
-                <div class="absolute inset-x-0 top-0 border-b border-slate-100 dark:border-white/10/60"></div>
-                <div class="absolute inset-x-0 top-[20%] border-b border-slate-100 dark:border-white/10/60"></div>
-                <div class="absolute inset-x-0 top-[40%] border-b border-slate-100 dark:border-white/10/60"></div>
-                <div class="absolute inset-x-0 top-[60%] border-b border-slate-100 dark:border-white/10/60"></div>
-                <div class="absolute inset-x-0 top-[80%] border-b border-slate-100 dark:border-white/10/60"></div>
-                <div class="absolute inset-x-0 bottom-6 border-b-2 border-slate-200 dark:border-white/10"></div>
-
-                <!-- Bars Area -->
-                <div class="flex-1 flex items-end justify-between px-1 sm:px-2 pb-6 z-10">
-                  <div 
-                    v-for="(item, idx) in monthlyData" 
-                    :key="idx" 
-                    class="flex flex-col items-center gap-1 group relative cursor-pointer"
-                  >
-                    <div class="flex items-end gap-1.5 h-44">
-                      <div 
-                        class="w-2.5 sm:w-3 bg-brand-gold rounded-t-full transition-all duration-300 hover:brightness-110 shadow-xs" 
-                        :style="{ height: `${item.earnings}%` }"
-                        :title="`Ingresos: $${item.earnings * 600}`"
-                      ></div>
-                      <div 
-                        class="w-2.5 sm:w-3 bg-brand-purple rounded-t-full transition-all duration-300 hover:brightness-125 shadow-xs" 
-                        :style="{ height: `${item.expanse}%` }"
-                        :title="`Gastos: $${item.expanse * 600}`"
-                      ></div>
-                    </div>
-                  </div>
+            <!-- Bar Chart SVG Container - Touch scrollable on mobile (< 640px) -->
+            <div class="mt-6 overflow-x-auto pb-2 scrollbar-thin">
+              <div class="h-60 flex min-w-[540px] sm:min-w-0">
+                <!-- Y-Axis Labels -->
+                <div class="flex flex-col justify-between text-[11px] font-bold text-slate-400 dark:text-slate-400 pr-3 pb-6 select-none flex-shrink-0">
+                  <span>$50k</span>
+                  <span>$40k</span>
+                  <span>$30k</span>
+                  <span>$20k</span>
+                  <span>$10k</span>
+                  <span>$0</span>
                 </div>
 
-                <!-- X-Axis Month Labels -->
-                <div class="flex justify-between px-1 sm:px-2 text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase">
-                  <span v-for="(m, i) in monthNames" :key="i" class="w-5 text-center">{{ m }}</span>
+                <!-- Bars & Grid -->
+                <div class="flex-1 flex flex-col justify-between relative">
+                  <div class="absolute inset-x-0 top-0 border-b border-slate-100 dark:border-white/10/60"></div>
+                  <div class="absolute inset-x-0 top-[20%] border-b border-slate-100 dark:border-white/10/60"></div>
+                  <div class="absolute inset-x-0 top-[40%] border-b border-slate-100 dark:border-white/10/60"></div>
+                  <div class="absolute inset-x-0 top-[60%] border-b border-slate-100 dark:border-white/10/60"></div>
+                  <div class="absolute inset-x-0 top-[80%] border-b border-slate-100 dark:border-white/10/60"></div>
+                  <div class="absolute inset-x-0 bottom-6 border-b-2 border-slate-200 dark:border-white/10"></div>
+
+                  <!-- Bars Area -->
+                  <div class="flex-1 flex items-end justify-between px-1 sm:px-2 pb-6 z-10">
+                    <div 
+                      v-for="(item, idx) in monthlyData" 
+                      :key="idx" 
+                      class="flex flex-col items-center gap-1 group relative cursor-pointer"
+                    >
+                      <div class="flex items-end gap-1.5 h-44">
+                        <div 
+                          class="w-2.5 sm:w-3 bg-brand-gold rounded-t-full transition-all duration-300 hover:brightness-110 shadow-xs" 
+                          :style="{ height: `${item.earnings}%` }"
+                          :title="`Ingresos: $${item.earnings * 600}`"
+                        ></div>
+                        <div 
+                          class="w-2.5 sm:w-3 bg-brand-purple rounded-t-full transition-all duration-300 hover:brightness-125 shadow-xs" 
+                          :style="{ height: `${item.expanse}%` }"
+                          :title="`Gastos: $${item.expanse * 600}`"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- X-Axis Month Labels -->
+                  <div class="flex justify-between px-1 sm:px-2 text-[10px] font-black text-slate-400 dark:text-slate-400 uppercase">
+                    <span v-for="(m, i) in monthNames" :key="i" class="w-5 text-center">{{ m }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -729,7 +731,7 @@
         </div>
 
         <!-- Students Gender Ratio Card (4 cols) -->
-        <div class="lg:col-span-4 glass-card glass-card-hover rounded-3xl p-6 flex flex-col justify-between h-[420px] shadow-sm dark:shadow-xl">
+        <div class="lg:col-span-4 glass-card glass-card-hover rounded-3xl p-5 sm:p-6 flex flex-col justify-between min-h-[420px] h-auto sm:h-[420px] shadow-sm dark:shadow-xl">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="text-lg font-bold text-slate-900 dark:text-white font-display">

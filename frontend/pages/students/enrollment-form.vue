@@ -175,12 +175,13 @@
         </div>
 
         <!-- In-Screen Photo Selector for Student (Hidden on Print) -->
-        <div class="print:hidden mb-4 p-3 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-slate-200 dark:border-slate-700/60">
+        <div class="print:hidden mb-4 p-3 bg-slate-50 rounded-2xl border border-slate-200">
           <UiAvatarUpload
             v-model="form.student.photo_url"
             v-model:stage="form.student.photo_stage"
             label="Foto Carnet del Estudiante (3x4 cm - Máx. 3MB)"
             :show-stage-selector="true"
+            :force-light="true"
           />
         </div>
 
@@ -509,10 +510,11 @@
                 </div>
               </div>
 
-              <div class="print:hidden mt-2 pt-2 border-t border-slate-200 dark:border-slate-700/60">
+              <div class="print:hidden mt-2 pt-2 border-t border-slate-200">
                 <UiAvatarUpload
                   v-model="form.father.photo_url"
                   label="Foto Carnet del Padre (Máx. 3MB)"
+                  :force-light="true"
                 />
               </div>
             </div>
@@ -647,10 +649,11 @@
                 </div>
               </div>
 
-              <div class="print:hidden mt-2 pt-2 border-t border-slate-200 dark:border-slate-700/60">
+              <div class="print:hidden mt-2 pt-2 border-t border-slate-200">
                 <UiAvatarUpload
                   v-model="form.mother.photo_url"
                   label="Foto Carnet de la Madre (Máx. 3MB)"
+                  :force-light="true"
                 />
               </div>
             </div>
@@ -737,10 +740,11 @@
                 </div>
               </div>
 
-              <div class="print:hidden mt-2 pt-2 border-t border-slate-200 dark:border-slate-700/60">
+              <div class="print:hidden mt-2 pt-2 border-t border-slate-200">
                 <UiAvatarUpload
                   v-model="form.authorized_pickup.photo_url"
                   label="Foto Carnet del Tercero Autorizado (Máx. 3MB)"
+                  :force-light="true"
                 />
               </div>
             </div>
@@ -1867,6 +1871,13 @@ const saveEnrollment = async () => {
 </script>
 
 <style scoped>
+/* Ensure official enrollment document remains 100% white paper format in both light and dark mode */
+.page-sheet {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
 /* Screen input field enhancements: extra lateral space and comfortable padding */
 .page-sheet input[type="text"],
 .page-sheet input[type="date"],
@@ -1874,6 +1885,9 @@ const saveEnrollment = async () => {
 .page-sheet input[type="email"],
 .page-sheet select,
 .page-sheet textarea {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
   padding-left: 10px !important;
   padding-right: 10px !important;
   padding-top: 5px !important;

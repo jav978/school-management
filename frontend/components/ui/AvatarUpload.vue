@@ -1,22 +1,38 @@
 <template>
   <div class="space-y-3">
     <div class="flex items-center justify-between">
-      <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+      <label 
+        class="block text-xs font-bold uppercase tracking-wider"
+        :class="forceLight ? 'text-slate-700' : 'text-slate-700 dark:text-slate-300'"
+      >
         {{ label || 'Fotografía de Perfil / Carnet' }}
       </label>
-      <span class="text-[11px] font-medium text-slate-400 dark:text-slate-500">
+      <span 
+        class="text-[11px] font-medium"
+        :class="forceLight ? 'text-slate-400' : 'text-slate-400 dark:text-slate-500'"
+      >
         Carnet Oficial 3:4 • Máx. 3MB (JPG, PNG, WEBP)
       </span>
     </div>
 
     <!-- Main Container with Preview and Controls -->
-    <div class="p-4 rounded-2xl bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 transition-all">
+    <div 
+      class="p-4 rounded-2xl transition-all"
+      :class="forceLight 
+        ? 'bg-slate-50 border border-slate-200 text-slate-900' 
+        : 'bg-slate-50/90 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800'"
+    >
       <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5">
         
         <!-- Avatar Preview Box (Carnet 3:4 aspect ratio: w-24 h-32 / 96x128px) -->
         <div class="flex flex-col items-center gap-2 flex-shrink-0">
           <div class="relative group">
-            <div class="w-24 h-32 rounded-2xl overflow-hidden bg-slate-200 dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-700 flex items-center justify-center shadow-sm transition-all group-hover:border-emerald-500/50">
+            <div 
+              class="w-24 h-32 rounded-2xl overflow-hidden border-2 border-dashed flex items-center justify-center shadow-sm transition-all group-hover:border-emerald-500/50"
+              :class="forceLight 
+                ? 'bg-slate-100 border-slate-300' 
+                : 'bg-slate-200 dark:bg-slate-800 border-slate-300 dark:border-slate-700'"
+            >
               <img
                 v-if="previewUrl"
                 :src="previewUrl"
@@ -24,12 +40,16 @@
                 class="w-full h-full object-cover"
                 @error="handleImageError"
               />
-              <div v-else class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 p-2 text-center select-none">
+              <div 
+                v-else 
+                class="flex flex-col items-center justify-center p-2 text-center select-none"
+                :class="forceLight ? 'text-slate-400' : 'text-slate-400 dark:text-slate-500'"
+              >
                 <svg class="w-8 h-8 stroke-current" fill="none" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
                 <span class="text-[10px] font-bold mt-1 uppercase tracking-wider">Sin Foto</span>
-                <span class="text-[9px] text-slate-400 dark:text-slate-600 font-mono">3 × 4 cm</span>
+                <span class="text-[9px] font-mono" :class="forceLight ? 'text-slate-400' : 'text-slate-400 dark:text-slate-600'">3 × 4 cm</span>
               </div>
             </div>
 
@@ -52,7 +72,10 @@
             v-if="previewUrl"
             type="button"
             @click="openRecropWithCurrentPhoto"
-            class="px-2.5 py-1 rounded-lg text-[10px] font-bold bg-slate-200 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-200 transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+            class="px-2.5 py-1 rounded-lg text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer active:scale-95 shadow-xs"
+            :class="forceLight
+              ? 'bg-slate-200 hover:bg-emerald-500 hover:text-white text-slate-700'
+              : 'bg-slate-200 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white dark:hover:bg-emerald-600 text-slate-700 dark:text-slate-200'"
             title="Ajustar encuadre o centrado"
           >
             <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -65,7 +88,10 @@
         <!-- Mode Tabs & Controls -->
         <div class="flex-1 w-full space-y-2.5">
           <!-- Switch Mode: Subir Archivo vs Cámara en Vivo vs Enlace URL -->
-          <div class="grid grid-cols-3 gap-1 p-1 bg-slate-200/80 dark:bg-slate-800/80 rounded-xl text-xs font-bold w-full">
+          <div 
+            class="grid grid-cols-3 gap-1 p-1 rounded-xl text-xs font-bold w-full"
+            :class="forceLight ? 'bg-slate-200/80' : 'bg-slate-200/80 dark:bg-slate-800/80'"
+          >
             <!-- Tab File -->
             <button
               type="button"
@@ -73,8 +99,8 @@
               :class="[
                 'w-full px-2 py-1.5 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 active:scale-95 text-[11px] sm:text-xs min-w-0',
                 mode === 'file' 
-                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs' 
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                  ? (forceLight ? 'bg-white text-emerald-600 shadow-xs' : 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs') 
+                  : (forceLight ? 'text-slate-500 hover:text-slate-800' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200')
               ]"
             >
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -90,8 +116,8 @@
               :class="[
                 'w-full px-2 py-1.5 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 active:scale-95 text-[11px] sm:text-xs min-w-0',
                 mode === 'camera' 
-                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs' 
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                  ? (forceLight ? 'bg-white text-emerald-600 shadow-xs' : 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs') 
+                  : (forceLight ? 'text-slate-500 hover:text-slate-800' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200')
               ]"
             >
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,8 +134,8 @@
               :class="[
                 'w-full px-2 py-1.5 rounded-lg transition-all cursor-pointer flex items-center justify-center gap-1 sm:gap-1.5 active:scale-95 text-[11px] sm:text-xs min-w-0',
                 mode === 'url' 
-                  ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs' 
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                  ? (forceLight ? 'bg-white text-emerald-600 shadow-xs' : 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs') 
+                  : (forceLight ? 'text-slate-500 hover:text-slate-800' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200')
               ]"
             >
               <svg class="w-3.5 h-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -136,11 +162,13 @@
               :class="[
                 'border-2 border-dashed rounded-xl p-3.5 text-center cursor-pointer transition-all flex items-center justify-center gap-2.5 text-xs font-semibold select-none',
                 isDragging
-                  ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400'
-                  : 'border-slate-300 dark:border-slate-700 hover:border-emerald-500/70 hover:bg-slate-100/60 dark:hover:bg-slate-800/40 text-slate-600 dark:text-slate-300'
+                  ? 'border-emerald-500 bg-emerald-50/50 text-emerald-700'
+                  : forceLight
+                    ? 'border-slate-300 hover:border-emerald-500/70 hover:bg-slate-100/60 text-slate-600'
+                    : 'border-slate-300 dark:border-slate-700 hover:border-emerald-500/70 hover:bg-slate-100/60 dark:hover:bg-slate-800/40 text-slate-600 dark:text-slate-300'
               ]"
             >
-              <svg class="w-4 h-4 flex-shrink-0 text-slate-400 dark:text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-4 h-4 flex-shrink-0" :class="forceLight ? 'text-slate-400' : 'text-slate-400 dark:text-slate-500'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
               </svg>
               <span>{{ uploading ? 'Procesando imagen...' : 'Seleccionar o arrastrar fotografía (WhatsApp / Galería)' }}</span>
@@ -203,7 +231,10 @@
               @input="onUrlInput"
               type="url"
               placeholder="https://ejemplo.com/foto_carnet.jpg"
-              class="w-full px-3.5 py-2 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-mono"
+              class="w-full px-3.5 py-2 rounded-xl text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-mono"
+              :class="forceLight
+                ? 'bg-white border border-slate-300 text-slate-800'
+                : 'bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-100'"
             />
           </div>
 
@@ -217,11 +248,19 @@
 
           <!-- Academic Stage Selector (For Students) -->
           <div v-if="showStageSelector" class="pt-1 flex items-center gap-2">
-            <span class="text-[11px] font-bold text-slate-500 dark:text-slate-400">Etapa Escolar:</span>
+            <span 
+              class="text-[11px] font-bold"
+              :class="forceLight ? 'text-slate-600' : 'text-slate-500 dark:text-slate-400'"
+            >
+              Etapa Escolar:
+            </span>
             <select
               :value="stage"
               @change="$emit('update:stage', $event.target.value)"
-              class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+              class="px-2.5 py-1 text-xs font-semibold rounded-lg focus:outline-none focus:ring-1 focus:ring-emerald-500 cursor-pointer"
+              :class="forceLight
+                ? 'bg-white border border-slate-300 text-slate-700'
+                : 'bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200'"
             >
               <option value="preescolar_primaria">Preescolar / Primaria (1°-6°)</option>
               <option value="media_general">Media General (1°-3° Año)</option>
@@ -411,6 +450,10 @@ const props = defineProps({
   label: {
     type: String,
     default: ''
+  },
+  forceLight: {
+    type: Boolean,
+    default: false
   }
 })
 
