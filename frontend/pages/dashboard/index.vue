@@ -47,7 +47,7 @@
                 {{ representedStudents.length }} Estudiante{{ representedStudents.length !== 1 ? 's' : '' }} Matriculado{{ representedStudents.length !== 1 ? 's' : '' }} • Solvencia Administrativa al Día
               </template>
               <template v-else>
-                Período Lectivo 2025-2026 • 1er Lapso Pedagógico en desarrollo
+                Período Lectivo 2026-2027 • 1er Lapso Pedagógico en desarrollo
               </template>
             </p>
           </div>
@@ -339,7 +339,7 @@
             </div>
 
             <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-300 font-medium">
-              <span>Año Escolar 2025-2026</span>
+              <span>Año Escolar 2026-2027</span>
               <span class="text-emerald-400 font-bold">● Válido / Activo</span>
             </div>
           </div>
@@ -593,7 +593,7 @@
 
           <div class="mt-4 pt-3 border-t border-slate-100 dark:border-white/10 flex items-center justify-between text-[11px] font-bold text-slate-500 dark:text-slate-400">
             <span class="text-brand-purple dark:text-brand-secondary">Familias activas</span>
-            <span>Año 2025-2026</span>
+            <span>Año 2026-2027</span>
           </div>
         </div>
 
@@ -640,7 +640,7 @@
                     {{ t('earnings') }} & Gastos Operativos
                   </h3>
                   <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-brand-gold/15 text-amber-700 dark:text-brand-gold border border-brand-gold/30">
-                    Año 2025-2026
+                    Año 2026-2027
                   </span>
                 </div>
                 <div class="relative inline-block mt-1">
@@ -888,7 +888,7 @@
               <h3 class="text-base font-bold font-display text-slate-900 dark:text-white">
                 {{ t('eventCalendar') }}
               </h3>
-              <span class="text-xs font-bold text-brand-gold">Año 2025-2026</span>
+              <span class="text-xs font-bold text-brand-gold">Año 2026-2027</span>
             </div>
 
             <!-- Tab Switcher -->
@@ -1083,7 +1083,7 @@ const academicLapsoInfo = computed(() => {
   return `Semana ${weekNum} • ${lapsoName}`
 })
 
-const selectedYear = ref('2025')
+const selectedYear = ref('2026')
 const calendarTab = ref('dayToDay')
 const selectedChild = activeStudentKey
 

@@ -875,7 +875,7 @@ async function seed() {
     const teacherVasquez = teacherRows.rows.find(t => t.last_name.includes('Vásquez')) || teacherRows.rows[1] || teacherRows.rows[0];
 
     // Limpiar horarios previos generados para evitar duplicidades
-    await client.query('DELETE FROM school.schedules WHERE academic_year = $1', ['2025-2026']);
+    await client.query('DELETE FROM school.schedules WHERE academic_year = $1', ['2026-2027']);
 
     // Definición de horario base de 7:00 a 12:40 (6 bloques pedagógicos de 45m + 2 recesos)
     // Bloques: 07:00-07:45, 07:45-08:30, 08:45-09:30, 09:30-10:15, 10:30-11:15, 11:15-12:00, 12:00-12:45
@@ -987,7 +987,7 @@ async function seed() {
               grade, section, day_of_week, start_time, end_time,
               semester, academic_year, is_active, is_deleted, created_at, updated_at
             ) VALUES (
-              1, $1, $2, $3, $4, $5, $6, $7, $8, '1er Lapso', '2025-2026', true, false, NOW(), NOW()
+              1, $1, $2, $3, $4, $5, $6, $7, $8, '1er Lapso', '2026-2027', true, false, NOW(), NOW()
             )
           `, [subId, tId, rId, year.grade, year.section, day, slot.start, slot.end]);
           schedulesCount++;
