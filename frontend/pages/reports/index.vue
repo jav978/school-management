@@ -292,9 +292,21 @@
             <button 
               @click="triggerPrint"
               type="button"
-              class="flex-1 sm:flex-none px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
+              class="flex-1 sm:flex-none px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+              title="Imprimir reporte en hoja carta"
             >
-              <span>🖨️ Imprimir / Exportar PDF</span>
+              <span>🖨️ {{ $t('printReportBtn', 'Imprimir') }}</span>
+            </button>
+            <button 
+              @click="downloadReportPdf"
+              :disabled="isExporting"
+              type="button"
+              class="flex-1 sm:flex-none px-3.5 py-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-xl text-xs font-bold shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all disabled:opacity-50"
+              title="Descargar archivo en PDF"
+            >
+              <span v-if="isExporting" class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              <span v-else>📥</span>
+              <span>{{ isExporting ? 'Generando...' : $t('downloadPdfBtn', 'Descargar PDF') }}</span>
             </button>
             <button 
               @click="exportCsv"
@@ -302,7 +314,7 @@
               class="px-3 py-2 bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-all"
               title="Descargar datos en formato CSV"
             >
-              <span>📥 CSV</span>
+              <span>📊 CSV</span>
             </button>
             <button 
               @click="isReportModalOpen = false"
@@ -319,7 +331,7 @@
         <!-- Filter Bar inside Modal (print:hidden) -->
         <div class="bg-slate-50 dark:bg-[#110926] p-4 rounded-2xl border border-slate-200 dark:border-white/10 mb-6 grid grid-cols-1 sm:grid-cols-3 gap-4 print:hidden">
           <div>
-            <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Año Escolar:</label>
+            <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">{{ $t('schoolYearLabel', 'Año Escolar') }}:</label>
             <select v-model="filterYear" class="w-full px-3 py-2 text-xs bg-white dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-xl font-medium text-slate-800 dark:text-slate-100">
               <option value="2026-2027">2026-2027 (En curso)</option>
               <option value="2025-2026">2025-2026 (Anterior)</option>
@@ -327,9 +339,9 @@
           </div>
 
           <div>
-            <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">Nivel / Grado:</label>
+            <label class="block text-[11px] font-bold uppercase text-slate-400 mb-1">{{ $t('gradeFilterLabel', 'Nivel / Grado') }}:</label>
             <select v-model="filterGrade" class="w-full px-3 py-2 text-xs bg-white dark:bg-[#1a1238] border border-slate-200 dark:border-white/10 rounded-xl font-medium text-slate-800 dark:text-slate-100">
-              <option value="todos">Todos los Grados</option>
+              <option value="todos">{{ $t('allGrades', 'Todos los Grados') }}</option>
               <option value="1er Año">1er Año</option>
               <option value="2do Año">2do Año</option>
               <option value="3er Año">3er Año</option>
@@ -350,22 +362,24 @@
         </div>
 
         <!-- Official Printable Document Body (Sheet Size Letter) -->
-        <div class="bg-white text-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm print:border-none print:shadow-none print:p-0">
-          <!-- Institutional Official Header -->
+        <div id="printable-report-sheet" class="bg-white text-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm print:border-none print:shadow-none print:p-0">
+          <!-- Institutional Official Header with School Logo + MPPE Logo -->
           <div class="flex items-center justify-between pb-6 mb-6 border-b-2 border-slate-800">
             <div class="flex items-center gap-4">
               <img src="/logocolegio.png" alt="U.E Santa Luisa" class="w-16 h-16 object-contain" />
               <div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-amber-700">República Bolivariana de Venezuela • MPPE</span>
-                <h1 class="text-xl font-black font-display tracking-tight text-slate-900">U.E Santa Luisa</h1>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-amber-700 block">República Bolivariana de Venezuela • MPPE</span>
+                <h1 class="text-xl font-black font-display tracking-tight text-slate-900 leading-tight">U.E Santa Luisa</h1>
                 <p class="text-xs text-slate-600 font-serif">Hijas de la Caridad de San Vicente de Paúl • Caracas, Venezuela</p>
+                <p class="text-[10px] text-slate-500 font-mono mt-0.5">Código DEA: OD04150104 • RIF: J-00123456-7 • Distrito Escolar N° 1</p>
               </div>
             </div>
 
-            <div class="text-right text-xs">
-              <span class="font-bold text-slate-800 uppercase block tracking-wider">Reporte Oficial</span>
+            <div class="flex flex-col items-end text-right text-xs gap-1">
+              <img src="/logomppe.png" alt="MPPE" class="h-12 object-contain mb-1" />
+              <span class="font-bold text-slate-800 uppercase block tracking-wider text-[11px]">{{ $t('officialReportTitle', 'Reporte Oficial') }}</span>
               <span class="font-mono text-amber-700 font-bold">RPT-2026-{{ selectedModule.toUpperCase() }}</span>
-              <span class="text-slate-400 block text-[11px] mt-0.5">Emisión: {{ currentDateFormatted }}</span>
+              <span class="text-slate-400 block text-[10px] mt-0.5">{{ $t('issuedDate', 'Emisión') }}: {{ currentDateFormatted }}</span>
             </div>
           </div>
 
@@ -442,8 +456,10 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
+import { usePdfExport } from '~/composables/usePdfExport'
 
 const api = useApi()
+const { downloadPdf, isExporting } = usePdfExport()
 const loading = ref(false)
 
 const studentsList = ref([])
@@ -650,6 +666,13 @@ const currentReportRows = computed(() => {
 
 const triggerPrint = () => {
   window.print()
+}
+
+const downloadReportPdf = async () => {
+  await downloadPdf('printable-report-sheet', `Reporte_Oficial_${selectedModule.value}_${filterYear.value}`, {
+    orientation: 'portrait',
+    format: 'letter'
+  })
 }
 
 const exportCsv = () => {

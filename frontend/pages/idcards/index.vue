@@ -961,15 +961,25 @@
             <button 
               type="button" 
               @click="triggerPrintDuplex" 
-              class="px-6 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-brand-gold hover:bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+              class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-brand-gold hover:bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/20 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
             >
-              <span>🖨️ Imprimir Hojas Dúplex (Ctrl+P)</span>
+              <span>🖨️ {{ $t('printDuplexSheet', 'Imprimir Hojas Dúplex (Ctrl+P)') }}</span>
+            </button>
+            <button 
+              type="button" 
+              @click="downloadDuplexPdf" 
+              :disabled="isExporting"
+              class="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-black bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white shadow-lg active:scale-95 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <span v-if="isExporting" class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              <span v-else>📥</span>
+              <span>{{ isExporting ? 'Generando...' : $t('downloadPdfBtn', 'Descargar PDF') }}</span>
             </button>
           </div>
         </div>
 
         <!-- Print Sheets View -->
-        <div class="p-6 flex flex-col items-center gap-10 print:p-0 print:gap-0">
+        <div id="idcards-duplex-printable-sheets" class="p-6 flex flex-col items-center gap-10 print:p-0 print:gap-0">
           
           <template v-for="(sheet, sheetIdx) in duplexSheets" :key="'sheet-' + sheetIdx">
             <!-- 1. PÁGINA ANVERSO (FRENTES) -->
@@ -1315,9 +1325,11 @@
 import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
 import { useToast } from '~/composables/useToast'
+import { usePdfExport } from '~/composables/usePdfExport'
 
 const api = useApi()
 const toast = useToast()
+const { downloadPdf, isExporting } = usePdfExport()
 
 const idCards = ref([])
 const loading = ref(true)
@@ -1891,6 +1903,13 @@ const triggerPrintSingle = () => {
 
 const triggerPrintDuplex = () => {
   window.print()
+}
+
+const downloadDuplexPdf = async () => {
+  await downloadPdf('idcards-duplex-printable-sheets', 'Carnets_Escolares_Duplex_2026_2027', {
+    orientation: 'portrait',
+    format: 'letter'
+  })
 }
 
 const formatDate = (dateStr) => {

@@ -47,10 +47,23 @@
           :disabled="!isSolvent"
           type="button"
           :class="!isSolvent ? 'opacity-50 cursor-not-allowed bg-slate-500' : 'bg-slate-800 hover:bg-slate-900 cursor-pointer'"
-          class="px-4 py-2.5 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-2 transition-all"
+          class="px-3.5 py-2.5 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-1.5 transition-all"
           :title="!isSolvent ? 'Impresión bloqueada: El representante no se encuentra solvente' : 'Imprimir Boleta de Calificaciones'"
         >
-          <span>🖨️ Imprimir Boleta</span>
+          <span>🖨️ {{ $t('printReportCard', 'Imprimir Boleta') }}</span>
+        </button>
+
+        <button 
+          @click="downloadBoletaPdf()" 
+          :disabled="!isSolvent || isExporting"
+          type="button"
+          :class="!isSolvent ? 'opacity-50 cursor-not-allowed bg-slate-500' : 'bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white cursor-pointer'"
+          class="px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-1.5 transition-all disabled:opacity-50"
+          title="Descargar boletín en formato PDF"
+        >
+          <span v-if="isExporting" class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <span v-else>📥</span>
+          <span>{{ isExporting ? 'Generando...' : $t('downloadPdfBtn', 'Descargar PDF') }}</span>
         </button>
       </div>
     </div>
@@ -210,7 +223,7 @@
     </div>
 
     <!-- SI ESTÁ SOLVENTE: RENDERIZA LOS MODELOS DE BOLETA -->
-    <div v-else class="space-y-6">
+    <div v-else id="boleta-printable-card" class="space-y-6">
       <!-- MODELO 1: MODERNA -->
       <div 
         v-if="selectedModel === 'moderna'"
@@ -221,22 +234,26 @@
           <div class="flex items-center gap-4">
             <img src="/logocolegio.png" alt="U.E Santa Luisa" class="w-16 h-16 object-contain" />
             <div>
-              <span class="text-[10px] font-bold uppercase tracking-widest text-orange-600">República Bolivariana de Venezuela • MPPE</span>
-              <h1 class="text-xl font-black font-display tracking-tight text-slate-900">U.E Santa Luisa</h1>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-orange-600 block">República Bolivariana de Venezuela • MPPE</span>
+              <h1 class="text-xl font-black font-display tracking-tight text-slate-900 leading-tight">U.E Colegio "Santa Luisa"</h1>
               <p class="text-xs text-slate-500">Boletín Informativo de Calificaciones • {{ activeReportCard.period }}</p>
+              <p class="text-[10px] text-slate-400 font-mono mt-0.5">Código DEA: OD04150104 • RIF: J-00123456-7</p>
             </div>
           </div>
 
-          <!-- Dynamic QR Code -->
-          <div class="flex items-center gap-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-100">
-            <ui-qr-code 
-              :value="getVerificationUrl(activeReportCard.verification_code)"
-              :size="64"
-            />
-            <div class="text-[10px] leading-tight">
-              <p class="font-bold text-slate-800">Código de Verificación:</p>
-              <p class="font-mono text-orange-600 font-bold mt-0.5">{{ activeReportCard.verification_code }}</p>
-              <p class="text-slate-400 mt-0.5">Escanea para validar</p>
+          <div class="flex items-center gap-3">
+            <img src="/logomppe.png" alt="MPPE" class="h-12 object-contain hidden sm:block" />
+            <!-- Dynamic QR Code -->
+            <div class="flex items-center gap-3 bg-slate-50 p-2.5 rounded-2xl border border-slate-100">
+              <ui-qr-code 
+                :value="getVerificationUrl(activeReportCard.verification_code)"
+                :size="64"
+              />
+              <div class="text-[10px] leading-tight">
+                <p class="font-bold text-slate-800">Verificación Oficial:</p>
+                <p class="font-mono text-orange-600 font-bold mt-0.5">{{ activeReportCard.verification_code }}</p>
+                <p class="text-slate-400 mt-0.5">Escanea para validar</p>
+              </div>
             </div>
           </div>
         </div>
@@ -328,12 +345,16 @@
         class="bg-white text-slate-900 p-8 rounded-xl border-2 border-slate-800 max-w-4xl mx-auto font-serif print:border-none print:p-0"
       >
         <!-- Header Formal -->
-        <div class="text-center border-b-2 border-slate-800 pb-4 mb-4">
-          <p class="text-[11px] uppercase tracking-widest font-bold">República Bolivariana de Venezuela</p>
-          <p class="text-[11px] uppercase tracking-widest font-bold">Ministerio del Poder Popular para la Educación</p>
-          <h2 class="text-xl font-bold uppercase tracking-wider mt-1">Unidad Educativa Santa Luisa</h2>
-          <p class="text-xs italic">Inscrito en el M.P.P.E. • Código DEA: S-2026-SL</p>
-          <p class="text-sm font-bold uppercase mt-2 text-slate-850">Boletín Informativo de Evaluación Integral</p>
+        <div class="flex items-center justify-between border-b-2 border-slate-800 pb-4 mb-4">
+          <img src="/logocolegio.png" alt="U.E Santa Luisa" class="w-16 h-16 object-contain" />
+          <div class="text-center flex-1 px-4">
+            <p class="text-[11px] uppercase tracking-widest font-bold">República Bolivariana de Venezuela</p>
+            <p class="text-[11px] uppercase tracking-widest font-bold">Ministerio del Poder Popular para la Educación</p>
+            <h2 class="text-xl font-bold uppercase tracking-wider mt-0.5">U.E Colegio "Santa Luisa"</h2>
+            <p class="text-xs italic">Hijas de la Caridad de San Vicente de Paúl • Código DEA: OD04150104 • RIF: J-00123456-7</p>
+            <p class="text-sm font-bold uppercase mt-1 text-slate-900">Boletín Informativo de Evaluación Integral</p>
+          </div>
+          <img src="/logomppe.png" alt="MPPE" class="h-14 object-contain" />
         </div>
 
         <!-- Student Data Formal Grid -->
@@ -632,11 +653,13 @@ import { useApi } from '~/composables/useApi'
 import { useToast } from '~/composables/useToast'
 import { useAuthStore } from '~/stores/auth'
 import { useActiveStudent } from '~/composables/useActiveStudent'
+import { usePdfExport } from '~/composables/usePdfExport'
 
 const api = useApi()
 const toast = useToast()
 const authStore = useAuthStore()
 const { activeStudent, isCarlos, isMaria } = useActiveStudent()
+const { downloadPdf, isExporting } = usePdfExport()
 
 const currentRole = computed(() => authStore.userRole || authStore.user?.role || 'admin')
 const canManage = computed(() => ['admin', 'control_estudio', 'coordinator'].includes(currentRole.value))
@@ -880,6 +903,19 @@ const triggerPrint = () => {
     return
   }
   window.print()
+}
+
+const downloadBoletaPdf = async () => {
+  if (!isSolvent.value) {
+    toast.warning('Descarga Restringida', 'El representante debe estar solvente con la institución para descargar el boletín.')
+    return
+  }
+  const studentSlug = (activeReportCard.value?.student_name || 'Estudiante').replace(/\s+/g, '_')
+  const periodSlug = (activeReportCard.value?.period || 'Lapso').replace(/\s+/g, '_')
+  await downloadPdf('boleta-printable-card', `Boleta_${studentSlug}_${periodSlug}_2026_2027`, {
+    orientation: 'portrait',
+    format: 'letter'
+  })
 }
 
 const openCreateModal = () => {

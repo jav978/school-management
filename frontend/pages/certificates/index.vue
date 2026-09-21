@@ -58,10 +58,24 @@
           @click="triggerPrint()" 
           type="button"
           data-testid="btn-trigger-print"
-          class="px-4 py-2.5 bg-slate-850 hover:bg-slate-950 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-2 transition-all cursor-pointer"
+          class="px-3.5 py-2.5 bg-slate-850 hover:bg-slate-950 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
           title="Imprimir en Formato Horizontal Carta"
         >
-          <span>🖨️ {{ isBatchMode ? `Imprimir Lote (${batchCertificates.length})` : 'Imprimir Diploma' }}</span>
+          <span>🖨️ {{ isBatchMode ? `Imprimir Lote (${batchCertificates.length})` : $t('printDiplomaBtn', 'Imprimir Diploma') }}</span>
+        </button>
+
+        <!-- Descargar PDF Button -->
+        <button 
+          @click="downloadCertificatePdf()" 
+          :disabled="isExporting"
+          type="button"
+          data-testid="btn-download-cert-pdf"
+          class="px-3.5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white rounded-2xl text-xs sm:text-sm font-bold shadow-sm flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+          title="Descargar Diploma en archivo PDF"
+        >
+          <span v-if="isExporting" class="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          <span v-else>📥</span>
+          <span>{{ isExporting ? 'Generando...' : $t('downloadPdfBtn', 'Descargar PDF') }}</span>
         </button>
       </div>
     </div>
@@ -288,7 +302,7 @@
     </div>
 
     <!-- SINGLE DIPLOMA CANVAS (LANDSCAPE PREVIEW & PRINT) -->
-    <div v-else class="max-w-5xl mx-auto print:max-w-none print:w-full print:m-0">
+    <div v-else id="certificate-printable-canvas" class="max-w-5xl mx-auto print:max-w-none print:w-full print:m-0">
       <component 
         :is="currentTemplateComponent" 
         :cert="activeCert"
@@ -600,6 +614,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useApi } from '~/composables/useApi'
 import { useToast } from '~/composables/useToast'
 import { useInstitution } from '~/composables/useInstitution'
+import { usePdfExport } from '~/composables/usePdfExport'
 
 import ClassicTemplate from '~/components/certificates/templates/ClassicTemplate.vue'
 import ModernGoldTemplate from '~/components/certificates/templates/ModernGoldTemplate.vue'
@@ -609,6 +624,7 @@ import BatchPrintModal from '~/components/certificates/BatchPrintModal.vue'
 const api = useApi()
 const toast = useToast()
 const { institution: institutionData } = useInstitution()
+const { downloadPdf, isExporting } = usePdfExport()
 
 // State
 const certificates = ref([])
@@ -711,6 +727,15 @@ const formatCertType = (type) => {
 // Actions
 const triggerPrint = () => {
   window.print()
+}
+
+const downloadCertificatePdf = async () => {
+  const recipient = (activeCert.value?.recipient_name || 'Diploma').replace(/\s+/g, '_')
+  const mention = (activeCert.value?.title || 'Honor').replace(/\s+/g, '_')
+  await downloadPdf('certificate-printable-canvas', `Diploma_${recipient}_${mention}_2026_2027`, {
+    orientation: 'landscape',
+    format: 'letter'
+  })
 }
 
 const exitBatchMode = () => {

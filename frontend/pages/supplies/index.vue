@@ -23,7 +23,7 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center flex-wrap gap-2.5">
-          <!-- Print / PDF Button -->
+          <!-- Print / PDF Buttons -->
           <button
             @click="triggerPrint"
             type="button"
@@ -33,7 +33,20 @@
             <svg class="w-4 h-4 text-amber-400 dark:text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
-            <span>Imprimir / PDF Oficial</span>
+            <span>Imprimir</span>
+          </button>
+
+          <button
+            @click="downloadSuppliesPdf"
+            :disabled="isExporting"
+            type="button"
+            class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+            title="Descargar archivo PDF directamente"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span>{{ isExporting ? 'Generando PDF...' : 'Descargar PDF' }}</span>
           </button>
 
           <!-- Admin Actions -->
@@ -1167,9 +1180,24 @@ const boughtPercentage = computed(() => {
   return Math.round((boughtCount.value / activeItems.value.length) * 100)
 })
 
-// Print trigger
+// Print & PDF Export
+const { downloadPdf, isExporting } = usePdfExport()
+
 const triggerPrint = () => {
   window.print()
+}
+
+const downloadSuppliesPdf = async () => {
+  if (!activeList.value) return
+  const safeTitle = (activeList.value.grade_name || 'utiles')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+  const filename = `lista_utiles_${safeTitle}_${activeList.value.academic_year_name || '2026-2027'}.pdf`
+  await downloadPdf('printable-supply-list', filename, {
+    orientation: 'portrait',
+    format: 'letter',
+    margin: [8, 8, 8, 8]
+  })
 }
 
 // Modal actions

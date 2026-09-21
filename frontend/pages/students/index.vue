@@ -6,11 +6,11 @@
         <div class="flex items-center gap-2.5">
           <span class="text-2xl">🎓</span>
           <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight">
-            Gestión de Estudiantes
+            {{ $t('studentsTitle', 'Gestión de Estudiantes') }}
           </h1>
         </div>
         <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 font-medium">
-          U.E Santa Luisa • Matrícula oficial, expedientes y control escolar en tiempo real
+          {{ $t('studentsSubtitle', 'U.E Santa Luisa • Matrícula oficial, expedientes y control escolar en tiempo real') }}
         </p>
       </div>
 
@@ -22,7 +22,7 @@
           class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white dark:bg-[#170f33] hover:bg-slate-50 dark:hover:bg-white/10 text-slate-800 dark:text-slate-100 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm shadow-xs border border-slate-200 dark:border-white/10 active:scale-[0.98] transition-all cursor-pointer"
         >
           <span>📄</span>
-          <span>Planilla de Matrícula</span>
+          <span>{{ $t('enrollmentFormBtn', 'Planilla de Matrícula') }}</span>
         </button>
 
         <!-- New Student Button - Opens Slide-over Drawer -->
@@ -34,7 +34,7 @@
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
           </svg>
-          <span>Inscribir Estudiante</span>
+          <span>{{ $t('enrollStudentBtn', 'Inscribir Estudiante') }}</span>
         </button>
       </div>
     </div>
@@ -44,7 +44,7 @@
       <!-- Total Estudiantes -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Total Estudiantes</p>
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{{ $t('totalStudents', 'Total Estudiantes') }}</p>
           <p class="text-3xl font-black font-display text-brand-primary dark:text-white mt-1 leading-tight tracking-tight">{{ totalStudents }}</p>
         </div>
         <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
@@ -57,11 +57,11 @@
       <!-- Estudiantes Activos -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Estudiantes Activos</p>
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{{ $t('activeStudents', 'Estudiantes Activos') }}</p>
           <div class="flex items-center gap-3 mt-1">
             <span class="text-3xl font-black font-display text-emerald-600 dark:text-emerald-400 leading-tight tracking-tight">{{ activeStudentsCount }}</span>
             <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
-              Matriculados
+              {{ $t('enrolledBadge', 'Matriculados') }}
             </span>
           </div>
         </div>
@@ -75,11 +75,11 @@
       <!-- Inactivos / Deshabilitados -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Deshabilitados / Inactivos</p>
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{{ $t('inactiveStudents', 'Deshabilitados / Inactivos') }}</p>
           <div class="flex items-center gap-3 mt-1">
             <span class="text-3xl font-black font-display text-amber-600 dark:text-brand-gold leading-tight tracking-tight">{{ inactiveStudentsCount }}</span>
             <span class="px-2 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-brand-gold border border-amber-200 dark:border-amber-800">
-              En Reserva
+              {{ $t('onHoldBadge', 'En Reserva') }}
             </span>
           </div>
         </div>
@@ -93,7 +93,7 @@
       <!-- Niveles / Grados Únicos -->
       <div class="glass-card glass-card-hover rounded-2xl p-5 flex items-center justify-between min-h-[104px]">
         <div class="flex flex-col justify-center">
-          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">Años Registrados</p>
+          <p class="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">{{ $t('registeredGrades', 'Años Registrados') }}</p>
           <p class="text-3xl font-black font-display text-slate-700 dark:text-slate-200 mt-1 leading-tight tracking-tight">{{ uniqueGradesCount }}</p>
         </div>
         <div class="w-12 h-12 rounded-2xl bg-slate-100/80 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-300 flex-shrink-0">
@@ -113,7 +113,7 @@
         <input 
           v-model="search"
           type="text" 
-          placeholder="Buscar por nombre, cédula o matrícula..." 
+          :placeholder="$t('searchStudentPlaceholder', 'Buscar por nombre, cédula o matrícula...')" 
           class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-[#110926] border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-800 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 transition-all"
         />
       </div>
@@ -124,7 +124,7 @@
           v-model="filterGrade"
           class="w-full sm:w-auto px-3 py-2 bg-slate-100 dark:bg-[#110926] border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
         >
-          <option value="">Todos los Grados</option>
+          <option value="">{{ $t('allGrades', 'Todos los Grados') }}</option>
           <option v-for="g in availableGrades" :key="g" :value="g">{{ g }}</option>
         </select>
 
@@ -133,9 +133,9 @@
           v-model="filterStatus"
           class="w-full sm:w-auto px-3 py-2 bg-slate-100 dark:bg-[#110926] border border-slate-200/80 dark:border-white/10 rounded-xl text-xs text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 cursor-pointer"
         >
-          <option value="">Todos los Estados</option>
-          <option value="active">Activos</option>
-          <option value="inactive">Inactivos</option>
+          <option value="">{{ $t('allStatuses', 'Todos los Estados') }}</option>
+          <option value="active">{{ $t('actives', 'Activos') }}</option>
+          <option value="inactive">{{ $t('inactives', 'Inactivos') }}</option>
         </select>
 
         <!-- View Switcher -->
@@ -143,7 +143,7 @@
           <button 
             @click="viewMode = 'grid'" 
             :class="[viewMode === 'grid' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold shadow-xs font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all cursor-pointer flex-1 sm:flex-none flex items-center justify-center']"
-            title="Vista en tarjetas"
+            :title="$t('gridView', 'Vista en tarjetas')"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
@@ -152,7 +152,7 @@
           <button 
             @click="viewMode = 'table'" 
             :class="[viewMode === 'table' ? 'bg-white dark:bg-[#201646] text-brand-primary dark:text-brand-gold shadow-xs font-bold' : 'text-slate-400 hover:text-slate-700 dark:hover:text-slate-200', 'p-1.5 rounded-lg transition-all cursor-pointer flex-1 sm:flex-none flex items-center justify-center']"
-            title="Vista en tabla"
+            :title="$t('tableView', 'Vista en tabla')"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" />
@@ -174,11 +174,11 @@
         🎓
       </div>
       <h3 class="text-lg font-bold text-slate-900 dark:text-white font-display tracking-tight">
-        {{ students.length === 0 ? 'Matrícula Escolar sin Registros' : 'No se encontraron coincidencias' }}
+        {{ students.length === 0 ? $t('emptyStudentsTitle', 'Matrícula Escolar sin Registros') : 'No se encontraron coincidencias' }}
       </h3>
       <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
         {{ students.length === 0 
-          ? 'No hay estudiantes registrados en la base de datos oficial. Inicie la inscripción de su primer alumno para comenzar a gestionar expedientes académicos reales.' 
+          ? $t('emptyStudentsDesc', 'No hay estudiantes registrados en la base de datos oficial. Inicie la inscripción de su primer alumno para comenzar a gestionar expedientes académicos reales.') 
           : 'No hay ningún estudiante que coincida con los criterios de búsqueda o filtros aplicados actualmente.' 
         }}
       </p>
@@ -189,7 +189,7 @@
           type="button"
           class="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 rounded-xl transition-all"
         >
-          Limpiar Filtros
+          {{ $t('clearFilters', 'Limpiar Filtros') }}
         </button>
         <button 
           @click="openCreateDrawer"
@@ -199,7 +199,7 @@
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4" />
           </svg>
-          <span>Inscribir Primer Estudiante</span>
+          <span>{{ $t('enrollFirstStudentBtn', 'Inscribir Primer Estudiante') }}</span>
         </button>
       </div>
     </div>
@@ -354,13 +354,13 @@
         <table class="w-full text-left border-collapse">
           <thead>
             <tr class="border-b border-slate-100 dark:border-white/10 bg-slate-50/50 dark:bg-[#110926] text-slate-400 text-[10px] font-bold uppercase tracking-wider">
-              <th class="py-3.5 pl-5">Estudiante</th>
-              <th class="py-3.5 px-4">Matrícula ID</th>
-              <th class="py-3.5 px-4">Grado & Sección</th>
-              <th class="py-3.5 px-4">Teléfono</th>
-              <th class="py-3.5 px-4">Inscripción</th>
-              <th class="py-3.5 px-4">Estado</th>
-              <th class="py-3.5 pr-5 text-right">Acciones</th>
+              <th class="py-3.5 pl-5">{{ $t('studentNameCol', 'Estudiante') }}</th>
+              <th class="py-3.5 px-4">{{ $t('studentIdCol', 'Matrícula ID') }}</th>
+              <th class="py-3.5 px-4">{{ $t('gradeSectionCol', 'Grado & Sección') }}</th>
+              <th class="py-3.5 px-4">{{ $t('phone', 'Teléfono') }}</th>
+              <th class="py-3.5 px-4">{{ $t('admissionDate', 'Inscripción') }}</th>
+              <th class="py-3.5 px-4">{{ $t('status', 'Estado') }}</th>
+              <th class="py-3.5 pr-5 text-right">{{ $t('actionsCol', 'Acciones') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-white/5 text-xs sm:text-sm">
