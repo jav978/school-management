@@ -180,7 +180,7 @@
                 <img 
                   src="/logocolegio.png" 
                   alt="" 
-                  class="w-60 h-60 object-contain opacity-10 select-none pointer-events-none" 
+                  class="w-72 h-72 object-contain opacity-15 select-none pointer-events-none" 
                 />
               </div>
 
@@ -221,15 +221,19 @@
                 </div>
 
                 <!-- Subtítulo de Rol y Nombre -->
-                <p class="text-[10px] font-black text-[#0C2340] uppercase tracking-wider mt-2.5 leading-none">
-                  {{ card.recipient_type === 'estudiante' ? 'ESTUDIANTE:' : (card.position || 'PERSONAL INSTITUCIONAL') + ':' }}
+                <p class="text-[10px] font-black text-[#0C2340] uppercase tracking-wider mt-2 leading-none">
+                  {{ card.recipient_type === 'estudiante' ? 'ESTUDIANTE:' : (card.recipient_type === 'profesor' ? 'DOCENTE:' : 'PERSONAL:') }}
                 </p>
-                <h4 class="font-black text-base text-slate-900 tracking-tight leading-tight uppercase px-1 text-center mt-1">
+                <h4 class="font-black text-base !text-[#0C2340] dark:!text-[#0C2340] tracking-tight leading-tight uppercase px-1 text-center mt-1">
                   {{ card.recipient_name }}
                 </h4>
+                <!-- Cédula de Identidad inmediatamente bajo el nombre -->
+                <p class="text-xs font-black font-mono text-[#0C2340] mt-0.5 tracking-wide">
+                  C.I. {{ card.recipient_id_card || 'V-00000000' }}
+                </p>
 
                 <!-- Bloque de Emergencia con Ícono Médico (💧+) -->
-                <div class="flex items-center gap-2.5 mt-2.5 bg-white/70 backdrop-blur-2xs border border-teal-200/90 rounded-xl px-3 py-1.5 shadow-2xs max-w-[245px] w-full">
+                <div class="flex items-center gap-2.5 mt-2 bg-white/75 backdrop-blur-2xs border border-teal-200/90 rounded-xl px-3 py-1.5 shadow-2xs max-w-[245px] w-full">
                   <div class="w-8 h-8 rounded-lg bg-[#0C2340] text-white flex items-center justify-center text-xs flex-shrink-0 font-black">
                     <span class="text-cyan-300 text-sm leading-none">💧<sup class="text-[9px] font-black text-white">+</sup></span>
                   </div>
@@ -242,11 +246,20 @@
                     </p>
                   </div>
                 </div>
+
+                <!-- Cargo / Especialidad bajo el bloque de emergencia -->
+                <p class="text-[11px] font-black uppercase text-[#0C2340] mt-2 tracking-wide text-center max-w-[250px] leading-tight">
+                  {{ card.recipient_type === 'profesor' 
+                    ? (card.specialty ? 'Profesor • ' + card.specialty : (card.position || 'Docente de Educación Media')) 
+                    : (card.recipient_type === 'estudiante' 
+                        ? (card.grade_level || 'Educación Media General') 
+                        : (card.position || 'Personal Administrativo')) }}
+                </p>
               </div>
 
-              <!-- Footer Anverso en Barra Sólida Cian -->
+              <!-- Footer Anverso en Barra Sólida Cian (Limpio sin C.I.) -->
               <div class="bg-[#0891B2] text-white px-3.5 py-2 flex justify-between items-center text-[10.5px] font-bold relative z-10 shadow-inner">
-                <span>C.I: {{ card.recipient_id_card || 'V-00000000' }}</span>
+                <span class="font-mono text-[10px] tracking-wider">{{ card.card_code }}</span>
                 <span>VENCE: <strong class="text-white font-black">{{ formatMonthYear(card.expiry_date || card.valid_until) }}</strong></span>
               </div>
             </div>
@@ -258,7 +271,7 @@
                 <img 
                   src="/logocolegio.png" 
                   alt="" 
-                  class="w-60 h-60 object-contain opacity-10 select-none pointer-events-none" 
+                  class="w-72 h-72 object-contain opacity-15 select-none pointer-events-none" 
                 />
               </div>
 
@@ -328,7 +341,7 @@
                 <img 
                   src="/logocolegio.png" 
                   alt="" 
-                  class="w-65 h-65 object-contain opacity-[0.10] select-none pointer-events-none" 
+                  class="w-72 h-72 object-contain opacity-15 select-none pointer-events-none" 
                 />
               </div>
 
@@ -358,24 +371,27 @@
                 </div>
 
                 <!-- Name and Details -->
-                <h4 class="font-black text-base text-center leading-tight mt-2.5 text-slate-900 px-2">
+                <h4 class="font-black text-base text-center leading-tight mt-2 !text-slate-950 dark:!text-slate-950 px-2 uppercase">
                   {{ card.recipient_name }}
                 </h4>
-                <p class="text-xs font-black text-orange-700 uppercase mt-0.5 tracking-wide">
-                  {{ card.position || card.recipient_type }}
+                <!-- Cédula de Identidad inmediatamente bajo el nombre -->
+                <p class="text-xs font-black font-mono text-orange-800 mt-0.5 tracking-wide">
+                  C.I. {{ card.recipient_id_card || 'V-00000000' }}
                 </p>
-                <p class="text-[11px] text-slate-700 font-bold mt-0.5">
-                  {{ card.grade_level || card.department || 'Educación Primaria' }}
+                <p class="text-xs font-black text-orange-700 uppercase mt-1.5 tracking-wide text-center">
+                  {{ card.recipient_type === 'profesor' ? (card.specialty ? 'Profesor • ' + card.specialty : (card.position || 'Docente')) : (card.position || card.recipient_type) }}
+                </p>
+                <p class="text-[11px] text-slate-700 font-bold mt-0.5 text-center">
+                  {{ card.grade_level || card.department || 'Educación Media General' }}
                 </p>
               </div>
 
-              <!-- Footer Section of Front (Azul Real Institucional) -->
+              <!-- Footer Section of Front (Azul Real Institucional - Limpio sin C.I.) -->
               <div class="p-3 bg-blue-900 border-t border-blue-950 text-center space-y-0.5 relative z-10 text-white shadow-inner">
                 <div class="flex justify-between items-center text-[10.5px] font-bold text-white px-1">
-                  <span>C.I: {{ card.recipient_id_card || 'V-00000000' }}</span>
+                  <span class="font-mono text-[9.5px] text-amber-300 font-bold tracking-wider">{{ card.card_code }}</span>
                   <span>VENCE: <strong class="text-amber-300 font-bold">{{ formatDate(card.expiry_date || card.valid_until) }}</strong></span>
                 </div>
-                <p class="font-mono text-[9px] text-amber-300/90 font-bold tracking-wider">{{ card.card_code }}</p>
               </div>
             </div>
 
@@ -386,7 +402,7 @@
                 <img 
                   src="/logocolegio.png" 
                   alt="" 
-                  class="w-65 h-65 object-contain opacity-[0.11] select-none pointer-events-none" 
+                  class="w-72 h-72 object-contain opacity-15 select-none pointer-events-none" 
                 />
               </div>
 
@@ -468,7 +484,7 @@
             <button 
               @click="isModalOpen = false" 
               type="button" 
-              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              class="w-8.5 h-8.5 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             >
               ✕
             </button>
@@ -621,7 +637,7 @@
             <button 
               @click="isBatchModalOpen = false" 
               type="button" 
-              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              class="w-8.5 h-8.5 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             >
               ✕
             </button>
@@ -1015,6 +1031,10 @@
                       <h5 class="font-black text-[8.5px] text-center leading-tight mt-0.5 text-slate-900 truncate w-full px-0.5 uppercase">
                         {{ card.recipient_name }}
                       </h5>
+                      <!-- Cédula de Identidad inmediatamente bajo el nombre -->
+                      <p class="text-[6px] font-black font-mono text-[#0C2340] leading-none mt-0.5">
+                        C.I. {{ card.recipient_id_card || 'V-00000000' }}
+                      </p>
 
                       <!-- Bloque de Emergencia con Ícono Médico (💧+) -->
                       <div class="flex items-center gap-1 mt-1 bg-white/80 border border-teal-200/90 rounded-md px-1.5 py-0.5 shadow-2xs w-full max-w-[135px]">
@@ -1030,11 +1050,16 @@
                           </p>
                         </div>
                       </div>
+
+                      <!-- Cargo / Especialidad bajo la caja de emergencia -->
+                      <p class="text-[6px] font-black uppercase text-[#0C2340] leading-none mt-1 truncate w-full text-center">
+                        {{ card.recipient_type === 'profesor' ? (card.specialty ? 'Prof. ' + card.specialty : (card.position || 'Docente')) : (card.recipient_type === 'estudiante' ? (card.grade_level || 'Educación Media') : card.position) }}
+                      </p>
                     </div>
 
-                    <!-- Footer Anverso Sólido Cian -->
+                    <!-- Footer Anverso Sólido Cian (Limpio sin C.I.) -->
                     <div class="bg-[#0891B2] text-white px-2 py-1 flex justify-between items-center text-[6.5px] font-bold relative z-10 shadow-inner">
-                      <span>C.I: {{ card.recipient_id_card || 'V-00000000' }}</span>
+                      <span class="font-mono text-[6px]">{{ card.card_code }}</span>
                       <span>VENCE: <strong class="text-white font-black">{{ formatMonthYear(card.expiry_date || card.valid_until) }}</strong></span>
                     </div>
                   </div>
@@ -1077,21 +1102,24 @@
                       <h5 class="font-black text-[9px] text-center leading-tight mt-1 text-slate-900 truncate w-full px-0.5">
                         {{ card.recipient_name }}
                       </h5>
+                      <!-- Cédula de Identidad inmediatamente bajo el nombre -->
+                      <p class="text-[6.5px] font-black font-mono text-orange-800 leading-none mt-0.5">
+                        C.I. {{ card.recipient_id_card || 'V-00000000' }}
+                      </p>
                       <p class="text-[7.5px] font-black text-orange-700 uppercase leading-none mt-0.5">
-                        {{ card.position || card.recipient_type || 'Estudiante' }}
+                        {{ card.recipient_type === 'profesor' ? (card.specialty ? 'Prof. ' + card.specialty : (card.position || 'Docente')) : (card.position || card.recipient_type || 'Estudiante') }}
                       </p>
                       <p class="text-[7px] text-slate-700 font-bold leading-none mt-0.5">
-                        {{ card.grade_level || card.department || 'Educación Primaria' }}
+                        {{ card.grade_level || card.department || 'Educación Media General' }}
                       </p>
                     </div>
 
-                    <!-- Footer Front (Azul Real Institucional) -->
+                    <!-- Footer Front (Azul Real Institucional - Limpio sin C.I.) -->
                     <div class="p-1.5 bg-blue-900 border-t border-blue-950 text-center relative z-10 text-[7px] font-bold text-white shadow-inner">
                       <div class="flex justify-between px-0.5 text-white">
-                        <span>C.I: {{ card.recipient_id_card || 'V-00000000' }}</span>
+                        <span class="font-mono text-[6px] text-amber-300 font-bold">{{ card.card_code }}</span>
                         <span>{{ formatDate(card.expiry_date || card.valid_until) }}</span>
                       </div>
-                      <p class="font-mono text-[6px] text-amber-300 font-bold leading-none mt-0.5 tracking-wider">{{ card.card_code }}</p>
                     </div>
                   </div>
                 </template>

@@ -82,30 +82,56 @@
       </div>
     </div>
 
-    <!-- Pestañas de Años de Bachillerato (1er a 5to Año + Electivas) -->
-    <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-      <button
-        v-for="tab in gradeTabs"
-        :key="tab.id"
-        @click="activeGradeTab = tab.id"
-        type="button"
-        :class="[
-          activeGradeTab === tab.id
-            ? 'bg-brand-primary text-white font-bold shadow-md shadow-brand-primary/20 border-brand-primary'
-            : 'bg-white dark:bg-[#170f33] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5',
-          'px-4 py-2 rounded-2xl border text-xs flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer font-medium'
-        ]"
+    <!-- Pestañas de Años de Bachillerato (Carrusel Táctil Dinámico) -->
+    <div class="relative flex items-center group/carousel">
+      <!-- Botón Desplazar Izquierda -->
+      <button 
+        @click="scrollGradeTabs(-180)" 
+        type="button" 
+        class="hidden sm:flex absolute left-0 z-10 w-7 h-7 rounded-full bg-white dark:bg-[#1a1238] border border-slate-200 dark:border-white/15 shadow-md text-slate-700 dark:text-white items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer -ml-2.5 text-xs font-black"
+        title="Deslizar a la izquierda"
       >
-        <span>{{ tab.icon }}</span>
-        <span>{{ tab.label }}</span>
-        <span 
+        ‹
+      </button>
+
+      <!-- Contenedor Deslizable Touch -->
+      <div 
+        ref="gradeTabsRef"
+        class="flex items-center gap-2 overflow-x-auto py-1 px-1 scrollbar-none snap-x snap-mandatory touch-pan-x scroll-smooth overscroll-x-contain w-full"
+      >
+        <button
+          v-for="tab in gradeTabs"
+          :key="tab.id"
+          @click="activeGradeTab = tab.id"
+          type="button"
           :class="[
-            activeGradeTab === tab.id ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400',
-            'px-2 py-0.5 rounded-full text-[10px] font-bold'
+            activeGradeTab === tab.id
+              ? 'bg-brand-primary text-white font-bold shadow-md shadow-brand-primary/25 border-brand-primary scale-[1.02]'
+              : 'bg-white dark:bg-[#170f33] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5',
+            'px-4 py-2 rounded-2xl border text-xs flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer font-medium snap-start flex-shrink-0 active:scale-95'
           ]"
         >
-          {{ tab.count }}
-        </span>
+          <span>{{ tab.icon }}</span>
+          <span>{{ tab.label }}</span>
+          <span 
+            :class="[
+              activeGradeTab === tab.id ? 'bg-white/25 text-white' : 'bg-slate-100 dark:bg-white/10 text-slate-500 dark:text-slate-400',
+              'px-2 py-0.5 rounded-full text-[10px] font-bold'
+            ]"
+          >
+            {{ tab.count }}
+          </span>
+        </button>
+      </div>
+
+      <!-- Botón Desplazar Derecha -->
+      <button 
+        @click="scrollGradeTabs(180)" 
+        type="button" 
+        class="hidden sm:flex absolute right-0 z-10 w-7 h-7 rounded-full bg-white dark:bg-[#1a1238] border border-slate-200 dark:border-white/15 shadow-md text-slate-700 dark:text-white items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer -mr-2.5 text-xs font-black"
+        title="Deslizar a la derecha"
+      >
+        ›
       </button>
     </div>
 
@@ -452,7 +478,7 @@
             <button 
               @click="closeModal" 
               type="button" 
-              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              class="w-8.5 h-8.5 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             >
               ✕
             </button>
@@ -823,6 +849,13 @@ const subjectToDelete = ref(null)
 const isDeleting = ref(false)
 
 const activeGradeTab = ref('all') // 'all' | '1er Año' | '2do Año' | '3er Año' | '4to Año' | '5to Año' | 'electives'
+const gradeTabsRef = ref(null)
+
+const scrollGradeTabs = (offset) => {
+  if (gradeTabsRef.value) {
+    gradeTabsRef.value.scrollBy({ left: offset, behavior: 'smooth' })
+  }
+}
 
 const form = ref({
   code: '',

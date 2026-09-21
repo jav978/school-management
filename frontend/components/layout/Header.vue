@@ -3,18 +3,18 @@
     <div class="max-w-[1720px] mx-auto w-full flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 gap-4">
       
       <!-- Left: Mobile Menu & Clean Branding on mobile -->
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2.5">
         <button 
           @click="$emit('toggle-sidebar')" 
           type="button" 
-          class="lg:hidden p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-slate-100 active:scale-95 transition-all cursor-pointer"
+          class="lg:hidden w-10 h-10 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-800 dark:hover:text-slate-100 active:scale-95 transition-all cursor-pointer flex items-center justify-center border border-slate-200/60 dark:border-white/10 shadow-xs"
           title="Abrir menú"
         >
-          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
-        <div class="lg:hidden w-8 h-8 rounded-lg bg-white dark:bg-white/10 p-0.5 border border-slate-200 dark:border-white/15 flex items-center justify-center flex-shrink-0 shadow-xs">
+        <div class="lg:hidden w-10 h-10 rounded-xl bg-white dark:bg-white/10 p-1 border border-slate-200 dark:border-white/15 flex items-center justify-center flex-shrink-0 shadow-xs">
           <img :src="resolvePhotoUrl(institution.logo_url) || '/logocolegio.png'" :alt="institution.name || 'U.E Santa Luisa'" class="w-full h-full object-contain" />
         </div>
       </div>
@@ -155,13 +155,13 @@
       </div>
 
       <!-- Right: Actions & Profile - Ultra clean on mobile (no overflow) -->
-      <div class="flex items-center space-x-1.5 sm:space-x-3">
+      <div class="flex items-center space-x-2 sm:space-x-3">
         
         <!-- Mobile Search Toggle Button (Shows on mobile only) -->
         <button 
           @click="isSearchMobileOpen = true"
           type="button" 
-          class="sm:hidden p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer touch-tap-target flex items-center justify-center"
+          class="sm:hidden w-10 h-10 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer flex items-center justify-center flex-shrink-0"
           title="Buscar en el sistema"
         >
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -309,7 +309,7 @@
           <button 
             @click="toggleNotificationsDropdown"
             type="button" 
-            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all relative border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
+            class="w-10 h-10 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all relative border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer flex items-center justify-center flex-shrink-0"
             title="Notificaciones y Alertas Escolares"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -424,8 +424,8 @@
             title="Menú de cuenta y usuario"
           >
             <!-- Avatar with Initials Fallback -->
-            <div class="relative">
-              <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-amber-500/70 dark:border-brand-gold shadow-xs bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white font-black text-xs sm:text-sm select-none">
+            <div class="relative flex items-center justify-center">
+              <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-amber-500/70 dark:border-brand-gold shadow-xs bg-gradient-to-tr from-amber-500 to-orange-600 flex items-center justify-center text-white font-black text-xs sm:text-sm select-none flex-shrink-0">
                 <img 
                   v-if="userAvatarUrl && !avatarError" 
                   :src="userAvatarUrl" 

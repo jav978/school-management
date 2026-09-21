@@ -234,16 +234,16 @@
         <div class="border-b-2 border-slate-900/80 dark:border-white/20 print:border-slate-900 pb-5 mb-6 text-center">
           <div class="flex items-center justify-between gap-4 mb-3">
             <!-- Left: National Coat of Arms / MPPE -->
-            <div class="w-16 h-16 flex items-center justify-center flex-shrink-0">
+            <div class="w-16 h-18 sm:w-20 sm:h-20 flex items-center justify-center flex-shrink-0">
               <img src="/logomppe.png" alt="MPPE" class="max-w-full max-h-full object-contain" @error="$event.target.style.display='none'" />
             </div>
 
             <!-- Center: Institutional Names -->
-            <div class="flex-1 text-center">
-              <p class="text-[11px] sm:text-xs tracking-wide uppercase font-serif text-slate-700 dark:text-slate-300 print:text-slate-800 font-semibold">
+            <div class="flex-1 text-center px-1">
+              <p class="text-[11px] sm:text-xs tracking-wide uppercase font-sans text-slate-700 dark:text-slate-300 print:text-slate-800 font-semibold">
                 República Bolivariana de Venezuela
               </p>
-              <p class="text-[10px] sm:text-[11px] tracking-wide uppercase font-serif text-slate-600 dark:text-slate-400 print:text-slate-700 font-medium">
+              <p class="text-[10px] sm:text-[11px] tracking-wide uppercase font-sans text-slate-600 dark:text-slate-400 print:text-slate-700 font-medium">
                 Ministerio del Poder Popular para la Educación
               </p>
               <h2 class="text-lg sm:text-2xl font-black font-display text-slate-950 dark:text-white print:text-black tracking-tight mt-1">
@@ -252,7 +252,7 @@
             </div>
 
             <!-- Right: Official Santa Luisa School Logo -->
-            <div class="w-16 h-16 flex items-center justify-center flex-shrink-0">
+            <div class="w-16 h-18 sm:w-20 sm:h-20 flex items-center justify-center flex-shrink-0">
               <img src="/logocolegio.png" alt="Santa Luisa" class="max-w-full max-h-full object-contain" />
             </div>
           </div>
@@ -272,7 +272,7 @@
         <div v-if="textbooks.length > 0" class="mb-6">
           <div class="flex items-center gap-2 mb-2.5">
             <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-serif">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-sans">
               TEXTOS SUGERIDOS:
             </h4>
           </div>
@@ -314,7 +314,7 @@
         <div v-if="notebooks.length > 0" class="mb-6">
           <div class="flex items-center gap-2 mb-2.5">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-serif">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-sans">
               LIBRETAS / CUADERNOS:
             </h4>
           </div>
@@ -353,7 +353,7 @@
         <div v-if="stationeryAndMaterials.length > 0" class="mb-6">
           <div class="flex items-center gap-2 mb-2.5">
             <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-serif">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-sans">
               ÚTILES ESCOLARES Y MATERIALES:
             </h4>
           </div>
@@ -423,7 +423,7 @@
         <div v-if="hygieneAndOther.length > 0" class="mb-6">
           <div class="flex items-center gap-2 mb-2.5">
             <span class="w-2 h-2 rounded-full bg-purple-500"></span>
-            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-serif">
+            <h4 class="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-white print:text-black font-sans">
               ARTÍCULOS DE ASEO E HIGIENE PERSONAL:
             </h4>
           </div>
@@ -460,7 +460,7 @@
 
         <!-- INSTITUTIONAL OFFICIAL NOTE BOX (Matching user document prompt) -->
         <div class="mt-8 p-4 rounded-2xl border-2 border-slate-900 dark:border-white/20 print:border-slate-900 bg-slate-50 dark:bg-white/5 print:bg-white">
-          <p class="text-xs font-black uppercase text-slate-900 dark:text-white print:text-black font-serif">
+          <p class="text-xs font-black uppercase text-slate-900 dark:text-white print:text-black font-sans">
             NOTA:
           </p>
           <p class="text-xs font-bold text-slate-800 dark:text-slate-200 print:text-black mt-1">

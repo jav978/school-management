@@ -474,7 +474,7 @@
             <button 
               @click="closeModal" 
               type="button" 
-              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              class="w-8.5 h-8.5 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             >
               ✕
             </button>
@@ -860,7 +860,7 @@
             <button 
               @click="closeReceiptViewer" 
               type="button" 
-              class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors cursor-pointer"
+              class="w-8.5 h-8.5 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95"
             >
               ✕
             </button>

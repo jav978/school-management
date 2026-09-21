@@ -4,23 +4,28 @@
     <!-- Role Welcome Banner -->
     <div class="glass-card rounded-3xl p-6 relative overflow-hidden border border-brand-primary/15 dark:border-white/10 shadow-sm">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
-        <div class="flex items-center gap-4">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-purple flex items-center justify-center text-white text-2xl font-black shadow-md border-2 border-brand-gold/40">
+        <div class="flex items-start sm:items-center gap-3.5 sm:gap-4">
+          <div class="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-purple flex items-center justify-center text-white text-2xl font-black shadow-md border-2 border-brand-gold/40 flex-shrink-0 mt-0.5 sm:mt-0">
             <span v-if="currentRole === 'student'">🎓</span>
             <span v-else-if="currentRole === 'teacher'">👨‍🏫</span>
             <span v-else-if="currentRole === 'parent'">👨‍👩‍👦</span>
             <span v-else>👩‍🦰</span>
           </div>
-          <div>
-            <div class="flex items-center gap-2 flex-wrap">
-              <h2 class="text-xl font-black text-slate-900 dark:text-white font-display tracking-tight">
-                <template v-if="currentRole === 'student'">¡Hola, Gabriel Martínez!</template>
-                <template v-else-if="currentRole === 'teacher'">¡Buen día, Prof. Carmen Fernández!</template>
-                <template v-else-if="currentRole === 'parent'">¡Bienvenida, Sra. {{ parentGreetingName }}!</template>
-                <template v-else>Panel Institucional • U.E Santa Luisa</template>
-              </h2>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2.5">
+              <div>
+                <h2 class="text-base sm:text-xl font-black text-slate-900 dark:text-white font-display tracking-tight leading-tight">
+                  <template v-if="currentRole === 'student'">¡Hola, Gabriel Martínez!</template>
+                  <template v-else-if="currentRole === 'teacher'">¡Buen día, Prof. Carmen Fernández!</template>
+                  <template v-else-if="currentRole === 'parent'">¡Bienvenida, Sra. {{ parentGreetingName }}!</template>
+                  <template v-else>
+                    <span class="block">Panel Institucional</span>
+                    <span class="block text-xs sm:text-sm font-extrabold text-amber-600 dark:text-brand-gold mt-0.5">U.E Colegio "Santa Luisa"</span>
+                  </template>
+                </h2>
+              </div>
               <span 
-                class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider"
+                class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider w-fit"
                 :class="{
                   'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30': currentRole === 'student',
                   'bg-sky-500/15 text-sky-700 dark:text-sky-400 border border-sky-500/30': currentRole === 'teacher',
