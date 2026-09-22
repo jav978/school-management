@@ -209,5 +209,57 @@ html.light,
   }
 }
 
+/* Global Print Styles for High-Fidelity Official Documents */
+@media print {
+  *,
+  *::before,
+  *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
 
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    font-size: 11pt;
+    line-height: 1.35;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
 
+  /* Table pagination rules */
+  table {
+    border-collapse: collapse !important;
+    page-break-inside: auto;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  td, th {
+    word-break: normal;
+  }
+
+  /* Prevent awkward page break cuts on cards, headers and signature sections */
+  .no-break-inside,
+  .signature-block,
+  .official-letterhead {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Ensure background colors on badges and table headers print cleanly */
+  .print-exact {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

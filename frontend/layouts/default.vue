@@ -18,10 +18,10 @@
     ></div>
 
     <!-- Main Content Area -->
-    <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden print:h-auto print:overflow-visible">
+    <div class="flex-1 flex flex-col min-w-0 h-full overflow-hidden print:h-auto print:min-h-0 print:overflow-visible print:block">
       <layout-header class="print:hidden" @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
-      <main class="flex-1 overflow-y-auto w-full p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 print:p-0 print:m-0 print:h-auto print:overflow-visible flex flex-col justify-between">
-        <div class="max-w-[1720px] mx-auto w-full flex-1 print:max-w-none print:p-0">
+      <main class="flex-1 overflow-y-auto w-full p-3 sm:p-6 lg:p-8 pb-24 lg:pb-8 print:p-0 print:m-0 print:h-auto print:min-h-0 print:overflow-visible print:block print:justify-start flex flex-col justify-between">
+        <div class="max-w-[1720px] mx-auto w-full flex-1 print:max-w-none print:p-0 print:block">
           <slot />
         </div>
 

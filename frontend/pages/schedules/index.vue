@@ -1,34 +1,5 @@
 <template>
   <div class="space-y-6 animate-fade-in">
-    
-    <!-- Official Institutional Header (Visible on Print) -->
-    <div class="hidden print:block text-center border-b-2 border-slate-900 pb-4 mb-4">
-      <div class="flex items-center justify-center gap-3 mb-2">
-        <img src="/logocolegio.png" alt="Logo" class="w-14 h-14 object-contain" />
-        <div>
-          <h2 class="text-xs uppercase font-bold tracking-widest text-slate-700">República Bolivariana de Venezuela</h2>
-          <h2 class="text-xs uppercase font-bold tracking-widest text-slate-700">Ministerio del Poder Popular para la Educación</h2>
-          <h1 class="text-base font-black text-slate-900 font-display">Unidad Educativa Colegio "Santa Luisa"</h1>
-          <p class="text-[11px] font-semibold text-slate-600">Calle Real del Prado de María, Caracas | RIF: J-00123456-7</p>
-        </div>
-      </div>
-      <div class="flex items-center justify-between text-xs font-bold text-slate-800 mt-2 px-2 border-t border-slate-300 pt-1.5">
-        <div>
-          <span class="font-extrabold uppercase">Estudiante: </span>
-          <span v-if="isParent">{{ activeStudent.full_name }} ({{ activeStudent.id_card }})</span>
-          <span v-else-if="isStudent">Carlos Johnson Vásquez (V-32.485.912)</span>
-          <span v-else>Registro General</span>
-        </div>
-        <div>
-          <span class="font-extrabold uppercase">Grado / Nivel: </span>
-          <span>{{ selectedGrade }} - Sección {{ selectedSection }} ({{ educationLevel === 'primaria' ? 'Primaria' : 'Media General' }})</span>
-        </div>
-        <div>
-          <span class="font-extrabold uppercase">Año Escolar: </span>
-          <span>2025-2026</span>
-        </div>
-      </div>
-    </div>
 
     <!-- Screen Page Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 print:hidden">
@@ -60,11 +31,24 @@
           @click="windowPrint"
           type="button"
           class="inline-flex items-center justify-center gap-2 bg-white dark:bg-[#170f33] border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm shadow-xs transition-all cursor-pointer"
+          title="Imprimir horario oficial en 1 hoja horizontal"
         >
           <svg class="w-4 h-4 text-brand-purple dark:text-brand-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
           </svg>
           <span>Imprimir Horario</span>
+        </button>
+
+        <button
+          @click="downloadSchedulePdf"
+          :disabled="isDownloadingPdf"
+          type="button"
+          class="inline-flex items-center justify-center gap-2 bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-brand-gold/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 text-amber-800 dark:text-brand-gold font-bold py-2.5 px-4 rounded-2xl text-xs sm:text-sm shadow-xs transition-all cursor-pointer disabled:opacity-50"
+          title="Descargar archivo PDF oficial en formato horizontal"
+        >
+          <span v-if="isDownloadingPdf" class="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin"></span>
+          <span v-else>📥</span>
+          <span>{{ isDownloadingPdf ? 'Generando...' : 'Descargar PDF' }}</span>
         </button>
 
         <!-- Only Admin, Control de Estudio or Coordinator can create blocks -->
@@ -373,13 +357,28 @@
     </div>
 
     <!-- Official Class Timetable Matrix (Desktop / Tablet & Print) -->
-    <div class="hidden md:block print:block glass-card rounded-2xl overflow-hidden shadow-sm">
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse min-w-[760px]">
+    <div id="printable-schedule-area" class="hidden md:block print:block glass-card rounded-2xl overflow-visible shadow-sm print:shadow-none print:border-none print:p-0 print:m-0 print:bg-white">
+      <!-- Official Institutional Header for Print & PDF -->
+      <ui-institutional-letterhead
+        class="hidden print:block mb-2"
+        :compact="true"
+        title="Distribución Oficial de Horarios Escolares"
+        :subtitle="`Año Escolar 2025-2026 • ${educationLevel === 'primaria' ? 'Nivel Primaria' : 'Educación Media General'}`"
+        report-code="HOR-2025-2026"
+        :metadata="[
+          { label: 'Estudiante / Modo', value: isParent ? activeStudent.full_name : (isStudent ? 'Carlos Johnson Vásquez' : (viewMode === 'specialist' ? 'Por Docente Especialista' : 'Registro General')) },
+          { label: 'Grado / Nivel', value: `${selectedGrade} - Sección ${selectedSection}` },
+          { label: 'Turno', value: activeStudent?.turn || 'Jornada Integral' },
+          { label: 'Año Escolar', value: '2025-2026' }
+        ]"
+      />
+
+      <div class="overflow-x-auto print:overflow-visible">
+        <table class="w-full text-left border-collapse min-w-[760px] print:min-w-0 print:w-full">
           <!-- Day of the Week Columns -->
           <thead>
             <tr class="bg-slate-50/80 dark:bg-[#110926] text-slate-500 dark:text-slate-400 uppercase tracking-wider text-[11px] font-bold border-b border-slate-200 dark:border-white/10">
-              <th class="p-3 w-36 text-center border-r border-slate-200 dark:border-white/10">Hora / Bloque</th>
+              <th class="p-3 w-36 text-center border-r border-slate-200 dark:border-white/10 schedule-time-col">Hora / Bloque</th>
               <th v-for="day in weekDays" :key="day.id" class="p-3 text-center border-r border-slate-200 dark:border-white/10 last:border-r-0">
                 <span class="block text-slate-900 dark:text-white font-extrabold text-xs sm:text-sm">{{ day.label }}</span>
                 <span class="block text-[10px] text-slate-400 font-normal">Jornada Escolar</span>
@@ -391,7 +390,7 @@
             <template v-for="(slot, sIndex) in activeTimeSlots" :key="sIndex">
               <!-- Special Break / Civic Row -->
               <tr v-if="slot.isBreak" class="bg-amber-50/50 dark:bg-amber-950/20 text-amber-800 dark:text-brand-gold border-y border-amber-200/50 dark:border-brand-gold/20">
-                <td class="p-2.5 text-center font-mono font-bold text-[11px] border-r border-amber-200/50 dark:border-brand-gold/20">
+                <td class="p-2.5 text-center font-mono font-bold text-[11px] border-r border-amber-200/50 dark:border-brand-gold/20 schedule-time-col">
                   {{ slot.start }} - {{ slot.end }}
                 </td>
                 <td colspan="5" class="p-2.5 text-center font-bold tracking-wider text-[11px]">
@@ -405,7 +404,7 @@
               <!-- Standard Academic Block Row (45 mins) -->
               <tr v-else class="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors">
                 <!-- Time Block Header -->
-                <td class="p-3 text-center font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-50/40 dark:bg-[#110926]/40 border-r border-slate-200 dark:border-white/10">
+                <td class="p-3 text-center font-mono font-bold text-slate-700 dark:text-slate-300 bg-slate-50/40 dark:bg-[#110926]/40 border-r border-slate-200 dark:border-white/10 schedule-time-col">
                   <div class="text-xs text-slate-900 dark:text-white font-extrabold">{{ slot.start }} - {{ slot.end }}</div>
                   <div class="text-[10px] text-brand-purple dark:text-brand-secondary font-bold">Bloque {{ slot.blockNum }} (45m)</div>
                 </td>
@@ -420,7 +419,7 @@
                   <div v-if="getScheduleAt(day.id, slot.start)" class="h-full">
                     <div 
                       :class="getClassCardColor(getScheduleAt(day.id, slot.start).subject_name)"
-                      class="p-2.5 rounded-xl border shadow-xs h-full flex flex-col justify-between transition-all group-hover:shadow-md"
+                      class="p-2.5 rounded-xl border shadow-xs h-full flex flex-col justify-between transition-all group-hover:shadow-md schedule-slot-card"
                     >
                       <div>
                         <div class="flex items-start justify-between gap-1">
@@ -485,10 +484,25 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Official Footer for Print (Unified directly with the table) -->
+      <div class="hidden print:flex justify-between items-end pt-3 mt-2 text-center text-[10px] font-bold text-slate-800 signature-block">
+        <div class="w-56 border-t border-slate-900 pt-1">
+          Coordinador(a) Docente<br>
+          <span class="font-normal text-[9px] text-slate-600">Coordinación Académica</span>
+        </div>
+        <div class="w-36 border border-slate-300 p-1.5 rounded text-[8px] text-slate-400 uppercase tracking-widest">
+          Sello Oficial U.E Santa Luisa
+        </div>
+        <div class="w-56 border-t border-slate-900 pt-1">
+          Dirección General<br>
+          <span class="font-normal text-[9px] text-slate-600">U.E Colegio "Santa Luisa"</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Assigned Teachers & Subjects Roster (Useful for parents and visible in print) -->
-    <div class="glass-card rounded-2xl p-5 shadow-xs">
+    <!-- Assigned Teachers & Subjects Roster (Useful on screen, hidden on print to guarantee 1 single page) -->
+    <div class="glass-card rounded-2xl p-5 shadow-xs print:hidden">
       <div class="flex items-center justify-between mb-4 border-b border-slate-100 dark:border-white/10 pb-3">
         <div class="flex items-center gap-2.5">
           <div class="w-8 h-8 rounded-xl bg-purple-100 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm">
@@ -527,22 +541,6 @@
             {{ item.hours }} h/sem
           </span>
         </div>
-      </div>
-
-    </div>
-
-    <!-- Official Footer for Print -->
-    <div class="hidden print:flex justify-between items-end pt-12 text-center text-xs font-bold text-slate-800">
-      <div class="w-64 border-t border-slate-900 pt-1">
-        Coordinador(a) Docente<br>
-        <span class="font-normal text-[10px]">Coordinación Académica</span>
-      </div>
-      <div class="w-40 border border-slate-300 p-3 rounded-lg text-[9px] text-slate-400 uppercase">
-        Sello Oficial U.E Santa Luisa
-      </div>
-      <div class="w-64 border-t border-slate-900 pt-1">
-        Dirección General<br>
-        <span class="font-normal text-[10px]">U.E Colegio "Santa Luisa"</span>
       </div>
     </div>
 
@@ -817,11 +815,13 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useToast } from '~/composables/useToast'
 import { useActiveStudent } from '~/composables/useActiveStudent'
+import { usePdfExport } from '~/composables/usePdfExport'
 
 const nuxtApp = useNuxtApp()
 const authStore = useAuthStore()
 const toast = useToast()
 const { activeStudent, isCarlos, isMaria } = useActiveStudent()
+const { downloadPdf, isExporting: isDownloadingPdf } = usePdfExport()
 
 // Strict Role Check
 const currentRole = computed(() => authStore.userRole || authStore.user?.role || 'admin')
@@ -1153,6 +1153,17 @@ const windowPrint = () => {
   window.print()
 }
 
+const downloadSchedulePdf = async () => {
+  const safeGrade = String(selectedGrade.value || 'Horario').replace(/\s+/g, '_')
+  const safeSec = String(selectedSection.value || 'U')
+  await downloadPdf('printable-schedule-area', `Horario_Oficial_${safeGrade}_Sec_${safeSec}_2025_2026`, {
+    orientation: 'landscape',
+    format: 'letter',
+    scale: 2,
+    margin: [4, 6, 4, 6]
+  })
+}
+
 // Fetch Auxiliary Data & Schedules
 const fetchAuxiliaryData = async () => {
   try {
@@ -1191,7 +1202,7 @@ onMounted(async () => {
 @media print {
   @page {
     size: landscape;
-    margin: 8mm;
+    margin: 4mm 6mm;
   }
 
   body {
@@ -1199,16 +1210,58 @@ onMounted(async () => {
     print-color-adjust: exact !important;
     background: #ffffff !important;
     color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* Force full width on print */
+  /* Schedule container on paper */
+  #printable-schedule-area {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
   table {
     width: 100% !important;
-    page-break-inside: avoid;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
-  tr, td, th {
-    page-break-inside: avoid;
+  th, td {
+    padding: 2px 3px !important;
+    font-size: 8.5pt !important;
+    line-height: 1.15 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .schedule-time-col {
+    width: 95px !important;
+    padding: 2px !important;
+  }
+
+  .schedule-slot-card {
+    padding: 2px 4px !important;
+    min-height: 32px !important;
+    border-radius: 4px !important;
+    border-width: 1px !important;
+  }
+
+  .schedule-slot-card p {
+    font-size: 8pt !important;
+    line-height: 1.1 !important;
+  }
+
+  .signature-block {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }
 </style>

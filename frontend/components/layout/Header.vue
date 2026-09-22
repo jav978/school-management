@@ -174,7 +174,7 @@
           <button 
             @click="toggleLangDropdown"
             type="button" 
-            class="h-10 px-3 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs flex items-center justify-center gap-1.5 cursor-pointer font-bold text-xs"
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs flex items-center gap-1.5 cursor-pointer font-bold text-xs"
             title="Cambiar idioma del sistema"
           >
             <svg class="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -214,7 +214,7 @@
         <button 
           @click="toggleTheme" 
           type="button" 
-          class="hidden sm:flex w-10 h-10 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer items-center justify-center flex-shrink-0"
+          class="hidden sm:flex p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer items-center justify-center"
           :title="colorMode.value === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'"
         >
           <!-- Sun icon when dark -->
@@ -231,7 +231,7 @@
         <button 
           @click="openFeedback('general')"
           type="button" 
-          class="hidden md:flex h-10 px-3 rounded-xl text-amber-600 dark:text-brand-gold bg-amber-500/10 hover:bg-amber-500/20 active:scale-95 transition-all border border-amber-500/20 shadow-xs items-center justify-center gap-1.5 cursor-pointer font-bold text-xs"
+          class="hidden md:flex p-2 sm:px-2.5 sm:py-2 rounded-xl text-amber-600 dark:text-brand-gold bg-amber-500/10 hover:bg-amber-500/20 active:scale-95 transition-all border border-amber-500/20 shadow-xs items-center gap-1.5 cursor-pointer font-bold text-xs"
           title="Calificar la plataforma y enviar sugerencias"
         >
           <span class="text-xs">⭐</span>
@@ -243,7 +243,7 @@
           <button 
             @click="toggleMessagesDropdown"
             type="button" 
-            class="w-10 h-10 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all relative border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer flex items-center justify-center flex-shrink-0"
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/10 hover:text-amber-600 dark:hover:text-brand-gold active:scale-95 transition-all relative border border-slate-200/60 dark:border-white/10 shadow-xs cursor-pointer"
             title="Mensajes y Correspondencia Escolar"
           >
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
