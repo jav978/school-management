@@ -66,6 +66,8 @@ export const translations: Record<Language, Record<string, any>> = {
     feedback: 'Métricas de Satisfacción',
     idcards: 'Carnets Escolares',
     users: 'Usuarios y Roles',
+    backups: 'Respaldos y Migración',
+    backupsDesc: 'Copias de seguridad automáticas y migración de datos históricos (5-20 años)',
     documentation: 'Documentación del Sistema',
 
     // Common Actions & Buttons
@@ -290,6 +292,8 @@ export const translations: Record<Language, Record<string, any>> = {
     feedback: 'Satisfaction Metrics',
     idcards: 'School ID Cards',
     users: 'Users & Roles',
+    backups: 'Backups & Migration',
+    backupsDesc: 'Automated backups and legacy historical data migration (5-20 years)',
     documentation: 'Documentation',
 
     // Common Actions & Buttons

@@ -65,6 +65,12 @@ require('./src/services/supply-lists')(app)
 require('./src/services/supply-suggestions')(app)
 require('./src/services/system-feedback')(app)
 
+// Backups & Legacy Data Migration System
+require('./src/services/backups')(app)
+require('./src/services/data-migration')(app)
+const { startScheduler, stopScheduler } = require('./src/services/backup-scheduler')
+startScheduler(app)
+
 let server = null
 app.listen(PORT).then((srv) => {
   server = srv
@@ -72,6 +78,7 @@ app.listen(PORT).then((srv) => {
 })
 
 const shutdown = () => {
+  stopScheduler()
   if (server) {
     server.close(() => {
       process.exit(0)

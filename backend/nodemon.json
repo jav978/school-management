@@ -1,0 +1,11 @@
+{
+  "watch": ["src", "index.js"],
+  "ignore": [
+    "storage/*",
+    "public/*",
+    "*.json.gz",
+    "*.meta.json",
+    "*.log"
+  ],
+  "ext": "js,json"
+}
