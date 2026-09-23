@@ -11,13 +11,11 @@
             <span>Listas de Útiles</span>
           </div>
           <h1 class="text-2xl sm:text-3xl font-black font-display text-slate-900 dark:text-white tracking-tight flex items-center gap-2.5">
-            <span>Listas Oficiales de Útiles Escolares</span>
-            <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-mono font-bold">
-              {{ activeList?.academic_year_name || '2026-2027' }}
-            </span>
+            <span>Listas Oficiales de Útiles Escolares  {{ activeList?.academic_year_name || '2026-2027' }}</span>
+            
           </h1>
           <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            U. E. Colegio "Santa Luisa" • Documento oficial sin publicidad comercial
+            U. E. Colegio "Santa Luisa" 
           </p>
         </div>
 

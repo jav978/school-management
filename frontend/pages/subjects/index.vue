@@ -82,33 +82,37 @@
       </div>
     </div>
 
-    <!-- Pestañas de Años de Bachillerato (Carrusel Táctil Dinámico) -->
-    <div class="relative flex items-center group/carousel">
-      <!-- Botón Desplazar Izquierda -->
+    <!-- Pestañas de Años de Bachillerato (Barra de Navegación Dinámica de Grados) -->
+    <div class="glass-card rounded-2xl p-2 sm:p-2.5 shadow-xs border border-slate-200/80 dark:border-white/10 flex items-center gap-2">
+      <!-- Botón Anterior: Mueve dinámicamente al grado previo -->
       <button 
-        @click="scrollGradeTabs(-180)" 
+        @click="prevGradeTab" 
         type="button" 
-        class="hidden sm:flex absolute left-0 z-10 w-7 h-7 rounded-full bg-white dark:bg-[#1a1238] border border-slate-200 dark:border-white/15 shadow-md text-slate-700 dark:text-white items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer -ml-2.5 text-xs font-black"
-        title="Deslizar a la izquierda"
+        class="flex-shrink-0 w-8 h-8 rounded-xl bg-slate-100/90 dark:bg-white/10 hover:bg-brand-primary/10 dark:hover:bg-brand-purple/20 text-slate-700 dark:text-white hover:text-brand-primary dark:hover:text-brand-gold flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs border border-transparent hover:border-brand-primary/20"
+        title="Año académico anterior (Grado previo)"
+        aria-label="Año académico anterior"
       >
-        ‹
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
       </button>
 
-      <!-- Contenedor Deslizable Touch -->
+      <!-- Contenedor Deslizable de Pestañas de Grados -->
       <div 
         ref="gradeTabsRef"
-        class="flex items-center gap-2 overflow-x-auto py-1 px-1 scrollbar-none snap-x snap-mandatory touch-pan-x scroll-smooth overscroll-x-contain w-full"
+        class="flex-1 flex items-center gap-2 overflow-x-auto py-1 px-1 scrollbar-none snap-x snap-mandatory touch-pan-x scroll-smooth overscroll-x-contain"
       >
         <button
           v-for="tab in gradeTabs"
           :key="tab.id"
-          @click="activeGradeTab = tab.id"
+          :ref="el => setTabRef(el, tab.id)"
+          @click="selectGradeTab(tab.id)"
           type="button"
           :class="[
             activeGradeTab === tab.id
               ? 'bg-brand-primary text-white font-bold shadow-md shadow-brand-primary/25 border-brand-primary scale-[1.02]'
               : 'bg-white dark:bg-[#170f33] text-slate-600 dark:text-slate-300 border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5',
-            'px-4 py-2 rounded-2xl border text-xs flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer font-medium snap-start flex-shrink-0 active:scale-95'
+            'flex-1 min-w-fit px-3.5 sm:px-4 py-2 rounded-xl border text-xs flex items-center justify-center gap-2 whitespace-nowrap transition-all cursor-pointer font-medium snap-start flex-shrink-0 active:scale-95'
           ]"
         >
           <span>{{ tab.icon }}</span>
@@ -124,14 +128,17 @@
         </button>
       </div>
 
-      <!-- Botón Desplazar Derecha -->
+      <!-- Botón Siguiente: Mueve dinámicamente al siguiente grado -->
       <button 
-        @click="scrollGradeTabs(180)" 
+        @click="nextGradeTab" 
         type="button" 
-        class="hidden sm:flex absolute right-0 z-10 w-7 h-7 rounded-full bg-white dark:bg-[#1a1238] border border-slate-200 dark:border-white/15 shadow-md text-slate-700 dark:text-white items-center justify-center hover:scale-110 active:scale-95 transition-all cursor-pointer -mr-2.5 text-xs font-black"
-        title="Deslizar a la derecha"
+        class="flex-shrink-0 w-8 h-8 rounded-xl bg-slate-100/90 dark:bg-white/10 hover:bg-brand-primary/10 dark:hover:bg-brand-purple/20 text-slate-700 dark:text-white hover:text-brand-primary dark:hover:text-brand-gold flex items-center justify-center transition-all cursor-pointer active:scale-95 shadow-xs border border-transparent hover:border-brand-primary/20"
+        title="Siguiente año académico (Grado siguiente)"
+        aria-label="Siguiente año académico"
       >
-        ›
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+        </svg>
       </button>
     </div>
 
@@ -241,7 +248,7 @@
         v-for="subject in filteredSubjects" 
         :key="subject.id"
         data-testid="subject-card"
-        class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between transition-all"
+        class="glass-card glass-card-hover rounded-2xl p-5 flex flex-col justify-between transition-all h-full"
         :class="!subject.is_active ? 'opacity-85 border-amber-500/30' : ''"
       >
         <div>
@@ -808,7 +815,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useAuthStore } from '~/stores/auth'
 import { useApi } from '~/composables/useApi'
 import { useToast } from '~/composables/useToast'
@@ -850,10 +857,45 @@ const isDeleting = ref(false)
 
 const activeGradeTab = ref('all') // 'all' | '1er Año' | '2do Año' | '3er Año' | '4to Año' | '5to Año' | 'electives'
 const gradeTabsRef = ref(null)
+const tabRefs = ref({})
 
-const scrollGradeTabs = (offset) => {
-  if (gradeTabsRef.value) {
-    gradeTabsRef.value.scrollBy({ left: offset, behavior: 'smooth' })
+const setTabRef = (el, id) => {
+  if (el) {
+    tabRefs.value[id] = el
+  }
+}
+
+const activeTabIndex = computed(() => {
+  return gradeTabs.value.findIndex(t => t.id === activeGradeTab.value)
+})
+
+const selectGradeTab = (tabId) => {
+  activeGradeTab.value = tabId
+  nextTick(() => {
+    const el = tabRefs.value[tabId]
+    if (el && gradeTabsRef.value) {
+      el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' })
+    }
+  })
+}
+
+// Avanza dinámicamente al siguiente grado escolar
+const nextGradeTab = () => {
+  const currentIndex = activeTabIndex.value
+  const nextIndex = currentIndex < gradeTabs.value.length - 1 ? currentIndex + 1 : 0
+  const targetTab = gradeTabs.value[nextIndex]
+  if (targetTab) {
+    selectGradeTab(targetTab.id)
+  }
+}
+
+// Retrocede dinámicamente al grado escolar previo
+const prevGradeTab = () => {
+  const currentIndex = activeTabIndex.value
+  const prevIndex = currentIndex > 0 ? currentIndex - 1 : gradeTabs.value.length - 1
+  const targetTab = gradeTabs.value[prevIndex]
+  if (targetTab) {
+    selectGradeTab(targetTab.id)
   }
 }
 
