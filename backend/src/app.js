@@ -92,7 +92,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')))
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 app.configure(express.rest())
-app.configure(socketio())
+if (!process.env.VERCEL) {
+  app.configure(socketio())
+}
 
 // Sanitized Global Exception Handler (Zero-Crash)
 app.use(errorHandler(app))

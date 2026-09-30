@@ -2,11 +2,18 @@ const fs = require('fs')
 const path = require('path')
 const crypto = require('crypto')
 
-const UPLOADS_DIR = path.join(__dirname, '../../public/uploads/avatars')
+const os = require('os')
+const UPLOADS_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'uploads/avatars')
+  : path.join(__dirname, '../../public/uploads/avatars')
 
 // Asegurar que el directorio de almacenamiento existe
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true })
+try {
+  if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true })
+  }
+} catch (e) {
+  // Ignorado en sistemas de archivos de solo lectura como AWS Lambda / Vercel
 }
 
 module.exports = function (app) {

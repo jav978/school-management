@@ -3,12 +3,19 @@ const path = require('path')
 const zlib = require('zlib')
 const bcrypt = require('bcryptjs')
 
-const BACKUPS_DIR = path.resolve(__dirname, '../../storage/backups')
+const os = require('os')
+const BACKUPS_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'backups')
+  : path.resolve(__dirname, '../../storage/backups')
 const CONFIG_FILE = path.join(BACKUPS_DIR, 'config.json')
 
 function ensureBackupDir() {
-  if (!fs.existsSync(BACKUPS_DIR)) {
-    fs.mkdirSync(BACKUPS_DIR, { recursive: true })
+  try {
+    if (!fs.existsSync(BACKUPS_DIR)) {
+      fs.mkdirSync(BACKUPS_DIR, { recursive: true })
+    }
+  } catch (e) {
+    // Ignorado en sistemas de archivos de solo lectura
   }
 }
 

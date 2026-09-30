@@ -3,12 +3,20 @@ const path = require('path')
 const os = require('os')
 const { execFile } = require('child_process')
 
-const DOCUMENTS_DIR = path.join(__dirname, '../../public/uploads/documents')
-const AVATARS_DIR = path.join(__dirname, '../../public/uploads/avatars')
+const DOCUMENTS_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'uploads/documents')
+  : path.join(__dirname, '../../public/uploads/documents')
+const AVATARS_DIR = process.env.VERCEL
+  ? path.join(os.tmpdir(), 'uploads/avatars')
+  : path.join(__dirname, '../../public/uploads/avatars')
 const LOGO_PATH = path.join(__dirname, '../../../frontend/public/logocolegio.png')
 
-if (!fs.existsSync(DOCUMENTS_DIR)) {
-  fs.mkdirSync(DOCUMENTS_DIR, { recursive: true })
+try {
+  if (!fs.existsSync(DOCUMENTS_DIR)) {
+    fs.mkdirSync(DOCUMENTS_DIR, { recursive: true })
+  }
+} catch (e) {
+  // Ignorado en sistemas de archivos de solo lectura como AWS Lambda / Vercel
 }
 
 // Convert local image to base64 Data URI
