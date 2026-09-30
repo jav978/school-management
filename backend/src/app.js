@@ -61,6 +61,16 @@ app.set('authentication', {
   }
 })
 
+// Root & Health Check Endpoint
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    name: 'Sistema de Gestión Escolar API',
+    engine: 'Feathers.js 5',
+    timestamp: new Date().toISOString()
+  })
+})
+
 // OAuth Provider Status Endpoint
 app.get('/oauth/status', (req, res) => {
   res.json({

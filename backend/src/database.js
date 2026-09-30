@@ -26,7 +26,12 @@ const buildConnection = () => {
 const db = knex({
   client: 'pg',
   connection: buildConnection(),
-  searchPath: ['school', 'public']
+  searchPath: ['school', 'public'],
+  pool: {
+    min: 0,
+    max: process.env.VERCEL ? 3 : 10,
+    idleTimeoutMillis: 30000
+  }
 })
 
 module.exports = db

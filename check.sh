@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if ! command -v node &> /dev/null || ! command -v npm &> /dev/null; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
+
 echo "🔍 Verificando configuración del sistema..."
 
 # Verificar Node.js
@@ -16,18 +22,18 @@ if ! command -v npm &> /dev/null; then
 fi
 echo "✅ npm $(npm --version)"
 
-# Verificar PostgreSQL
-if ! command -v psql &> /dev/null; then
-    echo "❌ PostgreSQL no está instalado."
-    exit 1
-fi
-echo "✅ PostgreSQL $(psql --version)"
-
-# Verificar si PostgreSQL está corriendo
-if ! pg_isready -q; then
-    echo "⚠️  PostgreSQL no está corriendo."
+# Verificar PostgreSQL (Local o en Docker)
+if command -v psql &> /dev/null; then
+    echo "✅ PostgreSQL CLI $(psql --version)"
+    if pg_isready -q; then
+        echo "✅ PostgreSQL está corriendo en el host"
+    fi
+elif docker ps --format '{{.Names}}' | grep -qE "^(postgres_db|school_db)$"; then
+    DB_CONTAINER=$(docker ps --format '{{.Names}}' | grep -E "^(postgres_db|school_db)$" | head -n 1)
+    echo "✅ PostgreSQL está corriendo en Docker (Contenedor: $DB_CONTAINER, puerto 5432)"
 else
-    echo "✅ PostgreSQL está corriendo"
+    echo "❌ PostgreSQL no se detectó (ni psql local ni contenedor Docker postgres_db/school_db activo)."
+    exit 1
 fi
 
 # Verificar dependencias del frontend
@@ -46,8 +52,8 @@ fi
 
 echo ""
 echo "📋 Resumen:"
-echo "  - Frontend: http://localhost:3000"
-echo "  - Backend: http://localhost:3030"
+echo "  - Frontend: http://localhost:3001"
+echo "  - Backend: http://localhost:3031"
 echo "  - Base de datos: school_management"
 echo ""
 echo "🚀 Para iniciar el sistema: ./start.sh"

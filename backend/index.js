@@ -69,16 +69,20 @@ require('./src/services/system-feedback')(app)
 require('./src/services/backups')(app)
 require('./src/services/data-migration')(app)
 const { startScheduler, stopScheduler } = require('./src/services/backup-scheduler')
-startScheduler(app)
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
+  startScheduler(app)
+}
 
 let server = null
-app.listen(PORT).then((srv) => {
-  server = srv
-  console.log(`Feathers application started on http://localhost:${PORT}`)
-})
+if (require.main === module) {
+  app.listen(PORT).then((srv) => {
+    server = srv
+    console.log(`Feathers application started on http://localhost:${PORT}`)
+  })
+}
 
 const shutdown = () => {
-  stopScheduler()
+  if (stopScheduler) stopScheduler()
   if (server) {
     server.close(() => {
       process.exit(0)
@@ -91,3 +95,5 @@ const shutdown = () => {
 process.once('SIGUSR2', shutdown)
 process.on('SIGINT', shutdown)
 process.on('SIGTERM', shutdown)
+
+module.exports = app

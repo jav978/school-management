@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Cargar NVM si node o npm no están en PATH
+if ! command -v npm &> /dev/null || ! command -v npx &> /dev/null; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 echo "🔄 [EduFlow] Reseteando base de datos a estado EN FRÍO (Clean Slate)..."
 

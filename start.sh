@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Cargar NVM si node o npm no están en PATH
+if ! command -v npm &> /dev/null; then
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+fi
+
 # Obtener la ruta absoluta del directorio donde se encuentra este script
 DIR_RAIZ="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$DIR_RAIZ"
