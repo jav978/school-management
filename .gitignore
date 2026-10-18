@@ -65,6 +65,7 @@ scratch/
 .insforge
 .agent
 .agents
+agent/
 .augment
 .claude
 .cline

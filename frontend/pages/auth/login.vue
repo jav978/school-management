@@ -67,16 +67,16 @@
           <!-- Username / Email Field -->
           <div>
             <label class="block text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider mb-1.5">
-              Correo Institucional
+              Correo Institucional o Usuario
             </label>
             <div class="relative">
               <input
                 v-model="email"
-                type="email"
+                type="text"
                 required
                 autocomplete="username"
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-[#110926] border border-slate-200 dark:border-white/10 rounded-2xl text-slate-800 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/40 focus:border-brand-purple text-sm transition-all shadow-inner"
-                placeholder="ejemplo@santaluisa.edu.ve"
+                placeholder="admin@colegiosantaluisa.edu o admin"
               />
             </div>
           </div>
@@ -138,6 +138,58 @@
           </div>
         </form>
 
+        <!-- Quick Demo Accounts -->
+        <div class="mt-6 pt-5 border-t border-slate-200/70 dark:border-white/10">
+          <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+            <span>🔑 Acceso Rápido de Prueba (Demo)</span>
+          </p>
+          <div class="grid grid-cols-2 gap-2 text-xs">
+            <button
+              type="button"
+              @click="setQuickCredentials('admin@colegiosantaluisa.edu', 'password123')"
+              class="p-2 text-left rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-brand-purple/10 dark:hover:bg-brand-purple/20 border border-slate-200/80 dark:border-white/10 transition-colors"
+            >
+              <div class="font-bold text-slate-800 dark:text-white flex items-center gap-1">
+                <span>👑 Admin</span>
+              </div>
+              <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">admin (password123)</div>
+            </button>
+
+            <button
+              type="button"
+              @click="setQuickCredentials('roberto@colegiosantaluisa.edu', 'password123')"
+              class="p-2 text-left rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-brand-purple/10 dark:hover:bg-brand-purple/20 border border-slate-200/80 dark:border-white/10 transition-colors"
+            >
+              <div class="font-bold text-slate-800 dark:text-white flex items-center gap-1">
+                <span>👨‍🏫 Profesor</span>
+              </div>
+              <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">roberto (password123)</div>
+            </button>
+
+            <button
+              type="button"
+              @click="setQuickCredentials('juan@estudiante.edu', 'password123')"
+              class="p-2 text-left rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-brand-purple/10 dark:hover:bg-brand-purple/20 border border-slate-200/80 dark:border-white/10 transition-colors"
+            >
+              <div class="font-bold text-slate-800 dark:text-white flex items-center gap-1">
+                <span>🎓 Estudiante</span>
+              </div>
+              <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">juan (password123)</div>
+            </button>
+
+            <button
+              type="button"
+              @click="setQuickCredentials('pedro@padre.com', 'password123')"
+              class="p-2 text-left rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-brand-purple/10 dark:hover:bg-brand-purple/20 border border-slate-200/80 dark:border-white/10 transition-colors"
+            >
+              <div class="font-bold text-slate-800 dark:text-white flex items-center gap-1">
+                <span>👨‍👩‍👧 Representante</span>
+              </div>
+              <div class="text-[10px] text-slate-500 dark:text-slate-400 truncate">pedro (password123)</div>
+            </button>
+          </div>
+        </div>
+
       </div>
     </main>
 
@@ -167,6 +219,12 @@ const showPassword = ref(false)
 const error = ref('')
 const loading = ref(false)
 const route = useRoute()
+
+const setQuickCredentials = (userEmail, userPassword) => {
+  email.value = userEmail
+  password.value = userPassword
+  error.value = ''
+}
 
 const toggleTheme = () => {
   const nextTheme = colorMode.value === 'dark' ? 'light' : 'dark'

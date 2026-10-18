@@ -26,6 +26,18 @@ app.use(helmet({
   contentSecurityPolicy: false
 }))
 
+// Normalizador de URLs para Vercel Serverless (limpia prefijos de rewrites /api)
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api/index.js')) {
+    req.url = req.url.slice('/api/index.js'.length) || '/'
+  } else if (req.url.startsWith('/api/')) {
+    req.url = req.url.slice(4) || '/'
+  } else if (req.url === '/api') {
+    req.url = '/'
+  }
+  next()
+})
+
 // Configuration
 const host = process.env.BACKEND_HOST || process.env.HOST || 'school-backend-9e07b02c-badb-4ddd-94ca-afd4d8aca2bd.fly.dev'
 const port = process.env.PORT || 3030
@@ -61,12 +73,13 @@ app.set('authentication', {
   }
 })
 
-// Root & Health Check Endpoint
-app.get('/', (req, res) => {
+// Root & Health Check Endpoint (soporta /, /api y /api/index.js)
+app.get(['/', '/api', '/api/index.js'], (req, res) => {
   res.json({
     status: 'online',
     name: 'Sistema de Gestión Escolar API',
     engine: 'Feathers.js 5',
+    database: process.env.DATABASE_URL ? 'connected (Neon Cloud)' : 'unconfigured',
     timestamp: new Date().toISOString()
   })
 })

@@ -28,85 +28,82 @@ class AttendanceService extends KnexService {
       throw new BadRequest('No se proporcionaron registros de asistencia')
     }
 
-    const defaultTeacher = await db('school.teachers').where({ is_deleted: false }).first().catch(() => null)
-    const fallbackTeacherId = defaultTeacher ? defaultTeacher.id : 1
+    // Pre-resolve teacher_id once outside the loop to eliminate N+1 queries
+    const sampleClassId = records[0]?.class_id
+    let resolvedTeacherId = null
+    if (sampleClassId) {
+      const cls = await db('school.classes').where({ id: sampleClassId }).first().catch(() => null)
+      resolvedTeacherId = cls?.homeroom_teacher_id
+    }
+    if (!resolvedTeacherId) {
+      const defaultTeacher = await db('school.teachers').where({ is_deleted: false }).first().catch(() => null)
+      resolvedTeacherId = defaultTeacher ? defaultTeacher.id : 1
+    }
 
-    const results = []
+    const validStatuses = ['present', 'absent', 'late', 'excused', 'half_day']
 
-    for (const item of records) {
+    // Format and sanitize all records before database operation
+    const formattedRecords = records.map(item => {
       if (!item.student_id) throw new BadRequest('student_id es requerido para registrar asistencia')
       if (!item.class_id) throw new BadRequest('class_id es requerido para registrar asistencia')
       if (!item.attendance_date) throw new BadRequest('attendance_date es requerido para registrar asistencia')
 
       let status = item.status || 'present'
       if (status === 'justified') status = 'excused'
-      const validStatuses = ['present', 'absent', 'late', 'excused', 'half_day']
       if (!validStatuses.includes(status)) {
         status = 'present'
       }
 
-      // Check teacher_id
-      let teacherId = item.teacher_id
-      if (!teacherId) {
-        const cls = await db('school.classes').where({ id: item.class_id }).first().catch(() => null)
-        teacherId = cls?.homeroom_teacher_id || fallbackTeacherId
-      }
-
-      const formattedDate = typeof item.attendance_date === 'string' 
-        ? item.attendance_date.split('T')[0] 
+      const formattedDate = typeof item.attendance_date === 'string'
+        ? item.attendance_date.split('T')[0]
         : new Date(item.attendance_date).toISOString().split('T')[0]
 
       const isExcused = item.is_excused !== undefined ? Boolean(item.is_excused) : (status === 'excused')
+      const minutesLate = item.minutes_late !== undefined ? item.minutes_late : (status === 'late' ? 15 : 0)
 
-      // Check if existing record exists for (student_id, class_id, attendance_date)
-      const existing = await db('school.attendance')
-        .where({
-          student_id: item.student_id,
-          class_id: item.class_id,
-          attendance_date: formattedDate
-        })
-        .first()
-        .catch(() => null)
-
-      if (existing) {
-        const [updated] = await db('school.attendance')
-          .where({ id: existing.id })
-          .update({
-            status,
-            notes: item.notes !== undefined ? item.notes : existing.notes,
-            excuse_reason: item.excuse_reason !== undefined ? item.excuse_reason : existing.excuse_reason,
-            is_excused: isExcused,
-            minutes_late: item.minutes_late !== undefined ? item.minutes_late : (status === 'late' ? 15 : 0),
-            teacher_id: teacherId,
-            updated_at: new Date(),
-            version: (existing.version || 1) + 1
-          })
-          .returning('*')
-        results.push(updated)
-      } else {
-        const [inserted] = await db('school.attendance')
-          .insert({
-            uuid: crypto.randomUUID(),
-            student_id: item.student_id,
-            class_id: item.class_id,
-            teacher_id: teacherId,
-            attendance_date: formattedDate,
-            status,
-            notes: item.notes || null,
-            excuse_reason: item.excuse_reason || null,
-            is_excused: isExcused,
-            minutes_late: item.minutes_late || (status === 'late' ? 15 : 0),
-            parent_notified: false,
-            created_at: new Date(),
-            is_deleted: false,
-            version: 1
-          })
-          .returning('*')
-        results.push(inserted)
+      return {
+        uuid: crypto.randomUUID(),
+        student_id: item.student_id,
+        class_id: item.class_id,
+        teacher_id: item.teacher_id || resolvedTeacherId,
+        attendance_date: formattedDate,
+        status,
+        notes: item.notes || null,
+        excuse_reason: item.excuse_reason || null,
+        excuse_document: item.excuse_document || null,
+        is_excused: isExcused,
+        minutes_late: minutesLate,
+        parent_notified: false,
+        created_at: new Date(),
+        updated_at: new Date(),
+        is_deleted: false,
+        version: 1
       }
-    }
+    })
 
-    return Array.isArray(data) ? results : (data.records ? { saved: results.length, records: results } : results[0])
+    // Execute atomic transaction with Bulk Upsert
+    return await db.transaction(async (trx) => {
+      const results = await trx('school.attendance')
+        .insert(formattedRecords)
+        .onConflict(['student_id', 'class_id', 'attendance_date'])
+        .merge({
+          status: trx.raw('EXCLUDED.status'),
+          notes: trx.raw('EXCLUDED.notes'),
+          excuse_reason: trx.raw('EXCLUDED.excuse_reason'),
+          excuse_document: trx.raw('EXCLUDED.excuse_document'),
+          is_excused: trx.raw('EXCLUDED.is_excused'),
+          minutes_late: trx.raw('EXCLUDED.minutes_late'),
+          teacher_id: trx.raw('EXCLUDED.teacher_id'),
+          updated_at: new Date(),
+          version: trx.raw('COALESCE(school.attendance.version, 1) + 1')
+        })
+        .returning('*')
+
+      if (Array.isArray(data)) {
+        return results
+      }
+      return data.records ? { saved: results.length, records: results } : results[0]
+    })
   }
 
   async patch(id, data, params) {

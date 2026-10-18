@@ -113,6 +113,37 @@ class CustomLocalStrategy extends LocalStrategy {
     }
   }
 
+  async findEntity(username, params) {
+    const { errorMessage } = this.configuration
+    if (!username) {
+      throw new NotAuthenticated(errorMessage)
+    }
+
+    const cleanInput = String(username).trim().toLowerCase()
+    const db = this.app?.get('knexClient') || defaultDb
+
+    let queryEmails = [cleanInput]
+    if (cleanInput.includes('@santaluisa.edu.ve')) {
+      queryEmails.push(cleanInput.replace('@santaluisa.edu.ve', '@colegiosantaluisa.edu'))
+    } else if (cleanInput.includes('@colegiosantaluisa.edu')) {
+      queryEmails.push(cleanInput.replace('@colegiosantaluisa.edu', '@santaluisa.edu.ve'))
+    }
+
+    const user = await db('school.users')
+      .where(function() {
+        this.whereIn(db.raw('LOWER(email)'), queryEmails)
+            .orWhereRaw('LOWER(username) = ?', [cleanInput])
+      })
+      .andWhere('is_deleted', false)
+      .first()
+
+    if (!user) {
+      throw new NotAuthenticated(errorMessage)
+    }
+
+    return user
+  }
+
   async getEntity(result, params) {
     const { provider, ...paramsWithoutProvider } = params
     return super.getEntity(result, paramsWithoutProvider)

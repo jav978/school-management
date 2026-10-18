@@ -43,6 +43,12 @@
       "skillPath": "skills/analytics-tracking-testing/SKILL.md",
       "computedHash": "689acb3c7fb224cb84a7272f6a4900c5b5c4937f45c92e6af5e333d8858022af"
     },
+    "anatomy": {
+      "source": "wheresryan22/anatomy",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "b243118c08624f740a28dc667c99a3536ff7ab98ececc6aa81e2473aaefedd08"
+    },
     "api-testing": {
       "source": "petrkindlmann/qa-skills",
       "sourceType": "github",
